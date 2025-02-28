@@ -32,7 +32,7 @@
     {
         "name": "Tandoori Chicken",
         "price": 300,
-        "image": "https://your-image-host.com/tandoori-chicken.jpg",
+        "image": "https://github.com/RamanandaSagarBagu/food-menu/blob/main/fs-tandoori-chicken.jpg?raw=true",
         "description": "Smoky and spicy grilled chicken"
     },
     {
