@@ -92,7 +92,7 @@
     {
         "name": "Chicken 65",
         "price": 260,
-        "image": "https://your-image-host.com/chicken-65.jpg",
+        "image": "https://raw.githubusercontent.com/RamanandaSagarBagu/food-menu/refs/heads/main/chicken%2065.webp",
         "description": "Crispy and spicy South Indian fried chicken"
     },
     {
