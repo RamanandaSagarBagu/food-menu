@@ -80,7 +80,7 @@
     {
         "name": "Egg Curry",
         "price": 180,
-        "image": "https://your-image-host.com/egg-curry.jpg",
+        "image": "https://raw.githubusercontent.com/RamanandaSagarBagu/food-menu/refs/heads/main/Egg-Masala-Curry.webp",
         "description": "Boiled eggs in spicy tomato gravy"
     },
     {
