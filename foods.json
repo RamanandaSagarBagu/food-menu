@@ -1,14 +1,122 @@
 [
-  {
-    "name": "Chicken Biryani",
-    "price": 250,
-    "image": "https://github.com/RamanandaSagarBagu/food-menu/blob/main/chicken-hyderabadi-biryani-01.jpg?raw=true",
-    "description": "Spicy Hyderabadi Biryani"
-  },
-  {
-    "name": "Paneer Butter Masala",
-    "price": 200,
-    "image": "https://github.com/RamanandaSagarBagu/food-menu/blob/main/download%20(1).jpeg?raw=true",
-    "description": "Creamy paneer curry"
-  }
+    {
+        "name": "Chicken Biryani",
+        "price": 250,
+        "image": "https://your-image-host.com/chicken-biryani.jpg",
+        "description": "Spicy Hyderabadi Biryani"
+    },
+    {
+        "name": "Paneer Butter Masala",
+        "price": 200,
+        "image": "https://your-image-host.com/paneer-butter-masala.jpg",
+        "description": "Creamy paneer curry"
+    },
+    {
+        "name": "Mutton Rogan Josh",
+        "price": 350,
+        "image": "https://your-image-host.com/mutton-rogan-josh.jpg",
+        "description": "Rich and flavorful Kashmiri mutton dish"
+    },
+    {
+        "name": "Masala Dosa",
+        "price": 120,
+        "image": "https://your-image-host.com/masala-dosa.jpg",
+        "description": "Crispy South Indian dosa with potato filling"
+    },
+    {
+        "name": "Butter Naan",
+        "price": 50,
+        "image": "https://your-image-host.com/butter-naan.jpg",
+        "description": "Soft Indian bread with butter"
+    },
+    {
+        "name": "Tandoori Chicken",
+        "price": 300,
+        "image": "https://your-image-host.com/tandoori-chicken.jpg",
+        "description": "Smoky and spicy grilled chicken"
+    },
+    {
+        "name": "Palak Paneer",
+        "price": 220,
+        "image": "https://your-image-host.com/palak-paneer.jpg",
+        "description": "Healthy spinach and paneer curry"
+    },
+    {
+        "name": "Veg Pulao",
+        "price": 180,
+        "image": "https://your-image-host.com/veg-pulao.jpg",
+        "description": "Aromatic basmati rice with vegetables"
+    },
+    {
+        "name": "Dal Tadka",
+        "price": 160,
+        "image": "https://your-image-host.com/dal-tadka.jpg",
+        "description": "Lentils tempered with spices"
+    },
+    {
+        "name": "Fish Curry",
+        "price": 280,
+        "image": "https://your-image-host.com/fish-curry.jpg",
+        "description": "Spicy and tangy coastal fish curry"
+    },
+    {
+        "name": "Chole Bhature",
+        "price": 150,
+        "image": "https://your-image-host.com/chole-bhature.jpg",
+        "description": "Puffed fried bread with spicy chickpea curry"
+    },
+    {
+        "name": "Aloo Paratha",
+        "price": 100,
+        "image": "https://your-image-host.com/aloo-paratha.jpg",
+        "description": "Stuffed whole wheat Indian bread"
+    },
+    {
+        "name": "Prawns Masala",
+        "price": 320,
+        "image": "https://your-image-host.com/prawns-masala.jpg",
+        "description": "Coastal-style spicy prawn curry"
+    },
+    {
+        "name": "Egg Curry",
+        "price": 180,
+        "image": "https://your-image-host.com/egg-curry.jpg",
+        "description": "Boiled eggs in spicy tomato gravy"
+    },
+    {
+        "name": "Kadai Paneer",
+        "price": 230,
+        "image": "https://your-image-host.com/kadai-paneer.jpg",
+        "description": "Paneer cooked in spicy onion-tomato gravy"
+    },
+    {
+        "name": "Chicken 65",
+        "price": 260,
+        "image": "https://your-image-host.com/chicken-65.jpg",
+        "description": "Crispy and spicy South Indian fried chicken"
+    },
+    {
+        "name": "Mushroom Masala",
+        "price": 210,
+        "image": "https://your-image-host.com/mushroom-masala.jpg",
+        "description": "Mushrooms in rich tomato-based gravy"
+    },
+    {
+        "name": "Dhokla",
+        "price": 130,
+        "image": "https://your-image-host.com/dhokla.jpg",
+        "description": "Soft and fluffy Gujarati snack"
+    },
+    {
+        "name": "Rajma Chawal",
+        "price": 170,
+        "image": "https://your-image-host.com/rajma-chawal.jpg",
+        "description": "Kidney beans curry served with rice"
+    },
+    {
+        "name": "Rasgulla",
+        "price": 90,
+        "image": "https://your-image-host.com/rasgulla.jpg",
+        "description": "Spongy and sweet Bengali dessert"
+    }
 ]
