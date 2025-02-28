@@ -116,7 +116,7 @@
     {
         "name": "Rasgulla",
         "price": 90,
-        "image": "https://your-image-host.com/rasgulla.jpg",
+        "image": "https://github.com/RamanandaSagarBagu/food-menu/blob/main/Rasgulla.jpg?raw=true",
         "description": "Spongy and sweet Bengali dessert"
     }
 ]
