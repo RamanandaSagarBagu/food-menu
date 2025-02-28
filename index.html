@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Food Menu</title>
+    <style>
+        body { font-family: Arial, sans-serif; text-align: center; }
+        .food-container { display: flex; flex-wrap: wrap; justify-content: center; }
+        .food-item { border: 1px solid #ddd; padding: 10px; margin: 10px; width: 200px; }
+        img { width: 100px; height: 100px; }
+    </style>
+</head>
+<body>
+    <h1>Food Menu</h1>
+    <div class="food-container" id="food-list"></div>
+    
+    <script>
+        async function loadFoodItems() {
+            const response = await fetch('foods.json'); // Fetch data from JSON file
+            const data = await response.json();
+            const foodList = document.getElementById('food-list');
+            
+            data.forEach(food => {
+                const item = document.createElement('div');
+                item.classList.add('food-item');
+                item.innerHTML = `
+                    <img src="${food.image}" alt="${food.name}">
+                    <h3>${food.name}</h3>
+                    <p>Price: ₹${food.price}</p>
+                    <p>${food.description}</p>
+                `;
+                foodList.appendChild(item);
+            });
+        }
+        
+        loadFoodItems();
+    </script>
+</body>
+</html>
