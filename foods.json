@@ -1,0 +1,14 @@
+[
+  {
+    "name": "Chicken Biryani",
+    "price": 250,
+    "image": "https://via.placeholder.com/100",
+    "description": "Spicy Hyderabadi Biryani"
+  },
+  {
+    "name": "Paneer Butter Masala",
+    "price": 200,
+    "image": "https://via.placeholder.com/100",
+    "description": "Creamy paneer curry"
+  }
+]
