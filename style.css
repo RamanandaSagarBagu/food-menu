@@ -1,0 +1,59 @@
+/* General Page Styling */
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f8f8f8;
+    margin: 0;
+    padding: 0;
+    text-align: center;
+}
+
+/* Food Menu Container */
+.food-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 20px;
+    max-width: 1000px;
+    margin: 20px auto;
+    padding: 10px;
+}
+
+/* Individual Food Card */
+.food-card {
+    background: white;
+    border-radius: 10px;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
+    padding: 15px;
+    transition: transform 0.3s ease-in-out;
+}
+
+.food-card:hover {
+    transform: scale(1.05);
+}
+
+/* Food Image */
+.food-card img {
+    width: 100%;
+    height: 150px;
+    border-radius: 10px;
+    object-fit: cover;
+}
+
+/* Food Title */
+.food-title {
+    font-size: 18px;
+    font-weight: bold;
+    margin: 10px 0;
+}
+
+/* Food Price */
+.food-price {
+    font-size: 16px;
+    color: #27ae60;
+    font-weight: bold;
+}
+
+/* Food Description */
+.food-description {
+    font-size: 14px;
+    color: #555;
+}
