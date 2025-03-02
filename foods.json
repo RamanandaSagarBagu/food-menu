@@ -86,7 +86,7 @@
     {
         "name": "Rasgulla",
         "price": 110,
-        "image": "https://example.com/rasgulla.jpg",
+        "image": "https://github.com/RamanandaSagarBagu/food-menu/blob/main/Rasgulla.jpg?raw=true",
         "description": "Soft spongy cheese balls soaked in sugar syrup",
         "category": "Dessert"
     },
