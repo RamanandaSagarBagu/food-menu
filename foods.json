@@ -72,7 +72,7 @@
     {
         "name": "Chole Bhature",
         "price": 150,
-        "image": "https://example.com/chole-bhature.jpg",
+        "image": "https://github.com/RamanandaSagarBagu/food-menu/blob/main/chole-bhature-recipe.jpg?raw=true",
         "description": "Spicy chickpea curry with fried bread",
         "category": "Veg"
     },
