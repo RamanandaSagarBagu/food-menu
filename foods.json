@@ -79,7 +79,7 @@
     {
         "name": "Gulab Jamun",
         "price": 100,
-        "image": "https://example.com/gulab-jamun.jpg",
+        "image": "https://github.com/RamanandaSagarBagu/food-menu/blob/main/gulab%20jamun.jpeg?raw=true",
         "description": "Sweet deep-fried dumplings soaked in syrup",
         "category": "Dessert"
     },
