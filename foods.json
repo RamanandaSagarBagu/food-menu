@@ -100,7 +100,7 @@
     {
         "name": "Mango Lassi",
         "price": 80,
-        "image": "https://example.com/mango-lassi.jpg",
+        "image": "https://github.com/RamanandaSagarBagu/food-menu/blob/main/mango%20lassi.jpeg?raw=true",
         "description": "Refreshing mango yogurt drink",
         "category": "Beverage"
     },
