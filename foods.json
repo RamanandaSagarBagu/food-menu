@@ -114,7 +114,7 @@
     {
         "name": "Egg Curry",
         "price": 210,
-        "image": "https://example.com/egg-curry.jpg",
+        "image": "https://raw.githubusercontent.com/RamanandaSagarBagu/food-menu/refs/heads/main/Egg-Masala-Curry.webp",
         "description": "Boiled eggs in a rich tomato-based gravy",
         "category": "Non-Veg"
     },
