@@ -65,7 +65,7 @@
     {
         "name": "Fish Curry",
         "price": 280,
-        "image": "https://example.com/fish-curry.jpg",
+        "image": "https://github.com/RamanandaSagarBagu/food-menu/blob/main/fish%20curry.jpg?raw=true",
         "description": "Spicy and tangy coastal fish curry",
         "category": "Non-Veg"
     },
