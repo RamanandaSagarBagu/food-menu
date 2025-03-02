@@ -135,7 +135,7 @@
     {
         "name": "Chicken Lollipop",
         "price": 260,
-        "image": "https://example.com/chicken-lollipop.jpg",
+        "image": "https://github.com/RamanandaSagarBagu/food-menu/blob/main/chicken%20lollipop.jpeg?raw=true",
         "description": "Spicy deep-fried chicken drumettes",
         "category": "Non-Veg"
     }
