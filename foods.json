@@ -37,7 +37,7 @@
     {
         "name": "Tandoori Chicken",
         "price": 300,
-        "image": "https://example.com/tandoori-chicken.jpg",
+        "image": "https://github.com/RamanandaSagarBagu/food-menu/blob/main/fs-tandoori-chicken.jpg?raw=true",
         "description": "Smoky and spicy grilled chicken",
         "category": "Non-Veg"
     },
