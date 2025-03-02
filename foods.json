@@ -93,7 +93,7 @@
     {
         "name": "Paneer Tikka",
         "price": 230,
-        "image": "https://example.com/paneer-tikka.jpg",
+        "image": "https://github.com/RamanandaSagarBagu/food-menu/blob/main/paneer%20tikka.jpg?raw=true",
         "description": "Grilled paneer cubes marinated in spices",
         "category": "Veg"
     },
