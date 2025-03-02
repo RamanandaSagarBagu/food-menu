@@ -128,7 +128,7 @@
     {
         "name": "Cold Coffee",
         "price": 90,
-        "image": "https://example.com/cold-coffee.jpg",
+        "image": "https://github.com/RamanandaSagarBagu/food-menu/blob/main/cold%20coffee.jpeg?raw=true",
         "description": "Chilled coffee with milk and sugar",
         "category": "Beverage"
     },
