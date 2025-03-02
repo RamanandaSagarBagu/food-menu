@@ -107,7 +107,7 @@
     {
         "name": "Veg Manchurian",
         "price": 190,
-        "image": "https://example.com/veg-manchurian.jpg",
+        "image": "https://github.com/RamanandaSagarBagu/food-menu/blob/main/veg%20manchuria.jpeg?raw=true",
         "description": "Crispy veggie balls in spicy sauce",
         "category": "Veg"
     },
