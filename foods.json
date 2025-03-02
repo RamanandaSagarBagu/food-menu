@@ -30,7 +30,7 @@
     {
         "name": "Butter Naan",
         "price": 50,
-        "image": "https://example.com/butter-naan.jpg",
+        "image": "https://raw.githubusercontent.com/RamanandaSagarBagu/food-menu/refs/heads/main/butter-naan-recipe1.webp",
         "description": "Soft Indian bread with butter",
         "category": "Veg"
     },
