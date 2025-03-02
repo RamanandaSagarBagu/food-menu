@@ -2,121 +2,141 @@
     {
         "name": "Chicken Biryani",
         "price": 250,
-        "image": "https://github.com/RamanandaSagarBagu/food-menu/blob/main/chicken-hyderabadi-biryani-01.jpg?raw=true",
-        "description": "Spicy Hyderabadi Biryani"
+        "image": "https://example.com/chicken-biryani.jpg",
+        "description": "Spicy Hyderabadi Biryani",
+        "category": "Non-Veg"
     },
     {
         "name": "Paneer Butter Masala",
         "price": 200,
-        "image": "https://github.com/RamanandaSagarBagu/food-menu/blob/main/download%20(1).jpeg?raw=true",
-        "description": "Creamy paneer curry"
+        "image": "https://example.com/paneer-butter-masala.jpg",
+        "description": "Creamy paneer curry",
+        "category": "Veg"
     },
     {
         "name": "Mutton Rogan Josh",
         "price": 350,
-        "image": "https://github.com/RamanandaSagarBagu/food-menu/blob/main/Mutton%20Rogan%20Josh%20Recipe.JPG?raw=true",
-        "description": "Rich and flavorful Kashmiri mutton dish"
+        "image": "https://example.com/mutton-rogan-josh.jpg",
+        "description": "Rich and flavorful Kashmiri mutton dish",
+        "category": "Non-Veg"
     },
     {
         "name": "Masala Dosa",
         "price": 120,
-        "image": "https://github.com/RamanandaSagarBagu/food-menu/blob/main/masala%20dosa.jpg?raw=true",
-        "description": "Crispy South Indian dosa with potato filling"
+        "image": "https://example.com/masala-dosa.jpg",
+        "description": "Crispy South Indian dosa with potato filling",
+        "category": "Veg"
     },
     {
         "name": "Butter Naan",
         "price": 50,
-        "image": "https://raw.githubusercontent.com/RamanandaSagarBagu/food-menu/refs/heads/main/butter-naan-recipe1.webp",
-        "description": "Soft Indian bread with butter"
+        "image": "https://example.com/butter-naan.jpg",
+        "description": "Soft Indian bread with butter",
+        "category": "Veg"
     },
     {
         "name": "Tandoori Chicken",
         "price": 300,
-        "image": "https://github.com/RamanandaSagarBagu/food-menu/blob/main/fs-tandoori-chicken.jpg?raw=true",
-        "description": "Smoky and spicy grilled chicken"
+        "image": "https://example.com/tandoori-chicken.jpg",
+        "description": "Smoky and spicy grilled chicken",
+        "category": "Non-Veg"
     },
     {
         "name": "Palak Paneer",
         "price": 220,
-        "image": "https://github.com/RamanandaSagarBagu/food-menu/blob/main/pallak-Paneer-.jpg?raw=true",
-        "description": "Healthy spinach and paneer curry"
+        "image": "https://example.com/palak-paneer.jpg",
+        "description": "Healthy spinach and paneer curry",
+        "category": "Veg"
     },
     {
         "name": "Veg Pulao",
         "price": 180,
-        "image": "https://github.com/RamanandaSagarBagu/food-menu/blob/main/Veg-Pulao.jpg?raw=true",
-        "description": "Aromatic basmati rice with vegetables"
+        "image": "https://example.com/veg-pulao.jpg",
+        "description": "Aromatic basmati rice with vegetables",
+        "category": "Veg"
     },
     {
         "name": "Dal Tadka",
         "price": 160,
-        "image": "https://github.com/RamanandaSagarBagu/food-menu/blob/main/Dal-tadka.jpg?raw=true",
-        "description": "Lentils tempered with spices"
+        "image": "https://example.com/dal-tadka.jpg",
+        "description": "Lentils tempered with spices",
+        "category": "Veg"
     },
     {
         "name": "Fish Curry",
         "price": 280,
-        "image": "https://github.com/RamanandaSagarBagu/food-menu/blob/main/fish%20curry.jpg?raw=true",
-        "description": "Spicy and tangy coastal fish curry"
+        "image": "https://example.com/fish-curry.jpg",
+        "description": "Spicy and tangy coastal fish curry",
+        "category": "Non-Veg"
     },
     {
         "name": "Chole Bhature",
         "price": 150,
-        "image": "https://github.com/RamanandaSagarBagu/food-menu/blob/main/chole-bhature-recipe.jpg?raw=true",
-        "description": "Puffed fried bread with spicy chickpea curry"
+        "image": "https://example.com/chole-bhature.jpg",
+        "description": "Spicy chickpea curry with fried bread",
+        "category": "Veg"
     },
     {
-        "name": "Aloo Paratha",
+        "name": "Gulab Jamun",
         "price": 100,
-        "image": "https://github.com/RamanandaSagarBagu/food-menu/blob/main/aallu%20paratha.jpeg?raw=true",
-        "description": "Stuffed whole wheat Indian bread"
-    },
-    {
-        "name": "Prawns Masala",
-        "price": 320,
-        "image": "https://github.com/RamanandaSagarBagu/food-menu/blob/main/Prawn-Masala-.jpg?raw=true",
-        "description": "Coastal-style spicy prawn curry"
-    },
-    {
-        "name": "Egg Curry",
-        "price": 180,
-        "image": "https://raw.githubusercontent.com/RamanandaSagarBagu/food-menu/refs/heads/main/Egg-Masala-Curry.webp",
-        "description": "Boiled eggs in spicy tomato gravy"
-    },
-    {
-        "name": "Kadai Paneer",
-        "price": 230,
-        "image": "https://github.com/RamanandaSagarBagu/food-menu/blob/main/kadai%20panner.jpeg?raw=true",
-        "description": "Paneer cooked in spicy onion-tomato gravy"
-    },
-    {
-        "name": "Chicken 65",
-        "price": 260,
-        "image": "https://raw.githubusercontent.com/RamanandaSagarBagu/food-menu/refs/heads/main/chicken%2065.webp",
-        "description": "Crispy and spicy South Indian fried chicken"
-    },
-    {
-        "name": "Mushroom Masala",
-        "price": 210,
-        "image": "https://github.com/RamanandaSagarBagu/food-menu/blob/main/mutter-mushroom.jpg?raw=true",
-        "description": "Mushrooms in rich tomato-based gravy"
-    },
-    {
-        "name": "Dhokla",
-        "price": 130,
-        "image": "https://github.com/RamanandaSagarBagu/food-menu/blob/main/dokla.jpg?raw=true",
-        "description": "Soft and fluffy Gujarati snack"
-    },
-    {
-        "name": "Rajma Chawal",
-        "price": 170,
-        "image": "https://github.com/RamanandaSagarBagu/food-menu/blob/main/rajma%20chaval.jpeg?raw=true",
-        "description": "Kidney beans curry served with rice"
+        "image": "https://example.com/gulab-jamun.jpg",
+        "description": "Sweet deep-fried dumplings soaked in syrup",
+        "category": "Dessert"
     },
     {
         "name": "Rasgulla",
+        "price": 110,
+        "image": "https://example.com/rasgulla.jpg",
+        "description": "Soft spongy cheese balls soaked in sugar syrup",
+        "category": "Dessert"
+    },
+    {
+        "name": "Paneer Tikka",
+        "price": 230,
+        "image": "https://example.com/paneer-tikka.jpg",
+        "description": "Grilled paneer cubes marinated in spices",
+        "category": "Veg"
+    },
+    {
+        "name": "Mango Lassi",
+        "price": 80,
+        "image": "https://example.com/mango-lassi.jpg",
+        "description": "Refreshing mango yogurt drink",
+        "category": "Beverage"
+    },
+    {
+        "name": "Veg Manchurian",
+        "price": 190,
+        "image": "https://example.com/veg-manchurian.jpg",
+        "description": "Crispy veggie balls in spicy sauce",
+        "category": "Veg"
+    },
+    {
+        "name": "Egg Curry",
+        "price": 210,
+        "image": "https://example.com/egg-curry.jpg",
+        "description": "Boiled eggs in a rich tomato-based gravy",
+        "category": "Non-Veg"
+    },
+    {
+        "name": "Mixed Fruit Salad",
+        "price": 130,
+        "image": "https://example.com/fruit-salad.jpg",
+        "description": "A refreshing mix of seasonal fruits",
+        "category": "Dessert"
+    },
+    {
+        "name": "Cold Coffee",
         "price": 90,
-        "image": "https://github.com/RamanandaSagarBagu/food-menu/blob/main/Rasgulla.jpg?raw=true",
-        "description": "Spongy and sweet Bengali dessert"
+        "image": "https://example.com/cold-coffee.jpg",
+        "description": "Chilled coffee with milk and sugar",
+        "category": "Beverage"
+    },
+    {
+        "name": "Chicken Lollipop",
+        "price": 260,
+        "image": "https://example.com/chicken-lollipop.jpg",
+        "description": "Spicy deep-fried chicken drumettes",
+        "category": "Non-Veg"
     }
 ]
