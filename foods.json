@@ -121,7 +121,7 @@
     {
         "name": "Mixed Fruit Salad",
         "price": 130,
-        "image": "https://example.com/fruit-salad.jpg",
+        "image": "https://github.com/RamanandaSagarBagu/food-menu/blob/main/mixed%20fruit%20salad.jpeg?raw=true",
         "description": "A refreshing mix of seasonal fruits",
         "category": "Dessert"
     },
