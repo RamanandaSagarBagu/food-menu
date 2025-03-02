@@ -1,28 +1,47 @@
-<script>
-    let allFoods = [];  // Store all foods globally
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Food Menu</title>
+    <link rel="stylesheet" href="style.css"> <!-- Link to CSS file -->
+</head>
+<body>
+    <h1 class="title">Food Menu</h1>
 
-    fetch('foods.json')
-        .then(response => response.json())
-        .then(foods => {
-            allFoods = foods;
-            displayFoods(allFoods);
-        });
+    <div class="search-container">
+        <input type="text" id="searchBox" placeholder="Search food..." onkeyup="searchFood()">
+    </div>
 
-    function displayFoods(foods) {
-        const foodContainer = document.getElementById('foodContainer');
-        foodContainer.innerHTML = foods.map(food => `
-            <div class="food-card">
-                <img src="${food.image}" alt="${food.name}">
-                <div class="food-title">${food.name}</div>
-                <div class="food-price">₹${food.price}</div>
-                <div class="food-description">${food.description}</div>
-            </div>
-        `).join('');
-    }
+    <div id="foodContainer" class="food-grid"></div>
 
-    function searchFood() {
-        let query = document.getElementById('searchBox').value.toLowerCase();
-        let filteredFoods = allFoods.filter(food => food.name.toLowerCase().includes(query));
-        displayFoods(filteredFoods);
-    }
-</script>
+    <script>
+        let allFoods = [];  // Store all foods globally
+
+        fetch('foods.json')
+            .then(response => response.json())
+            .then(foods => {
+                allFoods = foods;
+                displayFoods(allFoods);
+            });
+
+        function displayFoods(foods) {
+            const foodContainer = document.getElementById('foodContainer');
+            foodContainer.innerHTML = foods.map(food => `
+                <div class="food-card">
+                    <img src="${food.image}" alt="${food.name}">
+                    <div class="food-title">${food.name}</div>
+                    <div class="food-price">₹${food.price}</div>
+                    <div class="food-description">${food.description}</div>
+                </div>
+            `).join('');
+        }
+
+        function searchFood() {
+            let query = document.getElementById('searchBox').value.toLowerCase();
+            let filteredFoods = allFoods.filter(food => food.name.toLowerCase().includes(query));
+            displayFoods(filteredFoods);
+        }
+    </script>
+</body>
+</html>
