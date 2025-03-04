@@ -1,72 +1,120 @@
-// Sample food items
+// Food items data
 const foodItems = [
-    { id: 1, name: "Chicken Biryani", price: 250, category: "Biryani", image: "biryani.jpg", description: "Spicy Hyderabadi Biryani" },
-    { id: 2, name: "Paneer Butter Masala", price: 200, category: "Curry", image: "paneer.jpg", description: "Creamy paneer curry" },
-    { id: 3, name: "Rogan Josh", price: 300, category: "Mutton", image: "rogan.jpg", description: "Kashmiri mutton dish" },
-    { id: 4, name: "Masala Dosa", price: 120, category: "South Indian", image: "dosa.jpg", description: "Crispy dosa with potato filling" }
+    { id: 1, name: "Chicken Biryani", price: 250, category: "Biryani", description: "Spicy Hyderabad Biryani", image: "biryani.jpg" },
+    { id: 2, name: "Paneer Butter Masala", price: 180, category: "Curry", description: "Creamy paneer curry", image: "paneer.jpg" },
+    { id: 3, name: "Rogan Josh", price: 320, category: "Curry", description: "Rich and flavorful Kashmiri dish", image: "rogan.jpg" },
+    { id: 4, name: "Masala Dosa", price: 120, category: "South Indian", description: "Crispy dosa with potato filling", image: "dosa.jpg" }
 ];
 
 let cart = [];
 
-// Display food items
+// Function to display food items
 function displayFoodItems(items) {
-    const grid = document.getElementById("food-grid");
-    grid.innerHTML = "";
-    items.forEach(item => {
-        grid.innerHTML += `
-            <div class="food-card">
-                <img src="${item.image}" alt="${item.name}">
-                <h3 class="food-title">${item.name}</h3>
-                <p class="food-price">₹${item.price}</p>
-                <p class="food-description">${item.description}</p>
-                <button onclick="addToCart(${item.id})">Add to Cart</button>
-            </div>
-        `;
-    });
-}
+    console.log("Loading food items...");
+    const foodContainer = document.getElementById("foodContainer");
+    foodContainer.innerHTML = "";
 
-// Add to Cart
-function addToCart(id) {
-    let item = foodItems.find(f => f.id === id);
-    let found = cart.find(c => c.id === id);
-    if (found) {
-        found.qty++;
-    } else {
-        cart.push({ ...item, qty: 1 });
+    if (items.length === 0) {
+        foodContainer.innerHTML = "<p>No items found.</p>";
+        return;
     }
-    updateCartUI();
+
+    items.forEach(item => {
+        const foodCard = document.createElement("div");
+        foodCard.classList.add("food-card");
+        foodCard.innerHTML = `
+            <img src="${item.image}" alt="${item.name}">
+            <h3>${item.name}</h3>
+            <p>₹${item.price}</p>
+            <p>${item.description}</p>
+            <button onclick="addToCart(${item.id})">Add to Cart</button>
+        `;
+        foodContainer.appendChild(foodCard);
+    });
 }
 
-// Update Cart UI
-function updateCartUI() {
-    let cartItems = document.getElementById("cart-items");
-    let cartTotal = document.getElementById("cart-total");
-    let cartCount = document.getElementById("cart-count");
+// Function to filter foods
+function filterFoods() {
+    const category = document.getElementById("categoryFilter").value;
+    const filteredItems = category === "all" ? foodItems : foodItems.filter(item => item.category === category);
+    displayFoodItems(filteredItems);
+}
 
-    cartItems.innerHTML = "";
+// Function to search foods
+function searchFood() {
+    const query = document.getElementById("searchBox").value.toLowerCase();
+    const filteredItems = foodItems.filter(item => item.name.toLowerCase().includes(query));
+    displayFoodItems(filteredItems);
+}
+
+// Function to sort foods
+function sortFoods() {
+    const sortBy = document.getElementById("sortOptions").value;
+    let sortedItems = [...foodItems];
+
+    if (sortBy === "price-low") {
+        sortedItems.sort((a, b) => a.price - b.price);
+    } else if (sortBy === "price-high") {
+        sortedItems.sort((a, b) => b.price - a.price);
+    }
+
+    displayFoodItems(sortedItems);
+}
+
+// Function to add to cart
+function addToCart(id) {
+    const item = foodItems.find(food => food.id === id);
+    const existingItem = cart.find(cartItem => cartItem.id === id);
+
+    if (existingItem) {
+        existingItem.quantity += 1;
+    } else {
+        cart.push({ ...item, quantity: 1 });
+    }
+
+    updateCart();
+}
+
+// Function to update cart display
+function updateCart() {
+    const cartCount = document.getElementById("cart-count");
+    const cartItemsList = document.getElementById("cart-items");
+    const cartTotal = document.getElementById("cart-total");
+
+    cartCount.textContent = cart.reduce((sum, item) => sum + item.quantity, 0);
+    cartItemsList.innerHTML = "";
     let total = 0;
+
     cart.forEach(item => {
-        total += item.price * item.qty;
-        cartItems.innerHTML += `<p>${item.name} (x${item.qty}) - ₹${item.price * item.qty}</p>`;
+        total += item.price * item.quantity;
+        const li = document.createElement("li");
+        li.innerHTML = `${item.name} (x${item.quantity}) - ₹${item.price * item.quantity} <button onclick="removeFromCart(${item.id})">❌</button>`;
+        cartItemsList.appendChild(li);
     });
 
-    cartTotal.innerText = total;
-    cartCount.innerText = cart.length;
+    cartTotal.textContent = total;
 }
 
-// Open Cart
-function openCart() {
-    updateCartUI();
-    document.getElementById("cart-modal").style.display = "flex";
+// Function to remove item from cart
+function removeFromCart(id) {
+    cart = cart.filter(item => item.id !== id);
+    updateCart();
 }
 
-// Close Cart
-function closeCart() {
-    document.getElementById("cart-modal").style.display = "none";
+// Function to toggle cart modal
+function toggleCart() {
+    const cartModal = document.getElementById("cart-modal");
+    cartModal.style.display = cartModal.style.display === "block" ? "none" : "block";
 }
 
-// Hide cart modal on page load
+// Function to handle checkout
+function checkout() {
+    alert("Checkout not implemented yet!");
+}
+
+// Ensure cart modal is hidden initially
 window.onload = function () {
+    console.log("Page loaded");
+    document.getElementById("cart-modal").style.display = "none"; // Hides the cart modal on page load
     displayFoodItems(foodItems);
-    document.getElementById("cart-modal").style.display = "none";
 };
