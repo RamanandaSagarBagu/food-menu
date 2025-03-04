@@ -218,3 +218,158 @@ button:hover {
         padding: 10px;
     }
 }
+/* Cart Sidebar */
+.cart-sidebar {
+    position: fixed;
+    top: 0;
+    right: -400px; /* Initially hidden */
+    width: 350px;
+    height: 100%;
+    background: white;
+    box-shadow: -4px 0px 10px rgba(0, 0, 0, 0.2);
+    transition: right 0.4s ease-in-out;
+    padding: 20px;
+    overflow-y: auto;
+    z-index: 1000;
+}
+
+.cart-sidebar.open {
+    right: 0; /* Slide in when open */
+}
+
+/* Cart Header */
+.cart-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-bottom: 10px;
+    border-bottom: 2px solid #eee;
+}
+
+.cart-header h2 {
+    font-size: 1.5rem;
+    color: #333;
+    margin: 0;
+}
+
+.close-cart {
+    background: none;
+    border: none;
+    font-size: 1.5rem;
+    cursor: pointer;
+    color: #555;
+    transition: color 0.3s ease;
+}
+
+.close-cart:hover {
+    color: #d9534f;
+}
+
+/* Cart Items */
+.cart-items {
+    list-style: none;
+    padding: 0;
+    margin: 15px 0;
+}
+
+.cart-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px 0;
+    border-bottom: 1px solid #ddd;
+}
+
+.cart-item img {
+    width: 50px;
+    height: 50px;
+    border-radius: 8px;
+    object-fit: cover;
+    margin-right: 10px;
+}
+
+.item-details {
+    flex-grow: 1;
+    text-align: left;
+}
+
+.item-details h4 {
+    margin: 0;
+    font-size: 1rem;
+    color: #222;
+}
+
+.item-details p {
+    margin: 2px 0;
+    font-size: 0.9rem;
+    color: #666;
+}
+
+/* Quantity & Remove Button */
+.item-actions {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.quantity {
+    background: #f1f1f1;
+    padding: 5px 10px;
+    border-radius: 6px;
+    font-weight: bold;
+    color: #333;
+}
+
+.remove-item {
+    background: none;
+    border: none;
+    color: #d9534f;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: color 0.3s ease;
+}
+
+.remove-item:hover {
+    color: #b52b27;
+}
+
+/* Checkout Section */
+.cart-footer {
+    padding-top: 15px;
+    border-top: 2px solid #eee;
+    text-align: center;
+}
+
+.total-price {
+    font-size: 1.2rem;
+    font-weight: bold;
+    color: #222;
+    margin-bottom: 10px;
+}
+
+.checkout-btn {
+    width: 100%;
+    background: #28a745;
+    padding: 12px;
+    border: none;
+    border-radius: 8px;
+    color: white;
+    font-size: 1rem;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background 0.3s ease;
+}
+
+.checkout-btn:hover {
+    background: #218838;
+}
+
+/* Cart Open Animation */
+@keyframes slideIn {
+    from {
+        right: -400px;
+    }
+    to {
+        right: 0;
+    }
+}
