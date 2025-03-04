@@ -94,9 +94,19 @@ function removeFromCart(index) {
 }
 
 function toggleCart() {
-    let cartModal = document.getElementById("cart-modal");
-    cartModal.style.display = cartModal.style.display === "flex" ? "none" : "flex";
+    const cartModal = document.getElementById("cart-modal");
+    if (cartModal.style.display === "none" || cartModal.style.display === "") {
+        cartModal.style.display = "block"; // Show only when clicked
+    } else {
+        cartModal.style.display = "none";
+    }
 }
+
+// Ensure the modal is hidden when the page loads
+window.onload = function () {
+    document.getElementById("cart-modal").style.display = "none";
+};
+
 
 function checkout() {
     alert("Thank you for your purchase!");
