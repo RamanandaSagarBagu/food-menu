@@ -33,7 +33,7 @@ input, select {
     gap: 20px;
     max-width: 1200px;
     margin: auto;
-    align-items: stretch;
+    align-items: stretch; /* Ensures equal height */
 }
 
 /* Food Card */
@@ -45,50 +45,61 @@ input, select {
     text-align: center;
     display: flex;
     flex-direction: column;
-    justify-content: space-between;
-    height: 100%;
+    justify-content: space-between; /* Distributes space evenly */
+    height: 100%; /* Ensures all cards are equal in height */
+    transition: transform 0.2s ease-in-out; /* Smooth hover effect */
 }
 
+.food-card:hover {
+    transform: scale(1.05); /* Slight zoom on hover */
+}
+
+/* Image Styling */
 .food-card img {
     width: 100%;
-    height: 180px;
-    object-fit: cover;
+    height: 180px; /* Fixed height for consistency */
+    object-fit: cover; /* Ensures images fill the space properly */
     border-radius: 5px;
 }
 
+/* Food Title */
 .food-title {
     font-size: 18px;
     font-weight: bold;
     margin: 10px 0;
 }
 
+/* Food Price */
 .food-price {
     font-size: 16px;
     color: #28a745;
     margin: 5px 0;
 }
 
+/* Food Description */
 .food-description {
     font-size: 14px;
     color: #666;
-    flex-grow: 1;
+    flex-grow: 1; /* Pushes button to the bottom */
 }
 
-/* Buttons */
+/* Add to Cart Button */
 .food-card button {
     background: #007bff;
     color: white;
     border: none;
     padding: 10px;
+    margin-top: 10px;
     cursor: pointer;
     border-radius: 5px;
-    margin-top: 10px;
+    transition: background 0.3s ease-in-out;
 }
 
 .food-card button:hover {
     background: #0056b3;
 }
 
+/* Cart Button */
 .cart-btn {
     position: fixed;
     top: 20px;
@@ -102,29 +113,35 @@ input, select {
     font-size: 16px;
 }
 
-/* Cart Modal (Initially Hidden) */
+/* Cart Modal */
 .cart-modal {
-    display: none; /* Hidden by default */
+    display: none;
     position: fixed;
     top: 0;
     left: 0;
     width: 100%;
     height: 100%;
     background: rgba(0, 0, 0, 0.5);
+    display: flex;
     justify-content: center;
     align-items: center;
 }
 
+/* Cart Content */
 .cart-content {
     background: white;
     padding: 20px;
     border-radius: 8px;
     width: 300px;
     text-align: center;
+    position: relative;
 }
 
+/* Close Button */
 .close-btn {
-    float: right;
+    position: absolute;
+    top: 10px;
+    right: 15px;
     font-size: 24px;
     cursor: pointer;
 }
