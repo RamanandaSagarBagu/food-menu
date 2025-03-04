@@ -4,127 +4,41 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Food Menu</title>
-    <link rel="stylesheet" href="style.css"> 
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
     <h1 class="title">Food Menu</h1>
 
-    <!-- Search & Filter Section -->
+    <!-- Search, Filter, Sort -->
     <div class="controls">
-        <input type="text" id="searchBox" placeholder="Search food..." onkeyup="filterFoods()">
+        <input type="text" id="searchBox" placeholder="Search food..." onkeyup="searchFood()">
         <select id="categoryFilter" onchange="filterFoods()">
-            <option value="All">All Categories</option>
-            <option value="Veg">Veg</option>
-            <option value="Non-Veg">Non-Veg</option>
-            <option value="Dessert">Dessert</option>
-            <option value="Beverage">Beverage</option>
+            <option value="all">All Categories</option>
         </select>
-        <select id="sortOptions" onchange="filterFoods()">
+        <select id="sortOptions" onchange="sortFoods()">
             <option value="default">Sort By</option>
-            <option value="priceLow">Price: Low to High</option>
-            <option value="priceHigh">Price: High to Low</option>
-            <option value="nameAsc">Name: A-Z</option>
-            <option value="nameDesc">Name: Z-A</option>
+            <option value="price-low">Price: Low to High</option>
+            <option value="price-high">Price: High to Low</option>
         </select>
     </div>
 
-    <!-- Food Container -->
+    <!-- Food List -->
     <div id="foodContainer" class="food-grid"></div>
 
-    <!-- Cart Display -->
-    <div class="cart">
-        <h2>🛒 Cart <span id="cartCount">(0)</span></h2>
-        <ul id="cartItems"></ul>
-    </div>
+    <!-- Cart Button -->
+    <button class="cart-btn" onclick="toggleCart()">🛒 View Cart (<span id="cart-count">0</span>)</button>
 
-    <script>
-        let allFoods = [];  
-        let cart = []; 
-
-        // Fetch Food Data
-        fetch('foods.json')
-            .then(response => response.json())
-            .then(foods => {
-                allFoods = foods;
-                filterFoods();
-            });
-
-        // Display Foods Based on Filters
-        function filterFoods() {
-            let query = document.getElementById('searchBox').value.toLowerCase();
-            let category = document.getElementById('categoryFilter').value;
-            let sortOption = document.getElementById('sortOptions').value;
-
-            let filteredFoods = allFoods.filter(food => 
-                (category === "All" || food.category === category) &&
-                food.name.toLowerCase().includes(query)
-            );
-
-            // Sorting Logic
-            if (sortOption === "priceLow") {
-                filteredFoods.sort((a, b) => a.price - b.price);
-            } else if (sortOption === "priceHigh") {
-                filteredFoods.sort((a, b) => b.price - a.price);
-            } else if (sortOption === "nameAsc") {
-                filteredFoods.sort((a, b) => a.name.localeCompare(b.name));
-            } else if (sortOption === "nameDesc") {
-                filteredFoods.sort((a, b) => b.name.localeCompare(a.name));
-            }
-
-            displayFoods(filteredFoods);
-        }
-
-        // Display Foods
-        function displayFoods(foods) {
-            const foodContainer = document.getElementById('foodContainer');
-            foodContainer.innerHTML = foods.map(food => `
-                <div class="food-card">
-                    <img src="${food.image}" alt="${food.name}">
-                    <div class="food-title">${food.name}</div>
-                    <div class="food-price">₹${food.price}</div>
-                    <div class="food-description">${food.description}</div>
-                    <button onclick="addToCart('${food.name}', ${food.price})">Add to Cart</button>
-                </div>
-            `).join('');
-        }
-
-        // Add to Cart
-        function addToCart(name, price) {
-            cart.push({ name, price });
-            updateCart();
-        }
-
-        // Update Cart UI
-        function updateCart() {
-            let cartList = document.getElementById('cartItems');
-            let cartCount = document.getElementById('cartCount');
-
-            cartList.innerHTML = cart.map((item, index) => `
-                <li>${item.name} - ₹${item.price} <button onclick="removeFromCart(${index})">❌</button></li>
-            `).join('');
-
-            cartCount.innerText = `(${cart.length})`;
-        }
-
-        // Remove from Cart
-        function removeFromCart(index) {
-            cart.splice(index, 1);
-            updateCart();
-        }
-        
-    <!-- Cart Section -->
-        <button id="viewCartBtn" onclick="toggleCart()">🛒 View Cart (<span id="cartCount">0</span>)</button>
-
-        <div id="cartModal">
+    <!-- Cart Modal -->
+    <div id="cart-modal" class="cart-modal">
+        <div class="cart-content">
+            <span class="close-btn" onclick="toggleCart()">&times;</span>
             <h2>Your Cart</h2>
-            <ul id="cartItems"></ul>
-            <p>Total: ₹<span id="cartTotal">0</span></p>
+            <ul id="cart-items"></ul>
+            <h3>Total: ₹<span id="cart-total">0</span></h3>
             <button onclick="checkout()">Checkout</button>
-            <button onclick="toggleCart()">Close</button>
         </div>
     </div>
 
     <script src="script.js"></script>
 </body>
 </html>
-   
