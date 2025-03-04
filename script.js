@@ -1,120 +1,106 @@
-// Food items data
-const foodItems = [
-    { id: 1, name: "Chicken Biryani", price: 250, category: "Biryani", description: "Spicy Hyderabad Biryani", image: "biryani.jpg" },
-    { id: 2, name: "Paneer Butter Masala", price: 180, category: "Curry", description: "Creamy paneer curry", image: "paneer.jpg" },
-    { id: 3, name: "Rogan Josh", price: 320, category: "Curry", description: "Rich and flavorful Kashmiri dish", image: "rogan.jpg" },
-    { id: 4, name: "Masala Dosa", price: 120, category: "South Indian", description: "Crispy dosa with potato filling", image: "dosa.jpg" }
-];
-
+let allFoods = [];
 let cart = [];
 
-// Function to display food items
-function displayFoodItems(items) {
-    console.log("Loading food items...");
-    const foodContainer = document.getElementById("foodContainer");
-    foodContainer.innerHTML = "";
+// Fetch Foods
+fetch('foods.json')
+    .then(response => response.json())
+    .then(foods => {
+        allFoods = foods;
+        populateCategoryFilter();
+        displayFoods(allFoods);
+    });
 
-    if (items.length === 0) {
-        foodContainer.innerHTML = "<p>No items found.</p>";
-        return;
-    }
+// Display Foods
+function displayFoods(foods) {
+    const foodContainer = document.getElementById('foodContainer');
+    foodContainer.innerHTML = foods.map(food => `
+        <div class="food-card">
+            <img src="${food.image}" alt="${food.name}">
+            <div class="food-title"><strong>${food.name}</strong></div>
+            <div class="food-price">₹${food.price}</div>
+            <div class="food-description">${food.description}</div>
+            <button onclick="addToCart('${food.name}', ${food.price})">Add to Cart</button>
+        </div>
+    `).join('');
+}
 
-    items.forEach(item => {
-        const foodCard = document.createElement("div");
-        foodCard.classList.add("food-card");
-        foodCard.innerHTML = `
-            <img src="${item.image}" alt="${item.name}">
-            <h3>${item.name}</h3>
-            <p>₹${item.price}</p>
-            <p>${item.description}</p>
-            <button onclick="addToCart(${item.id})">Add to Cart</button>
-        `;
-        foodContainer.appendChild(foodCard);
+// Search Function
+function searchFood() {
+    let query = document.getElementById('searchBox').value.toLowerCase();
+    let filteredFoods = allFoods.filter(food => food.name.toLowerCase().includes(query));
+    displayFoods(filteredFoods);
+}
+
+// Category Filter
+function populateCategoryFilter() {
+    let categories = [...new Set(allFoods.map(food => food.category))];
+    let categoryFilter = document.getElementById('categoryFilter');
+    categories.forEach(category => {
+        let option = document.createElement('option');
+        option.value = category;
+        option.textContent = category;
+        categoryFilter.appendChild(option);
     });
 }
 
-// Function to filter foods
 function filterFoods() {
-    const category = document.getElementById("categoryFilter").value;
-    const filteredItems = category === "all" ? foodItems : foodItems.filter(item => item.category === category);
-    displayFoodItems(filteredItems);
+    let category = document.getElementById('categoryFilter').value;
+    let filteredFoods = category === "all" ? allFoods : allFoods.filter(food => food.category === category);
+    displayFoods(filteredFoods);
 }
 
-// Function to search foods
-function searchFood() {
-    const query = document.getElementById("searchBox").value.toLowerCase();
-    const filteredItems = foodItems.filter(item => item.name.toLowerCase().includes(query));
-    displayFoodItems(filteredItems);
-}
-
-// Function to sort foods
+// Sorting
 function sortFoods() {
-    const sortBy = document.getElementById("sortOptions").value;
-    let sortedItems = [...foodItems];
+    let option = document.getElementById('sortOptions').value;
+    let sortedFoods = [...allFoods];
 
-    if (sortBy === "price-low") {
-        sortedItems.sort((a, b) => a.price - b.price);
-    } else if (sortBy === "price-high") {
-        sortedItems.sort((a, b) => b.price - a.price);
-    }
+    if (option === "price-low") sortedFoods.sort((a, b) => a.price - b.price);
+    if (option === "price-high") sortedFoods.sort((a, b) => b.price - a.price);
 
-    displayFoodItems(sortedItems);
+    displayFoods(sortedFoods);
 }
 
-// Function to add to cart
-function addToCart(id) {
-    const item = foodItems.find(food => food.id === id);
-    const existingItem = cart.find(cartItem => cartItem.id === id);
-
-    if (existingItem) {
-        existingItem.quantity += 1;
+// Cart Functions
+function addToCart(name, price) {
+    let item = cart.find(item => item.name === name);
+    if (item) {
+        item.quantity += 1;
     } else {
-        cart.push({ ...item, quantity: 1 });
+        cart.push({ name, price, quantity: 1 });
     }
-
     updateCart();
 }
 
-// Function to update cart display
 function updateCart() {
+    const cartItems = document.getElementById("cart-items");
     const cartCount = document.getElementById("cart-count");
-    const cartItemsList = document.getElementById("cart-items");
     const cartTotal = document.getElementById("cart-total");
 
-    cartCount.textContent = cart.reduce((sum, item) => sum + item.quantity, 0);
-    cartItemsList.innerHTML = "";
+    cartItems.innerHTML = "";
     let total = 0;
 
-    cart.forEach(item => {
+    cart.forEach((item, index) => {
         total += item.price * item.quantity;
-        const li = document.createElement("li");
-        li.innerHTML = `${item.name} (x${item.quantity}) - ₹${item.price * item.quantity} <button onclick="removeFromCart(${item.id})">❌</button>`;
-        cartItemsList.appendChild(li);
+        cartItems.innerHTML += `<li>${item.name} (x${item.quantity}) - ₹${item.price * item.quantity} <button onclick="removeFromCart(${index})">❌</button></li>`;
     });
 
-    cartTotal.textContent = total;
+    cartCount.innerText = cart.length;
+    cartTotal.innerText = total;
 }
 
-// Function to remove item from cart
-function removeFromCart(id) {
-    cart = cart.filter(item => item.id !== id);
+function removeFromCart(index) {
+    cart.splice(index, 1);
     updateCart();
 }
 
-// Function to toggle cart modal
 function toggleCart() {
-    const cartModal = document.getElementById("cart-modal");
-    cartModal.style.display = cartModal.style.display === "block" ? "none" : "block";
+    let cartModal = document.getElementById("cart-modal");
+    cartModal.style.display = cartModal.style.display === "flex" ? "none" : "flex";
 }
 
-// Function to handle checkout
 function checkout() {
-    alert("Checkout not implemented yet!");
+    alert("Thank you for your purchase!");
+    cart = [];
+    updateCart();
+    toggleCart();
 }
-
-// Ensure cart modal is hidden initially
-window.onload = function () {
-    console.log("Page loaded");
-    document.getElementById("cart-modal").style.display = "none"; // Hides the cart modal on page load
-    displayFoodItems(foodItems);
-};
