@@ -1,106 +1,121 @@
-let allFoods = [];
+// Sample food items (You can load these dynamically from a backend)
+const foodItems = [
+    { name: "Chicken Biryani", price: 250, category: "Biryani", image: "biryani.jpg" },
+    { name: "Paneer Butter Masala", price: 200, category: "Curry", image: "paneer.jpg" },
+    { name: "Mutton Rogan Josh", price: 350, category: "Curry", image: "mutton.jpg" },
+    { name: "Masala Dosa", price: 120, category: "South Indian", image: "dosa.jpg" }
+];
+
+// Global cart array
 let cart = [];
 
-// Fetch Foods
-fetch('foods.json')
-    .then(response => response.json())
-    .then(foods => {
-        allFoods = foods;
-        populateCategoryFilter();
-        displayFoods(allFoods);
-    });
+// Function to render food items
+function displayFoodItems(items) {
+    const foodGrid = document.getElementById("food-grid");
+    foodGrid.innerHTML = ""; // Clear previous items
 
-// Display Foods
-function displayFoods(foods) {
-    const foodContainer = document.getElementById('foodContainer');
-    foodContainer.innerHTML = foods.map(food => `
-        <div class="food-card">
-            <img src="${food.image}" alt="${food.name}">
-            <div class="food-title"><strong>${food.name}</strong></div>
-            <div class="food-price">₹${food.price}</div>
-            <div class="food-description">${food.description}</div>
-            <button onclick="addToCart('${food.name}', ${food.price})">Add to Cart</button>
-        </div>
-    `).join('');
-}
-
-// Search Function
-function searchFood() {
-    let query = document.getElementById('searchBox').value.toLowerCase();
-    let filteredFoods = allFoods.filter(food => food.name.toLowerCase().includes(query));
-    displayFoods(filteredFoods);
-}
-
-// Category Filter
-function populateCategoryFilter() {
-    let categories = [...new Set(allFoods.map(food => food.category))];
-    let categoryFilter = document.getElementById('categoryFilter');
-    categories.forEach(category => {
-        let option = document.createElement('option');
-        option.value = category;
-        option.textContent = category;
-        categoryFilter.appendChild(option);
+    items.forEach(item => {
+        const foodCard = document.createElement("div");
+        foodCard.classList.add("food-card");
+        foodCard.innerHTML = `
+            <img src="${item.image}" alt="${item.name}">
+            <h3 class="food-title">${item.name}</h3>
+            <p class="food-price">₹${item.price}</p>
+            <p class="food-description">${item.category} Dish</p>
+            <button onclick="addToCart('${item.name}', ${item.price})">Add to Cart</button>
+        `;
+        foodGrid.appendChild(foodCard);
     });
 }
 
-function filterFoods() {
-    let category = document.getElementById('categoryFilter').value;
-    let filteredFoods = category === "all" ? allFoods : allFoods.filter(food => food.category === category);
-    displayFoods(filteredFoods);
-}
-
-// Sorting
-function sortFoods() {
-    let option = document.getElementById('sortOptions').value;
-    let sortedFoods = [...allFoods];
-
-    if (option === "price-low") sortedFoods.sort((a, b) => a.price - b.price);
-    if (option === "price-high") sortedFoods.sort((a, b) => b.price - a.price);
-
-    displayFoods(sortedFoods);
-}
-
-// Cart Functions
+// Function to add items to the cart
 function addToCart(name, price) {
-    let item = cart.find(item => item.name === name);
+    let item = cart.find(product => product.name === name);
+    
     if (item) {
-        item.quantity += 1;
+        item.quantity += 1; // Increase quantity if item exists
     } else {
         cart.push({ name, price, quantity: 1 });
     }
-    updateCart();
+
+    updateCartUI();
 }
 
-function updateCart() {
-    const cartItems = document.getElementById("cart-items");
-    const cartCount = document.getElementById("cart-count");
-    const cartTotal = document.getElementById("cart-total");
+// Function to update the cart UI
+function updateCartUI() {
+    let cartContent = document.getElementById("cart-content");
+    let totalPrice = 0;
+    
+    cartContent.innerHTML = `<h2>Your Cart</h2>`;
 
-    cartItems.innerHTML = "";
-    let total = 0;
+    if (cart.length === 0) {
+        cartContent.innerHTML += `<p>Your cart is empty.</p>`;
+    } else {
+        cart.forEach(item => {
+            totalPrice += item.price * item.quantity;
+            cartContent.innerHTML += `
+                <p>${item.name} × ${item.quantity} - ₹${item.price * item.quantity}</p>
+            `;
+        });
+    }
 
-    cart.forEach((item, index) => {
-        total += item.price * item.quantity;
-        cartItems.innerHTML += `<li>${item.name} (x${item.quantity}) - ₹${item.price * item.quantity} <button onclick="removeFromCart(${index})">❌</button></li>`;
-    });
+    cartContent.innerHTML += `<h3>Total: ₹${totalPrice}</h3>
+        <button onclick="checkout()">Checkout</button>`;
 
-    cartCount.innerText = cart.length;
-    cartTotal.innerText = total;
+    document.getElementById("cart-count").innerText = `(${cart.length})`; // Update cart count
 }
 
-function removeFromCart(index) {
-    cart.splice(index, 1);
-    updateCart();
+// Open cart modal
+function openCart() {
+    updateCartUI();
+    document.getElementById("cart-modal").style.display = "flex";
 }
 
-function toggleCart() {
-    let cartModal = document.getElementById("cart-modal");
-    cartModal.style.display = cartModal.style.display === "flex" ? "none" : "flex";
+// Close cart modal
+function closeCart() {
+    document.getElementById("cart-modal").style.display = "none";
 }
 
+// Checkout function
 function checkout() {
-    alert("Thank you for your purchase!");
-    cart = [];
-    updateCart();
-    toggleCart();
+    alert("Order placed successfully!");
+    cart = []; // Clear cart
+    updateCartUI();
+    closeCart();
 }
+
+// Function to filter food items by category
+function filterCategory(category) {
+    if (category === "All Categories") {
+        displayFoodItems(foodItems);
+    } else {
+        const filteredItems = foodItems.filter(item => item.category === category);
+        displayFoodItems(filteredItems);
+    }
+}
+
+// Function to sort food items
+function sortFoodItems(criteria) {
+    let sortedItems = [...foodItems];
+
+    if (criteria === "Price Low to High") {
+        sortedItems.sort((a, b) => a.price - b.price);
+    } else if (criteria === "Price High to Low") {
+        sortedItems.sort((a, b) => b.price - a.price);
+    }
+
+    displayFoodItems(sortedItems);
+}
+
+// Function to search food items
+function searchFood(query) {
+    const filteredItems = foodItems.filter(item => 
+        item.name.toLowerCase().includes(query.toLowerCase())
+    );
+    displayFoodItems(filteredItems);
+}
+
+// Initialize the food menu on page load
+window.onload = function () {
+    displayFoodItems(foodItems);
+};
