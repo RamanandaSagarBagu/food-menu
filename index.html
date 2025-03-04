@@ -3,39 +3,57 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Food Menu</title>
-    <link rel="stylesheet" href="style.css">
+    <title>Food Ordering System</title>
+    <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-    <h1 class="title">Food Menu</h1>
 
-    <!-- Search, Filter, Sort -->
+    <h1 class="title">Food Ordering System</h1>
+
+    <!-- Controls -->
     <div class="controls">
-        <input type="text" id="searchBox" placeholder="Search food..." onkeyup="searchFood()">
-        <select id="categoryFilter" onchange="filterFoods()">
+        <input type="text" id="search" placeholder="Search food...">
+        <select id="filter">
             <option value="all">All Categories</option>
-        </select>
-        <select id="sortOptions" onchange="sortFoods()">
-            <option value="default">Sort By</option>
-            <option value="price-low">Price: Low to High</option>
-            <option value="price-high">Price: High to Low</option>
+            <option value="veg">Vegetarian</option>
+            <option value="non-veg">Non-Vegetarian</option>
         </select>
     </div>
 
-    <!-- Food List -->
-    <div id="foodContainer" class="food-grid"></div>
+    <!-- Food Grid -->
+    <div class="food-grid">
+        <div class="food-card">
+            <img src="food1.jpg" alt="Food">
+            <h3>Pizza</h3>
+            <p>Delicious cheese pizza</p>
+            <p class="price">$10</p>
+            <button class="add-to-cart" data-name="Pizza" data-price="10">Add to Cart</button>
+        </div>
+        
+        <div class="food-card">
+            <img src="food2.jpg" alt="Food">
+            <h3>Burger</h3>
+            <p>Juicy beef burger</p>
+            <p class="price">$8</p>
+            <button class="add-to-cart" data-name="Burger" data-price="8">Add to Cart</button>
+        </div>
+    </div>
 
     <!-- Cart Button -->
-    <button class="cart-btn" onclick="toggleCart()">🛒 View Cart (<span id="cart-count">0</span>)</button>
+    <button class="cart-btn" id="cart-btn">🛒 Cart (<span id="cart-count">0</span>)</button>
 
-    <!-- Cart Modal -->
-    <div id="cart-modal" class="cart-modal">
-        <div class="cart-content">
-            <span class="close-btn" onclick="toggleCart()">&times;</span>
-            <h2>Your Cart</h2>
-            <ul id="cart-items"></ul>
-            <h3>Total: ₹<span id="cart-total">0</span></h3>
-            <button onclick="checkout()">Checkout</button>
+    <!-- Cart Sidebar -->
+    <div class="cart-sidebar" id="cart-sidebar">
+        <div class="cart-header">
+            <h2>Shopping Cart</h2>
+            <button class="close-cart" id="close-cart">&times;</button>
+        </div>
+
+        <ul class="cart-items"></ul>
+
+        <div class="cart-footer">
+            <p class="total-price">Total: $<span id="cart-total">0</span></p>
+            <button class="checkout-btn">Checkout</button>
         </div>
     </div>
 
