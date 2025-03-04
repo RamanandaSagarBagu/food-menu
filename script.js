@@ -16,10 +16,10 @@ function displayFoods(foods) {
     foodContainer.innerHTML = foods.map(food => `
         <div class="food-card">
             <img src="${food.image}" alt="${food.name}">
-            <div class="food-title"><strong>${food.name}</strong></div>
-            <div class="food-price">₹${food.price}</div>
-            <div class="food-description">${food.description}</div>
-            <button onclick="addToCart('${food.name}', ${food.price})">Add to Cart</button>
+            <h3>${food.name}</h3>
+            <p class="price">₹${food.price}</p>
+            <p>${food.description}</p>
+            <button class="add-to-cart" onclick="addToCart('${food.name}', ${food.price})">Add to Cart</button>
         </div>
     `).join('');
 }
@@ -71,36 +71,7 @@ function addToCart(name, price) {
     updateCart();
 }
 
-function updateCart() {
-    const cartItems = document.getElementById("cart-items");
-    const cartCount = document.getElementById("cart-count");
-    const cartTotal = document.getElementById("cart-total");
-
-    cartItems.innerHTML = "";
-    let total = 0;
-
-    cart.forEach((item, index) => {
-        total += item.price * item.quantity;
-        cartItems.innerHTML += `<li>${item.name} (x${item.quantity}) - ₹${item.price * item.quantity} <button onclick="removeFromCart(${index})">❌</button></li>`;
-    });
-
-    cartCount.innerText = cart.length;
-    cartTotal.innerText = total;
-}
-
-function removeFromCart(index) {
-    cart.splice(index, 1);
-    updateCart();
-}
-
 function toggleCart() {
     let cartModal = document.getElementById("cart-modal");
-    cartModal.style.display = cartModal.style.display === "flex" ? "none" : "flex";
-}
-
-function checkout() {
-    alert("Thank you for your purchase!");
-    cart = [];
-    updateCart();
-    toggleCart();
+    cartModal.style.display = cartModal.style.display === "block" ? "none" : "block";
 }
