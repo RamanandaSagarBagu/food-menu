@@ -1,17 +1,19 @@
+/* General Styles */
 body {
     font-family: Arial, sans-serif;
     text-align: center;
-    background-color: #f8f9fa;
+    background-color: #f4f4f4;
     margin: 0;
     padding: 20px;
 }
 
+/* Title */
 .title {
     font-size: 32px;
     margin-bottom: 20px;
-    color: #333;
 }
 
+/* Controls (Search, Filter, Sort) */
 .controls {
     display: flex;
     justify-content: center;
@@ -19,111 +21,91 @@ body {
     margin-bottom: 20px;
 }
 
-#searchBox, #categoryFilter, #sortOptions {
+input, select {
     padding: 10px;
     font-size: 16px;
-    border: 1px solid #ccc;
-    border-radius: 5px;
 }
 
+/* Food Grid */
 .food-grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
     gap: 20px;
-    justify-content: center;
+    max-width: 1200px;
+    margin: auto;
 }
 
+/* Food Card */
 .food-card {
     background: white;
     padding: 15px;
-    border-radius: 10px;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-    transition: transform 0.2s;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    text-align: center;
+    transition: transform 0.3s;
+}
+
+.food-card img {
+    width: 100%;
+    border-radius: 5px;
 }
 
 .food-card:hover {
     transform: scale(1.05);
 }
 
-.food-card img {
-    width: 100%;
-    height: 150px;
-    object-fit: cover;
-    border-radius: 8px;
-}
-
-.food-title {
-    font-size: 18px;
-    font-weight: bold;
-    margin-top: 10px;
-}
-
-.food-price {
-    font-size: 16px;
-    color: green;
-    font-weight: bold;
-}
-
-.food-description {
-    font-size: 14px;
-    color: #555;
-}
-
-button {
-    padding: 8px 12px;
-    background-color: #007bff;
-    color: white;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    margin-top: 10px;
-}
-
-button:hover {
-    background-color: #0056b3;
-}
-
-.cart {
-    margin-top: 30px;
-    padding: 15px;
-    background: white;
-    border-radius: 10px;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-    max-width: 400px;
-    margin-left: auto;
-    margin-right: auto;
-}
-
-.cart h2 {
-    font-size: 22px;
-    margin-bottom: 10px;
-}
-
-.cart ul {
-    list-style: none;
-    padding: 0;
-}
-
-.cart li {
-    font-size: 16px;
-    padding: 5px 0;
-}
-#viewCartBtn {
-    background: blue;
+/* Add to Cart Button */
+.food-card button {
+    background: #007bff;
     color: white;
     border: none;
     padding: 10px;
-    margin-top: 20px;
+    margin-top: 10px;
     cursor: pointer;
+    border-radius: 5px;
 }
 
-#cartModal {
+.food-card button:hover {
+    background: #0056b3;
+}
+
+/* Cart Button */
+.cart-btn {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    background: #28a745;
+    color: white;
+    padding: 10px 15px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+}
+
+/* Cart Modal */
+.cart-modal {
     display: none;
     position: fixed;
-    background: white;
-    padding: 20px;
-    top: 20%;
-    left: 30%;
-    border: 1px solid black;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    justify-content: center;
+    align-items: center;
 }
 
+.cart-content {
+    background: white;
+    padding: 20px;
+    border-radius: 8px;
+    width: 300px;
+    text-align: center;
+}
+
+.close-btn {
+    float: right;
+    font-size: 24px;
+    cursor: pointer;
+}
