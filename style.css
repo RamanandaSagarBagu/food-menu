@@ -1,15 +1,12 @@
 body {
     font-family: Arial, sans-serif;
     text-align: center;
-    background-color: #f8f9fa;
-    margin: 0;
-    padding: 20px;
+    margin: 20px;
 }
 
-.title {
-    font-size: 32px;
-    margin-bottom: 20px;
-    color: #333;
+.container {
+    max-width: 900px;
+    margin: auto;
 }
 
 .controls {
@@ -19,92 +16,39 @@ body {
     margin-bottom: 20px;
 }
 
-#searchBox, #categoryFilter, #sortOptions {
-    padding: 10px;
-    font-size: 16px;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-}
-
-.food-grid {
+#foodContainer {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-    gap: 20px;
-    justify-content: center;
+    gap: 15px;
 }
 
 .food-card {
-    background: white;
+    border: 1px solid #ddd;
     padding: 15px;
-    border-radius: 10px;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-    transition: transform 0.2s;
-}
-
-.food-card:hover {
-    transform: scale(1.05);
+    text-align: center;
 }
 
 .food-card img {
-    width: 100%;
-    height: 150px;
+    width: 100px;
+    height: 100px;
     object-fit: cover;
-    border-radius: 8px;
 }
 
-.food-title {
-    font-size: 18px;
-    font-weight: bold;
-    margin-top: 10px;
-}
-
-.food-price {
-    font-size: 16px;
-    color: green;
-    font-weight: bold;
-}
-
-.food-description {
-    font-size: 14px;
-    color: #555;
-}
-
-button {
-    padding: 8px 12px;
-    background-color: #007bff;
+#viewCartBtn {
+    background: blue;
     color: white;
     border: none;
-    border-radius: 5px;
+    padding: 10px;
+    margin-top: 20px;
     cursor: pointer;
-    margin-top: 10px;
 }
 
-button:hover {
-    background-color: #0056b3;
-}
-
-.cart {
-    margin-top: 30px;
-    padding: 15px;
+#cartModal {
+    display: none;
+    position: fixed;
     background: white;
-    border-radius: 10px;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-    max-width: 400px;
-    margin-left: auto;
-    margin-right: auto;
-}
-
-.cart h2 {
-    font-size: 22px;
-    margin-bottom: 10px;
-}
-
-.cart ul {
-    list-style: none;
-    padding: 0;
-}
-
-.cart li {
-    font-size: 16px;
-    padding: 5px 0;
+    padding: 20px;
+    top: 20%;
+    left: 30%;
+    border: 1px solid black;
 }
