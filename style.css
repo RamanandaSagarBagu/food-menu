@@ -10,8 +10,9 @@ body {
     text-align: center;
 }
 
+/* Title */
 .title {
-    font-size: 2.5rem;
+    font-size: 2rem;
     font-weight: 600;
     color: #333;
     margin-bottom: 20px;
@@ -21,13 +22,16 @@ body {
 /* Controls */
 .controls {
     margin-bottom: 20px;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 10px;
 }
 
 input, select {
     padding: 10px;
     border: 1px solid #ccc;
     border-radius: 8px;
-    margin: 5px;
     font-size: 1rem;
     transition: all 0.3s ease;
 }
@@ -40,23 +44,18 @@ input:focus, select:focus {
 /* Food Grid */
 .food-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); /* Adjust for responsiveness */
     gap: 20px;
-    justify-content: center;
     padding: 10px;
 }
 
-/* Food Card */
 .food-card {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    text-align: center;
-    background: #fff;
+    background: white;
     padding: 15px;
     border-radius: 12px;
     box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
     transition: transform 0.3s ease, box-shadow 0.3s ease;
+    text-align: center;
 }
 
 .food-card:hover {
@@ -64,16 +63,13 @@ input:focus, select:focus {
     box-shadow: 0px 6px 12px rgba(0, 0, 0, 0.15);
 }
 
-/* Food Image */
 .food-card img {
     width: 100%;
-    height: 180px; /* Ensures all images are uniform */
+    height: 180px;
     object-fit: cover;
     border-radius: 10px;
-    margin-bottom: 10px;
 }
 
-/* Food Text */
 .food-card h3 {
     font-size: 1.2rem;
     font-weight: 600;
@@ -107,6 +103,12 @@ button:hover {
     background: #0056b3;
 }
 
+/* Add to Cart Button */
+.add-to-cart {
+    width: 100%; /* Full width on mobile */
+    padding: 12px;
+}
+
 /* Cart Button */
 .cart-btn {
     background: #28a745;
@@ -116,10 +118,12 @@ button:hover {
     top: 20px;
     right: 20px;
     box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease;
 }
 
 .cart-btn:hover {
     background: #218838;
+    transform: scale(1.05);
 }
 
 /* Cart Modal */
@@ -141,7 +145,6 @@ button:hover {
     color: #333;
 }
 
-/* Close Button */
 .close-btn {
     position: absolute;
     top: 10px;
@@ -150,12 +153,58 @@ button:hover {
     cursor: pointer;
 }
 
-/* Fade In Animation */
+/* Animations */
 @keyframes fadeIn {
     from {
         opacity: 0;
     }
     to {
         opacity: 1;
+    }
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .title {
+        font-size: 1.8rem;
+    }
+    
+    .controls {
+        flex-direction: column;
+    }
+    
+    input, select {
+        width: 100%;
+        font-size: 1rem;
+    }
+
+    .food-grid {
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); /* Adjust for small screens */
+    }
+
+    .food-card {
+        padding: 12px;
+    }
+
+    .cart-btn {
+        top: auto;
+        bottom: 20px;
+        right: 10px;
+        padding: 10px 15px;
+    }
+}
+
+@media (max-width: 480px) {
+    .title {
+        font-size: 1.6rem;
+    }
+
+    .food-grid {
+        grid-template-columns: 1fr; /* Single column layout for extra small screens */
+    }
+
+    .cart-btn {
+        font-size: 0.9rem;
+        padding: 10px;
     }
 }
