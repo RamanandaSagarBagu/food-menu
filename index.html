@@ -4,37 +4,37 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Food Menu</title>
-    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
     <h1 class="title">Food Menu</h1>
 
-    <!-- Search, Filter, Sort Controls -->
+    <!-- Search, Filter, Sort -->
     <div class="controls">
-        <input type="text" id="search" placeholder="Search food..." onkeyup="filterFood()">
-        <select id="categoryFilter" onchange="filterFood()">
+        <input type="text" id="searchBox" placeholder="Search food..." onkeyup="searchFood()">
+        <select id="categoryFilter" onchange="filterFoods()">
             <option value="all">All Categories</option>
         </select>
-        <select id="sortBy" onchange="sortFood()">
+        <select id="sortOptions" onchange="sortFoods()">
             <option value="default">Sort By</option>
-            <option value="priceAsc">Price: Low to High</option>
-            <option value="priceDesc">Price: High to Low</option>
+            <option value="price-low">Price: Low to High</option>
+            <option value="price-high">Price: High to Low</option>
         </select>
     </div>
 
-    <!-- Food Grid -->
-    <div class="food-grid" id="food-grid"></div>
+    <!-- Food List -->
+    <div id="foodContainer" class="food-grid"></div>
 
     <!-- Cart Button -->
-    <button class="cart-btn" onclick="openCart()">🛒 View Cart (<span id="cart-count">0</span>)</button>
+    <button class="cart-btn" onclick="toggleCart()">🛒 View Cart (<span id="cart-count">0</span>)</button>
 
     <!-- Cart Modal -->
-    <div class="cart-modal" id="cart-modal">
+    <div id="cart-modal" class="cart-modal">
         <div class="cart-content">
-            <span class="close-btn" onclick="closeCart()">×</span>
+            <span class="close-btn" onclick="toggleCart()">&times;</span>
             <h2>Your Cart</h2>
-            <div id="cart-items"></div>
-            <p><strong>Total:</strong> ₹<span id="cart-total">0</span></p>
+            <ul id="cart-items"></ul>
+            <h3>Total: ₹<span id="cart-total">0</span></h3>
             <button onclick="checkout()">Checkout</button>
         </div>
     </div>
