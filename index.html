@@ -111,6 +111,21 @@
             cart.splice(index, 1);
             updateCart();
         }
+        <!-- Cart Section -->
+        <button id="viewCartBtn" onclick="toggleCart()">🛒 View Cart (<span id="cartCount">0</span>)</button>
+
+        <div id="cartModal">
+            <h2>Your Cart</h2>
+            <ul id="cartItems"></ul>
+            <p>Total: ₹<span id="cartTotal">0</span></p>
+            <button onclick="checkout()">Checkout</button>
+            <button onclick="toggleCart()">Close</button>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
     </script>
 </body>
 </html>
