@@ -50,6 +50,7 @@ input:focus, select:focus {
     grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
     gap: 20px;
     padding: 10px;
+    justify-content: center;
 }
 
 .food-card {
@@ -84,46 +85,6 @@ input:focus, select:focus {
     margin-top: 10px;
 }
 
-.food-card p {
-    font-size: 0.9rem;
-    color: #555;
-}
-
-.food-card .price {
-    font-size: 1.1rem;
-    font-weight: 600;
-    color: #218838;
-}
-
-/* Buttons */
-button {
-    background: #007bff;
-    color: white;
-    border: none;
-    padding: 10px 15px;
-    border-radius: 8px;
-    cursor: pointer;
-    font-size: 1rem;
-    transition: all 0.3s ease;
-}
-
-button:hover {
-    background: #0056b3;
-}
-
-/* Add to Cart Button */
-.add-to-cart {
-    width: 100%;
-    padding: 12px;
-    background: #ff5722;
-    font-weight: bold;
-    margin-top: auto;
-}
-
-.add-to-cart:hover {
-    background: #e64a19;
-}
-
 /* Cart Button */
 .cart-btn {
     background: #218838;
@@ -134,7 +95,7 @@ button:hover {
     right: 20px;
     box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
     transition: transform 0.3s ease, background 0.3s ease;
-    z-index: 1000;
+    z-index: 9999;
 }
 
 .cart-btn:hover {
@@ -154,73 +115,14 @@ button:hover {
     border-radius: 12px;
     box-shadow: 0px 6px 12px rgba(0, 0, 0, 0.2);
     animation: fadeIn 0.5s ease;
-    z-index: 1050;
+    z-index: 10000;
+    width: 90%;
+    max-width: 400px;
 }
 
-.cart-content h2 {
-    font-size: 1.8rem;
-    color: #333;
-}
-
-.close-btn {
-    position: absolute;
-    top: 10px;
-    right: 15px;
-    font-size: 1.5rem;
-    cursor: pointer;
-}
-
-/* Animations */
-@keyframes fadeIn {
-    from {
-        opacity: 0;
-    }
-    to {
-        opacity: 1;
-    }
-}
-
-/* Responsive Design */
-@media (max-width: 768px) {
-    .title {
-        font-size: 1.8rem;
-    }
-    
-    .controls {
-        flex-direction: column;
-    }
-    
-    input, select {
-        width: 100%;
-        font-size: 1rem;
-    }
-
-    .food-grid {
-        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-    }
-
-    .food-card {
-        padding: 12px;
-    }
-
-    .cart-btn {
-        bottom: 20px;
-        right: 10px;
-        padding: 10px 15px;
-    }
-}
-
-@media (max-width: 480px) {
-    .title {
-        font-size: 1.6rem;
-    }
-
-    .food-grid {
-        grid-template-columns: 1fr;
-    }
-
-    .cart-btn {
-        font-size: 0.9rem;
-        padding: 10px;
+@media (max-width: 600px) {
+    .cart-modal {
+        width: 95%;
+        max-width: 350px;
     }
 }
