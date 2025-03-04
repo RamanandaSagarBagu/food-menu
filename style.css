@@ -50,15 +50,20 @@ input:focus, select:focus {
     grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); /* Responsive */
     gap: 20px;
     padding: 10px;
+    align-items: stretch; /* Ensure even alignment */
 }
 
+/* Food Card */
 .food-card {
-    background: #fff; /* White background for contrast */
+    background: #fff;
     padding: 15px;
     border-radius: 12px;
     box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
     transition: transform 0.3s ease, box-shadow 0.3s ease, background 0.3s ease;
     text-align: center;
+    display: flex;
+    flex-direction: column;
+    height: 100%; /* Ensures equal height */
 }
 
 .food-card:hover {
@@ -67,13 +72,15 @@ input:focus, select:focus {
     background: #f9f9f9; /* Slight background change */
 }
 
+/* Food Image */
 .food-card img {
     width: 100%;
     height: 180px;
-    object-fit: cover;
+    object-fit: cover; /* Prevents image stretching */
     border-radius: 10px;
 }
 
+/* Food Details */
 .food-card h3 {
     font-size: 1.2rem;
     font-weight: 600;
@@ -91,28 +98,13 @@ input:focus, select:focus {
     color: #218838;
 }
 
-/* Buttons */
-button {
-    background: #007bff;
-    color: white;
-    border: none;
-    padding: 10px 15px;
-    border-radius: 8px;
-    cursor: pointer;
-    font-size: 1rem;
-    transition: all 0.3s ease;
-}
-
-button:hover {
-    background: #0056b3;
-}
-
 /* Add to Cart Button */
 .add-to-cart {
     width: 100%;
     padding: 12px;
     background: #ff5722; /* Different color for CTA */
     font-weight: bold;
+    margin-top: auto; /* Push button to the bottom */
 }
 
 .add-to-cart:hover {
