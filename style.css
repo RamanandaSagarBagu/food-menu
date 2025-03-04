@@ -108,3 +108,22 @@ button:hover {
     font-size: 16px;
     padding: 5px 0;
 }
+#viewCartBtn {
+    background: blue;
+    color: white;
+    border: none;
+    padding: 10px;
+    margin-top: 20px;
+    cursor: pointer;
+}
+
+#cartModal {
+    display: none;
+    position: fixed;
+    background: white;
+    padding: 20px;
+    top: 20%;
+    left: 30%;
+    border: 1px solid black;
+}
+
