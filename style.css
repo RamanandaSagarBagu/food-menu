@@ -4,29 +4,27 @@
 /* General Styling */
 body {
     font-family: 'Poppins', sans-serif;
-    background-color: #f4f4f4; /* Light gray for subtle contrast */
+    background-color: #f4f4f4;
     margin: 0;
     padding: 20px;
     text-align: center;
-    color: #333; /* Darker text for readability */
+    color: #333;
 }
 
 /* Title */
 .title {
     font-size: 2rem;
     font-weight: 600;
-    color: #222;
     margin-bottom: 20px;
-    animation: fadeIn 1s ease-in-out;
 }
 
 /* Controls */
 .controls {
-    margin-bottom: 20px;
     display: flex;
-    flex-wrap: wrap;
     justify-content: center;
     gap: 10px;
+    flex-wrap: wrap;
+    margin-bottom: 20px;
 }
 
 input, select {
@@ -34,14 +32,8 @@ input, select {
     border: 1px solid #bbb;
     border-radius: 8px;
     font-size: 1rem;
-    transition: all 0.3s ease;
+    width: 200px;
     background-color: #fff;
-    color: #333;
-}
-
-input:focus, select:focus {
-    border-color: #0056b3;
-    outline: none;
 }
 
 /* Food Grid */
@@ -57,14 +49,7 @@ input:focus, select:focus {
     padding: 15px;
     border-radius: 12px;
     box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
-    transition: transform 0.3s ease, box-shadow 0.3s ease, background 0.3s ease;
     text-align: center;
-}
-
-.food-card:hover {
-    transform: translateY(-5px);
-    box-shadow: 0px 6px 12px rgba(0, 0, 0, 0.15);
-    background: #f9f9f9;
 }
 
 .food-card img {
@@ -74,20 +59,9 @@ input:focus, select:focus {
     border-radius: 10px;
 }
 
-.food-card h3 {
-    font-size: 1.2rem;
-    font-weight: 600;
-    color: #222;
-}
-
-.food-card p {
-    font-size: 0.9rem;
-    color: #555;
-}
-
 .food-card .price {
     font-size: 1.1rem;
-    font-weight: 600;
+    font-weight: bold;
     color: #218838;
 }
 
@@ -96,51 +70,33 @@ button {
     background: #007bff;
     color: white;
     border: none;
-    padding: 10px 15px;
+    padding: 10px;
     border-radius: 8px;
     cursor: pointer;
     font-size: 1rem;
-    transition: all 0.3s ease;
 }
 
 button:hover {
     background: #0056b3;
 }
 
-/* Add to Cart Button */
-.add-to-cart {
-    width: 100%;
-    padding: 12px;
-    background: #ff5722;
-    font-weight: bold;
-}
-
-.add-to-cart:hover {
-    background: #e64a19;
-}
-
 /* Cart Button */
 .cart-btn {
-    background: #218838;
-    font-weight: 600;
-    padding: 12px 20px;
     position: fixed;
     top: 20px;
     right: 20px;
+    background: #218838;
+    padding: 12px 20px;
+    border-radius: 8px;
+    font-weight: bold;
     box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
-    transition: transform 0.3s ease, background 0.3s ease;
-}
-
-.cart-btn:hover {
-    background: #1a682e;
-    transform: scale(1.05);
 }
 
 /* Cart Sidebar */
 .cart-sidebar {
     position: fixed;
     top: 0;
-    right: -400px; /* Initially hidden */
+    right: -350px;
     width: 350px;
     height: 100%;
     background: white;
@@ -152,36 +108,7 @@ button:hover {
 }
 
 .cart-sidebar.open {
-    right: 0; /* Slide in when open */
-    animation: slideIn 0.4s ease-in-out;
-}
-
-/* Cart Header */
-.cart-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding-bottom: 10px;
-    border-bottom: 2px solid #eee;
-}
-
-.cart-header h2 {
-    font-size: 1.5rem;
-    color: #333;
-    margin: 0;
-}
-
-.close-cart {
-    background: none;
-    border: none;
-    font-size: 1.5rem;
-    cursor: pointer;
-    color: #555;
-    transition: color 0.3s ease;
-}
-
-.close-cart:hover {
-    color: #d9534f;
+    right: 0;
 }
 
 /* Cart Items */
@@ -191,7 +118,14 @@ button:hover {
     margin: 15px 0;
 }
 
-.cart-item {
-    display: flex;
-    align-items: center;
-    justify-content: s
+.cart-footer {
+    padding-top: 15px;
+    text-align: center;
+}
+
+.checkout-btn {
+    width: 100%;
+    background: #28a745;
+    padding: 12px;
+    border-radius: 8px;
+}
