@@ -26,32 +26,68 @@ input, select {
     font-size: 16px;
 }
 
-/* Food Grid */
+/* Fix food grid layout */
 .food-grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
     gap: 20px;
     max-width: 1200px;
     margin: auto;
+    align-items: stretch; /* Ensures equal height */
 }
 
-/* Food Card */
+/* Improve food card alignment */
 .food-card {
     background: white;
     padding: 15px;
     border-radius: 8px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
     text-align: center;
-    transition: transform 0.3s;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between; /* Distributes space evenly */
+    height: 100%; /* Ensures all cards are equal in height */
 }
 
+/* Ensure uniform image sizing */
 .food-card img {
     width: 100%;
+    height: 180px; /* Fixed height for consistency */
+    object-fit: cover; /* Ensures images fill the space properly */
     border-radius: 5px;
 }
 
-.food-card:hover {
-    transform: scale(1.05);
+/* Fix text and button positioning */
+.food-title {
+    font-size: 18px;
+    font-weight: bold;
+    margin: 10px 0;
+}
+
+.food-price {
+    font-size: 16px;
+    color: #28a745;
+    margin: 5px 0;
+}
+
+.food-description {
+    font-size: 14px;
+    color: #666;
+    flex-grow: 1; /* Pushes button to the bottom */
+}
+
+.food-card button {
+    background: #007bff;
+    color: white;
+    border: none;
+    padding: 10px;
+    cursor: pointer;
+    border-radius: 5px;
+    margin-top: 10px;
+}
+
+.food-card button:hover {
+    background: #0056b3;
 }
 
 /* Add to Cart Button */
