@@ -1,12 +1,15 @@
 body {
     font-family: Arial, sans-serif;
     text-align: center;
-    margin: 20px;
+    background-color: #f8f9fa;
+    margin: 0;
+    padding: 20px;
 }
 
-.container {
-    max-width: 900px;
-    margin: auto;
+.title {
+    font-size: 32px;
+    margin-bottom: 20px;
+    color: #333;
 }
 
 .controls {
@@ -16,39 +19,92 @@ body {
     margin-bottom: 20px;
 }
 
-#foodContainer {
+#searchBox, #categoryFilter, #sortOptions {
+    padding: 10px;
+    font-size: 16px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+.food-grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-    gap: 15px;
+    gap: 20px;
+    justify-content: center;
 }
 
 .food-card {
-    border: 1px solid #ddd;
+    background: white;
     padding: 15px;
-    text-align: center;
+    border-radius: 10px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    transition: transform 0.2s;
+}
+
+.food-card:hover {
+    transform: scale(1.05);
 }
 
 .food-card img {
-    width: 100px;
-    height: 100px;
+    width: 100%;
+    height: 150px;
     object-fit: cover;
+    border-radius: 8px;
 }
 
-#viewCartBtn {
-    background: blue;
+.food-title {
+    font-size: 18px;
+    font-weight: bold;
+    margin-top: 10px;
+}
+
+.food-price {
+    font-size: 16px;
+    color: green;
+    font-weight: bold;
+}
+
+.food-description {
+    font-size: 14px;
+    color: #555;
+}
+
+button {
+    padding: 8px 12px;
+    background-color: #007bff;
     color: white;
     border: none;
-    padding: 10px;
-    margin-top: 20px;
+    border-radius: 5px;
     cursor: pointer;
+    margin-top: 10px;
 }
 
-#cartModal {
-    display: none;
-    position: fixed;
+button:hover {
+    background-color: #0056b3;
+}
+
+.cart {
+    margin-top: 30px;
+    padding: 15px;
     background: white;
-    padding: 20px;
-    top: 20%;
-    left: 30%;
-    border: 1px solid black;
+    border-radius: 10px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    max-width: 400px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.cart h2 {
+    font-size: 22px;
+    margin-bottom: 10px;
+}
+
+.cart ul {
+    list-style: none;
+    padding: 0;
+}
+
+.cart li {
+    font-size: 16px;
+    padding: 5px 0;
 }
