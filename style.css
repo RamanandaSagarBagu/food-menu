@@ -1,41 +1,40 @@
 /* Import Google Fonts */
-@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&family=Inter:wght@300;400;600&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap');
 
 /* General Styling */
 body {
-    font-family: 'Inter', sans-serif;
-    background-color: #f9f9f9; /* Soft background */
+    font-family: 'Poppins', sans-serif;
+    background-color: #f8f9fa;
     margin: 0;
     padding: 20px;
     text-align: center;
     color: #333;
-    transition: background 0.3s ease-in-out;
 }
 
 /* Title */
 .title {
-    font-size: 2.5rem;
+    font-size: 2.2rem;
     font-weight: 700;
     color: #222;
-    margin-bottom: 20px;
+    margin-bottom: 15px;
     animation: fadeIn 1s ease-in-out;
 }
 
 /* Controls */
 .controls {
-    margin-bottom: 20px;
     display: flex;
     flex-wrap: wrap;
     justify-content: center;
     gap: 15px;
+    margin-bottom: 20px;
 }
 
 input, select {
     padding: 12px;
-    border: 1px solid #bbb;
-    border-radius: 10px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
     font-size: 1rem;
-    transition: all 0.3s ease;
+    transition: 0.3s;
     background-color: #fff;
     color: #333;
 }
@@ -43,6 +42,7 @@ input, select {
 input:focus, select:focus {
     border-color: #007bff;
     outline: none;
+    box-shadow: 0px 0px 8px rgba(0, 123, 255, 0.5);
 }
 
 /* Food Grid */
@@ -54,72 +54,58 @@ input:focus, select:focus {
     align-items: stretch;
 }
 
-/* Food Card */
 .food-card {
-    background: white;
-    padding: 20px;
+    background: #fff;
+    padding: 15px;
     border-radius: 12px;
-    box-shadow: 0px 5px 10px rgba(0, 0, 0, 0.1);
-    transition: all 0.3s ease-in-out;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+    transition: 0.3s;
     text-align: center;
-    display: flex;
-    flex-direction: column;
-    height: 100%;
 }
 
 .food-card:hover {
     transform: translateY(-5px);
-    box-shadow: 0px 8px 15px rgba(0, 0, 0, 0.15);
+    box-shadow: 0px 6px 12px rgba(0, 0, 0, 0.15);
 }
 
-/* Food Image */
 .food-card img {
     width: 100%;
     height: 200px;
     object-fit: cover;
     border-radius: 10px;
-    transition: transform 0.3s ease-in-out;
 }
 
-.food-card:hover img {
-    transform: scale(1.05);
-}
-
-/* Food Details */
 .food-card h3 {
-    font-size: 1.3rem;
+    font-size: 1.2rem;
     font-weight: 600;
     color: #222;
 }
 
 .food-card p {
-    font-size: 1rem;
+    font-size: 0.9rem;
     color: #555;
-    flex-grow: 1;
 }
 
 .food-card .price {
-    font-size: 1.2rem;
-    font-weight: bold;
+    font-size: 1.1rem;
+    font-weight: 600;
     color: #28a745;
-    margin-top: 5px;
 }
 
-/* Add to Cart Button */
-.add-to-cart {
-    width: 100%;
-    padding: 14px;
+/* Buttons */
+button, .add-to-cart {
     background: #ff5722;
-    font-weight: bold;
-    border: none;
     color: white;
-    border-radius: 10px;
+    border: none;
+    padding: 12px;
+    border-radius: 8px;
     cursor: pointer;
-    margin-top: auto;
-    transition: all 0.3s ease-in-out;
+    font-size: 1rem;
+    transition: 0.3s;
+    width: 100%;
 }
 
-.add-to-cart:hover {
+button:hover, .add-to-cart:hover {
     background: #e64a19;
     transform: scale(1.05);
 }
@@ -127,29 +113,20 @@ input:focus, select:focus {
 /* Cart Button */
 .cart-btn {
     background: #218838;
+    color: white;
     font-weight: 600;
-    padding: 14px 25px;
-    border-radius: 50px;
+    padding: 12px 20px;
     position: fixed;
     bottom: 20px;
     right: 20px;
-    color: white;
-    box-shadow: 0px 5px 10px rgba(0, 0, 0, 0.15);
-    transition: all 0.3s ease-in-out;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    font-size: 1rem;
+    border-radius: 12px;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.15);
+    transition: 0.3s;
 }
 
 .cart-btn:hover {
     background: #1a682e;
     transform: scale(1.05);
-}
-
-.cart-btn i {
-    font-size: 1.4rem;
 }
 
 /* Cart Modal */
@@ -161,11 +138,11 @@ input:focus, select:focus {
     transform: translate(-50%, -50%);
     background: white;
     padding: 25px;
-    border-radius: 15px;
-    box-shadow: 0px 8px 20px rgba(0, 0, 0, 0.2);
+    border-radius: 12px;
+    box-shadow: 0px 6px 12px rgba(0, 0, 0, 0.2);
     animation: fadeIn 0.5s ease;
+    max-width: 400px;
     width: 90%;
-    max-width: 500px;
 }
 
 .cart-content h2 {
@@ -179,23 +156,6 @@ input:focus, select:focus {
     right: 15px;
     font-size: 1.5rem;
     cursor: pointer;
-    color: #999;
-}
-
-.checkout-btn {
-    width: 100%;
-    padding: 14px;
-    background: #007bff;
-    color: white;
-    font-weight: bold;
-    border-radius: 10px;
-    cursor: pointer;
-    transition: all 0.3s ease-in-out;
-}
-
-.checkout-btn:hover {
-    background: #0056b3;
-    transform: scale(1.05);
 }
 
 /* Animations */
@@ -211,46 +171,44 @@ input:focus, select:focus {
 /* Responsive Design */
 @media (max-width: 768px) {
     .title {
-        font-size: 2rem;
+        font-size: 1.8rem;
     }
-
+    
     .controls {
         flex-direction: column;
         gap: 10px;
     }
-
+    
     input, select {
         width: 100%;
-        font-size: 1rem;
     }
 
     .food-grid {
         grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
     }
+    
+    .food-card img {
+        height: 180px;
+    }
 
     .cart-btn {
         bottom: 15px;
-        right: 10px;
-        padding: 12px 20px;
-        font-size: 0.9rem;
+        right: 15px;
+        padding: 10px 15px;
     }
 }
 
 @media (max-width: 480px) {
     .title {
-        font-size: 1.7rem;
+        font-size: 1.6rem;
     }
-
+    
     .food-grid {
         grid-template-columns: 1fr;
     }
-
+    
     .cart-btn {
-        font-size: 0.85rem;
-        padding: 10px 15px;
-    }
-
-    .cart-modal {
-        width: 95%;
+        font-size: 0.9rem;
+        padding: 10px;
     }
 }
