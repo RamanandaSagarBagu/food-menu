@@ -19,9 +19,24 @@ function displayFoods(foods) {
             <h3>${food.name}</h3>
             <p class="price">₹${food.price}</p>
             <p>${food.description}</p>
-            <button class="add-to-cart" onclick="addToCart('${food.name}', ${food.price})">Add to Cart</button>
+            <button class="add-to-cart" data-name="${food.name}" data-price="${food.price}">Add to Cart</button>
         </div>
     `).join('');
+
+    // Attach event listeners for Add to Cart buttons after rendering
+    attachCartEventListeners();
+}
+
+// Attach "Add to Cart" event listeners
+function attachCartEventListeners() {
+    const addToCartButtons = document.querySelectorAll(".add-to-cart");
+    addToCartButtons.forEach(button => {
+        button.addEventListener("click", function () {
+            let name = this.getAttribute("data-name");
+            let price = parseFloat(this.getAttribute("data-price"));
+            addToCart(name, price);
+        });
+    });
 }
 
 // Search Function
@@ -61,25 +76,27 @@ function sortFoods() {
 }
 
 // Cart Functions
-document.addEventListener("DOMContentLoaded", function () {
-    const cartButton = document.querySelector(".cart-btn");
-    const cartCount = document.querySelector(".cart-btn span");
-    const addToCartButtons = document.querySelectorAll(".add-to-cart");
+function addToCart(name, price) {
+    let cartButton = document.querySelector(".cart-btn");
+    let cartCount = document.querySelector(".cart-btn span");
 
-    let cartItems = 0; // Keeps track of cart count
+    let existingItem = cart.find(item => item.name === name);
+    if (existingItem) {
+        existingItem.quantity += 1;
+    } else {
+        cart.push({ name, price, quantity: 1 });
+    }
 
-    addToCartButtons.forEach(button => {
-        button.addEventListener("click", function () {
-            cartItems++; // Increase count
-            cartCount.textContent = `(${cartItems})`; // Update cart count
-            cartButton.classList.add("bounce"); // Add animation
-            
-            setTimeout(() => cartButton.classList.remove("bounce"), 500); // Remove animation after 0.5s
-        });
-    });
-});
+    // Update cart count
+    let totalItems = cart.reduce((sum, item) => sum + item.quantity, 0);
+    cartCount.textContent = `(${totalItems})`;
 
+    // Bounce animation
+    cartButton.classList.add("bounce");
+    setTimeout(() => cartButton.classList.remove("bounce"), 500);
+}
 
+// Toggle Cart Display
 function toggleCart() {
     let cartModal = document.getElementById("cart-modal");
     cartModal.style.display = cartModal.style.display === "block" ? "none" : "block";
