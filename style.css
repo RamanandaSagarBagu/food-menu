@@ -45,11 +45,12 @@ input:focus, select:focus {
 .food-grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-    gap: 20px;
+    gap: 30px; /* Increase gap for more horizontal space */
     padding: 10px;
     justify-content: center;
-    align-items: stretch; /* Ensures all cards stretch to the same height */
+    align-items: stretch;
 }
+
 
 /* Food Card */
 .food-card {
