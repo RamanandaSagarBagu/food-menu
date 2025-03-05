@@ -45,7 +45,7 @@ input:focus, select:focus {
 .food-grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); /* Adjust column size */
-    gap: 45px 20px; /* First value = row gap, Second value = column gap */
+    gap: 45px 10px; /* First value = row gap, Second value = column gap */
     padding: 20px; /* Extra padding for spacing */
     justify-content: center;
     align-items: stretch; /* Ensures uniform height */
