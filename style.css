@@ -44,25 +44,25 @@ input:focus, select:focus {
 /* Food Grid */
 .food-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); /* Adjust column size */
-    gap: 45px 10px; /* First value = row gap, Second value = column gap */
-    padding: 20px; /* Extra padding for spacing */
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 20px; /* Adjusted for better spacing */
+    padding: 20px;
     justify-content: center;
-    align-items: stretch; /* Ensures uniform height */
+    align-items: stretch;
 }
-
 
 /* Food Card */
 .food-card {
     display: flex;
     flex-direction: column;
-    justify-content: space-between; /* Keeps buttons at the bottom */
-    height: 100%;
+    justify-content: space-between;
     background: white;
     padding: 15px;
     border-radius: 12px;
     box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
     text-align: center;
+    height: auto;
+    min-height: 400px; /* Ensures uniform card height */
 }
 
 .food-card:hover {
@@ -86,7 +86,7 @@ input:focus, select:focus {
 .food-card p {
     font-size: 0.9rem;
     color: #666;
-    flex-grow: 1; /* Allows the description to take up available space */
+    flex-grow: 1;
 }
 
 .food-card .price {
@@ -111,13 +111,17 @@ button:hover {
     background: #0056b3;
 }
 
-/* Add to Cart Button - Ensure Proper Alignment */
+/* Add to Cart Button */
 .add-to-cart {
-    width: 100%;  /* Full width */
+    width: 100%;
     padding: 12px;
-    margin-top: auto; /* Push button to the bottom */
+    margin-top: auto;
 }
 
+/* 🛑 Fix for Large "Add to Cart" Bar */
+.add-to-cart-large-bar {
+    display: none !important; /* Ensures it doesn't appear */
+}
 
 /* Cart Button */
 .cart-btn {
@@ -129,6 +133,7 @@ button:hover {
     right: 20px;
     box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
     transition: transform 0.3s ease;
+    border-radius: 8px;
 }
 
 .cart-btn:hover {
@@ -148,6 +153,9 @@ button:hover {
     border-radius: 12px;
     box-shadow: 0px 6px 12px rgba(0, 0, 0, 0.2);
     animation: fadeIn 0.5s ease;
+    width: 90%;
+    max-width: 500px;
+    z-index: 1000;
 }
 
 .cart-content h2 {
@@ -155,6 +163,7 @@ button:hover {
     color: #333;
 }
 
+/* Close Button */
 .close-btn {
     position: absolute;
     top: 10px;
@@ -165,12 +174,8 @@ button:hover {
 
 /* Animations */
 @keyframes fadeIn {
-    from {
-        opacity: 0;
-    }
-    to {
-        opacity: 1;
-    }
+    from { opacity: 0; }
+    to { opacity: 1; }
 }
 
 @keyframes bounce {
@@ -198,7 +203,7 @@ button:hover {
     }
 
     .food-grid {
-        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); /* Adjust for small screens */
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
     }
 
     .food-card {
@@ -219,7 +224,7 @@ button:hover {
     }
 
     .food-grid {
-        grid-template-columns: 1fr; /* Single column layout for extra small screens */
+        grid-template-columns: 1fr;
     }
 
     .cart-btn {
