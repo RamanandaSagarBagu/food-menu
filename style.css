@@ -208,3 +208,29 @@ button:hover {
         padding: 10px;
     }
 }
+.food-card {
+    background: #fff;
+    padding: 15px;
+    border-radius: 12px;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between; /* Ensures buttons stay at the bottom */
+    height: 100%; /* Makes all cards the same height */
+}
+
+.food-card p {
+    flex-grow: 1; /* Allows descriptions to expand within the available space */
+}
+
+/* Ensure consistent height */
+.food-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 20px;
+    padding: 10px;
+    justify-content: center;
+    align-items: stretch; /* Ensures all cards stretch to the same height */
+}
