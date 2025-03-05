@@ -61,15 +61,24 @@ function sortFoods() {
 }
 
 // Cart Functions
-function addToCart(name, price) {
-    let item = cart.find(item => item.name === name);
-    if (item) {
-        item.quantity += 1;
-    } else {
-        cart.push({ name, price, quantity: 1 });
-    }
-    updateCart();
-}
+document.addEventListener("DOMContentLoaded", function () {
+    const cartButton = document.querySelector(".cart-btn");
+    const cartCount = document.querySelector(".cart-btn span");
+    const addToCartButtons = document.querySelectorAll(".add-to-cart");
+
+    let cartItems = 0; // Keeps track of cart count
+
+    addToCartButtons.forEach(button => {
+        button.addEventListener("click", function () {
+            cartItems++; // Increase count
+            cartCount.textContent = `(${cartItems})`; // Update cart count
+            cartButton.classList.add("bounce"); // Add animation
+            
+            setTimeout(() => cartButton.classList.remove("bounce"), 500); // Remove animation after 0.5s
+        });
+    });
+});
+
 
 function toggleCart() {
     let cartModal = document.getElementById("cart-modal");
