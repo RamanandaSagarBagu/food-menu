@@ -23,14 +23,13 @@ function displayFoods(foods) {
         </div>
     `).join('');
 
-    // Attach event listeners for Add to Cart buttons after rendering
+    // Attach event listeners after rendering new items
     attachCartEventListeners();
 }
 
-// Attach "Add to Cart" event listeners
+// Attach event listeners for "Add to Cart" buttons
 function attachCartEventListeners() {
-    const addToCartButtons = document.querySelectorAll(".add-to-cart");
-    addToCartButtons.forEach(button => {
+    document.querySelectorAll(".add-to-cart").forEach(button => {
         button.addEventListener("click", function () {
             let name = this.getAttribute("data-name");
             let price = parseFloat(this.getAttribute("data-price"));
@@ -87,17 +86,40 @@ function addToCart(name, price) {
         cart.push({ name, price, quantity: 1 });
     }
 
-    // Update cart count
+    updateCartCount();
+}
+
+// Update cart count in button
+function updateCartCount() {
+    let cartCount = document.querySelector(".cart-btn span");
     let totalItems = cart.reduce((sum, item) => sum + item.quantity, 0);
     cartCount.textContent = `(${totalItems})`;
-
-    // Bounce animation
-    cartButton.classList.add("bounce");
-    setTimeout(() => cartButton.classList.remove("bounce"), 500);
 }
 
 // Toggle Cart Display
 function toggleCart() {
     let cartModal = document.getElementById("cart-modal");
     cartModal.style.display = cartModal.style.display === "block" ? "none" : "block";
+}
+
+// Remove Item from Cart
+function removeFromCart(name) {
+    cart = cart.filter(item => item.name !== name);
+    updateCartCount();
+    displayCartItems();
+}
+
+// Display Cart Items
+function displayCartItems() {
+    let cartList = document.getElementById("cart-items");
+    if (!cartList) return;
+
+    cartList.innerHTML = cart.length === 0
+        ? "<p>Cart is empty.</p>"
+        : cart.map(item => `
+            <div class="cart-item">
+                <p>${item.name} (x${item.quantity}) - ₹${item.price * item.quantity}</p>
+                <button class="remove-cart" onclick="removeFromCart('${item.name}')">Remove</button>
+            </div>
+        `).join('');
 }
