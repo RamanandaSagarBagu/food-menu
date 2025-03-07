@@ -4,37 +4,121 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Food Menu</title>
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="styles.css">
+    <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
 </head>
 <body>
-    <h1 class="title">Food Menu</h1>
-
-    <div class="controls">
+    <header>
+        <h1>Food Menu</h1>
+        <button class="cart-btn" onclick="toggleCart()">View Cart (<span>0</span>)</button>
+    </header>
+    <div>
         <input type="text" id="searchBox" placeholder="Search food..." onkeyup="searchFood()">
         <select id="categoryFilter" onchange="filterFoods()">
             <option value="all">All Categories</option>
         </select>
         <select id="sortOptions" onchange="sortFoods()">
             <option value="default">Sort By</option>
-            <option value="price-low">Price: Low to High</option>
-            <option value="price-high">Price: High to Low</option>
+            <option value="price-low">Price Low to High</option>
+            <option value="price-high">Price High to Low</option>
         </select>
     </div>
-
-    <div id="foodContainer" class="food-grid"></div>
-
-    <button class="cart-btn" onclick="toggleCart()">🛒 View Cart (<span id="cart-count">0</span>)</button>
-
+    <div id="foodContainer"></div>
     <div id="cart-modal" class="cart-modal">
-        <div class="cart-content">
-            <span class="close-btn" onclick="toggleCart()">&times;</span>
-            <h2>Your Cart</h2>
-            <ul id="cart-items"></ul>
-            <h3>Total: ₹<span id="cart-total">0</span></h3>
-            <button onclick="checkout()">Checkout</button>
-        </div>
+        <h2>Your Cart</h2>
+        <div id="cart-items"></div>
+        <p>Total: ₹<span id="cart-total">0</span></p>
+        <button onclick="checkout()">Checkout</button>
+        <button onclick="toggleCart()">Close</button>
     </div>
-
     <script src="script.js"></script>
 </body>
 </html>
+
+// script.js
+let allFoods = [];
+let cart = [];
+fetch('foods.json')
+    .then(response => response.json())
+    .then(foods => {
+        allFoods = foods;
+        populateCategoryFilter();
+        displayFoods(allFoods);
+    });
+function displayFoods(foods) {
+    const foodContainer = document.getElementById('foodContainer');
+    foodContainer.innerHTML = foods.map(food => `
+        <div class="food-card">
+            <img src="${food.image}" alt="${food.name}">
+            <h3>${food.name}</h3>
+            <p class="price">₹${food.price}</p>
+            <p>${food.description}</p>
+            <button class="add-to-cart" data-name="${food.name}" data-price="${food.price}">Add to Cart</button>
+        </div>
+    `).join('');
+    attachCartEventListeners();
+}
+function attachCartEventListeners() {
+    document.querySelectorAll(".add-to-cart").forEach(button => {
+        button.addEventListener("click", function () {
+            let name = this.getAttribute("data-name");
+            let price = parseFloat(this.getAttribute("data-price"));
+            addToCart(name, price);
+        });
+    });
+}
+function addToCart(name, price) {
+    let existingItem = cart.find(item => item.name === name);
+    if (existingItem) {
+        existingItem.quantity += 1;
+    } else {
+        cart.push({ name, price, quantity: 1 });
+    }
+    updateCartCount();
+}
+function updateCartCount() {
+    let cartCount = document.querySelector(".cart-btn span");
+    let totalItems = cart.reduce((sum, item) => sum + item.quantity, 0);
+    cartCount.textContent = `(${totalItems})`;
+}
+function checkout() {
+    let totalAmount = cart.reduce((sum, item) => sum + item.price * item.quantity, 0);
+    let paymentOptions = document.createElement("div");
+    paymentOptions.innerHTML = `
+        <h3>Select Payment Method</h3>
+        <button onclick="payWithRazorpay(${totalAmount})">Pay with Razorpay</button>
+        <button onclick="payWithUPI(${totalAmount})">Pay with UPI</button>
+    `;
+    document.body.appendChild(paymentOptions);
+}
+function payWithRazorpay(amount) {
+    let options = {
+        "key": "YOUR_RAZORPAY_KEY",
+        "amount": amount * 100,
+        "currency": "INR",
+        "name": "Food Order",
+        "description": "Payment for food order",
+        "handler": function(response) {
+            alert("Payment Successful! Order ID: " + response.razorpay_payment_id);
+            trackOrder(response.razorpay_payment_id);
+        },
+    };
+    let rzp = new Razorpay(options);
+    rzp.open();
+}
+function payWithUPI(amount) {
+    let upiQR = document.createElement("div");
+    upiQR.innerHTML = `
+        <h3>Scan QR to Pay</h3>
+        <img src="upi-qr-code.png" alt="UPI QR Code">
+        <p>Or use UPI ID: yourupi@upi</p>
+    `;
+    document.body.appendChild(upiQR);
+}
+function trackOrder(orderId) {
+    let orderStatus = document.createElement("p");
+    orderStatus.textContent = "Order ID: " + orderId + " - Status: Preparing";
+    document.body.appendChild(orderStatus);
+    setTimeout(() => orderStatus.textContent = "Order ID: " + orderId + " - Status: Out for Delivery", 5000);
+    setTimeout(() => orderStatus.textContent = "Order ID: " + orderId + " - Status: Delivered", 10000);
+}
