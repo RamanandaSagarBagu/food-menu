@@ -85,6 +85,28 @@ function addToCart(name, price) {
     updateCart();
 }
 
+function addToCart(foodItem) {
+    let cart = JSON.parse(localStorage.getItem("cart")) || [];
+    
+    // Check if item already exists in cart
+    let existingItem = cart.find(item => item.id === foodItem.id);
+    
+    if (existingItem) {
+        existingItem.quantity += 1;  // Increase quantity if already in cart
+    } else {
+        cart.push({
+            id: foodItem.id,
+            name: foodItem.name,
+            price: foodItem.price,
+            image: foodItem.image,  // Ensure image URL is passed
+            quantity: 1
+        });
+    }
+
+    localStorage.setItem("cart", JSON.stringify(cart));
+    updateCartUI();  // Refresh UI
+}
+
 // Update Cart UI
 function updateCart() {
     let cartList = document.getElementById("cart-items");
@@ -137,6 +159,27 @@ function removeFromCart(name) {
 function toggleCart() {
     let cartModal = document.getElementById("cart-modal");
     cartModal.style.display = cartModal.style.display === "block" ? "none" : "block";
+}
+function displayCartItems() {
+    let cart = JSON.parse(localStorage.getItem("cart")) || [];
+    let cartContainer = document.querySelector(".cart-content");
+    cartContainer.innerHTML = ""; // Clear previous items
+
+    cart.forEach(item => {
+        let cartItem = document.createElement("div");
+        cartItem.classList.add("cart-item");
+
+        cartItem.innerHTML = `
+            <img src="${item.image}" alt="${item.name}" class="cart-img">
+            <div class="cart-details">
+                <h4>${item.name} (x${item.quantity})</h4>
+                <p>₹${item.price}</p>
+            </div>
+            <button class="cart-remove" onclick="removeFromCart('${item.id}')">Remove</button>
+        `;
+
+        cartContainer.appendChild(cartItem);
+    });
 }
 
 // Payment Processing (Example Integration)
