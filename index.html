@@ -5,38 +5,44 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Food Menu</title>
     <link rel="stylesheet" href="styles.css">
-    <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
 </head>
 <body>
 
+    <!-- Header Section -->
     <header>
         <h1>Food Menu</h1>
-        <button class="cart-btn" onclick="toggleCart()">View Cart (<span id="cart-count">0</span>)</button>
+        <button class="cart-btn" onclick="openCart()">🛒 View Cart (<span id="cart-count">0</span>)</button>
     </header>
 
+    <!-- Search & Filters -->
     <div class="controls">
-        <input type="text" id="searchBox" placeholder="Search food..." onkeyup="searchFood()">
-        <select id="categoryFilter" onchange="filterFoods()">
+        <input type="text" id="search" placeholder="Search food..." onkeyup="searchFood()">
+        <select id="category" onchange="filterCategory()">
             <option value="all">All Categories</option>
+            <option value="biryani">Biryani</option>
+            <option value="fast-food">Fast Food</option>
+            <option value="dessert">Desserts</option>
         </select>
-        <select id="sortOptions" onchange="sortFoods()">
+        <select id="sort" onchange="sortItems()">
             <option value="default">Sort By</option>
-            <option value="price-low">Price Low to High</option>
-            <option value="price-high">Price High to Low</option>
+            <option value="low-high">Price: Low to High</option>
+            <option value="high-low">Price: High to Low</option>
         </select>
     </div>
 
-    <div id="foodContainer" class="food-grid"></div>
+    <!-- Food Menu Grid -->
+    <div class="food-grid" id="food-menu">
+        <!-- Items will be loaded dynamically from JavaScript -->
+    </div>
 
+    <!-- Cart Modal -->
     <div id="cart-modal" class="cart-modal">
         <h2>Your Cart</h2>
         <div id="cart-items"></div>
         <p>Total: ₹<span id="cart-total">0</span></p>
-        <button onclick="checkout()">Checkout</button>
-        <button onclick="toggleCart()">Close</button>
+        <button class="checkout-btn" onclick="checkout()">Proceed to Pay</button>
+        <button class="close-btn" onclick="closeCart()">Close</button>
     </div>
-
-    <div id="order-status"></div>
 
     <script src="script.js"></script>
 </body>
