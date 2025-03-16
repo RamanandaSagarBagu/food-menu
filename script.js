@@ -1,149 +1,69 @@
-// Global Variables
-let allFoods = [];
-let cart = JSON.parse(localStorage.getItem('cart')) || [];
+// Sample Food Data
+const foodItems = [
+    { id: 1, name: "Chicken Biryani", category: "biryani", price: 250, img: "biryani.jpg" },
+    { id: 2, name: "Veg Pizza", category: "fast-food", price: 180, img: "pizza.jpg" },
+    { id: 3, name: "Gulab Jamun", category: "dessert", price: 50, img: "jamun.jpg" }
+];
 
-// Fetch Foods
-fetch('foods.json')
-    .then(response => response.json())
-    .then(foods => {
-        allFoods = foods;
-        populateCategoryFilter();
-        displayFoods(allFoods);
-        updateCartCount();
-        displayCartItems();
-    });
+// Cart Array
+let cart = [];
 
-// Display Foods
-function displayFoods(foods) {
-    const foodContainer = document.getElementById('foodContainer');
-    foodContainer.innerHTML = foods.map(food => `
-        <div class="food-card">
-            <img src="${food.image}" alt="${food.name}">
-            <h3>${food.name}</h3>
-            <p class="price">₹${food.price}</p>
-            <p>${food.description}</p>
-            <button class="add-to-cart" data-name="${food.name}" data-price="${food.price}">Add to Cart</button>
-        </div>
-    `).join('');
-
-    attachCartEventListeners();
-}
-
-// Attach event listeners for "Add to Cart" buttons
-function attachCartEventListeners() {
-    document.querySelectorAll(".add-to-cart").forEach(button => {
-        button.addEventListener("click", function () {
-            let name = this.getAttribute("data-name");
-            let price = parseFloat(this.getAttribute("data-price"));
-            addToCart(name, price);
-        });
-    });
-}
-
-// Add Item to Cart
-function addToCart(name, price) {
-    let existingItem = cart.find(item => item.name === name);
-    if (existingItem) {
-        existingItem.quantity += 1;
-    } else {
-        cart.push({ name, price, quantity: 1 });
-    }
-    localStorage.setItem('cart', JSON.stringify(cart));
-    updateCartCount();
-    displayCartItems();
-}
-
-// Update cart count in button
-function updateCartCount() {
-    document.getElementById("cart-count").textContent = cart.reduce((sum, item) => sum + item.quantity, 0);
-}
-
-// Display Cart Items
-function displayCartItems() {
-    let cartList = document.getElementById("cart-items");
-    let cartTotal = document.getElementById("cart-total");
-    if (!cartList || !cartTotal) return;
-
-    cartList.innerHTML = cart.length === 0
-        ? "<p>Cart is empty.</p>"
-        : cart.map(item => `
-            <div class="cart-item">
-                <p>${item.name} (x${item.quantity}) - ₹${item.price * item.quantity}</p>
-                <button class="remove-cart" onclick="removeFromCart('${item.name}')">Remove</button>
+// Load Menu Items
+function loadMenu() {
+    const menu = document.getElementById("food-menu");
+    menu.innerHTML = "";
+    foodItems.forEach(item => {
+        menu.innerHTML += `
+            <div class="food-card">
+                <img src="${item.img}" alt="${item.name}">
+                <h3>${item.name}</h3>
+                <p class="price">₹${item.price}</p>
+                <button class="add-to-cart" onclick="addToCart(${item.id})">Add to Cart</button>
             </div>
-        `).join('');
+        `;
+    });
+}
+
+// Add to Cart
+function addToCart(id) {
+    let item = foodItems.find(food => food.id === id);
+    cart.push(item);
+    document.getElementById("cart-count").innerText = cart.length;
+}
+
+// Open Cart
+function openCart() {
+    let cartItems = document.getElementById("cart-items");
+    cartItems.innerHTML = "";
+    let total = 0;
     
-    cartTotal.textContent = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+    cart.forEach(item => {
+        total += item.price;
+        cartItems.innerHTML += `<p>${item.name} - ₹${item.price}</p>`;
+    });
+    
+    document.getElementById("cart-total").innerText = total;
+    document.getElementById("cart-modal").style.display = "block";
 }
 
-// Remove Item from Cart
-function removeFromCart(name) {
-    cart = cart.filter(item => item.name !== name);
-    localStorage.setItem('cart', JSON.stringify(cart));
-    updateCartCount();
-    displayCartItems();
+// Close Cart
+function closeCart() {
+    document.getElementById("cart-modal").style.display = "none";
 }
 
-// Toggle Cart Display
-function toggleCart() {
-    let cartModal = document.getElementById("cart-modal");
-    cartModal.style.display = cartModal.style.display === "block" ? "none" : "block";
+// Checkout with Razorpay
+function checkout() {
+    alert("UPI Payment Integration Coming Soon!");
 }
 
 // Search Function
 function searchFood() {
-    let query = document.getElementById('searchBox').value.toLowerCase();
-    displayFoods(allFoods.filter(food => food.name.toLowerCase().includes(query)));
-}
-
-// Category Filter
-function populateCategoryFilter() {
-    let categories = [...new Set(allFoods.map(food => food.category))];
-    let categoryFilter = document.getElementById('categoryFilter');
-    categoryFilter.innerHTML = `<option value="all">All Categories</option>`;
-    categories.forEach(category => {
-        categoryFilter.innerHTML += `<option value="${category}">${category}</option>`;
+    let query = document.getElementById("search").value.toLowerCase();
+    document.querySelectorAll(".food-card").forEach(card => {
+        let name = card.querySelector("h3").innerText.toLowerCase();
+        card.style.display = name.includes(query) ? "block" : "none";
     });
 }
 
-function filterFoods() {
-    let category = document.getElementById('categoryFilter').value;
-    displayFoods(category === "all" ? allFoods : allFoods.filter(food => food.category === category));
-}
-
-// Sorting
-function sortFoods() {
-    let option = document.getElementById('sortOptions').value;
-    let sortedFoods = [...allFoods];
-
-    if (option === "price-low") sortedFoods.sort((a, b) => a.price - b.price);
-    if (option === "price-high") sortedFoods.sort((a, b) => b.price - a.price);
-
-    displayFoods(sortedFoods);
-}
-
-// Razorpay Payment
-function checkout() {
-    let totalAmount = cart.reduce((sum, item) => sum + item.price * item.quantity, 0);
-    let options = {
-        "key": "YOUR_RAZORPAY_KEY",
-        "amount": totalAmount * 100,
-        "currency": "INR",
-        "name": "Food Order",
-        "description": "Payment for food order",
-        "handler": function(response) {
-            alert("Payment Successful! Order ID: " + response.razorpay_payment_id);
-            trackOrder(response.razorpay_payment_id);
-        },
-    };
-    let rzp = new Razorpay(options);
-    rzp.open();
-}
-
-// Order Tracking
-function trackOrder(orderId) {
-    let orderStatus = document.getElementById("order-status");
-    orderStatus.innerHTML = `<p>Order ID: ${orderId} - Status: Preparing</p>`;
-    setTimeout(() => orderStatus.innerHTML = `<p>Order ID: ${orderId} - Status: Out for Delivery</p>`, 5000);
-    setTimeout(() => orderStatus.innerHTML = `<p>Order ID: ${orderId} - Status: Delivered</p>`, 10000);
-}
+// Load Menu on Page Load
+document.addEventListener("DOMContentLoaded", loadMenu);
