@@ -1,144 +1,93 @@
-/* Import Google Fonts */
-@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap');
-
-/* General Styling */
+/* General Styles */
 body {
-    font-family: 'Poppins', sans-serif;
-    background-color: #f8f9fa;
+    font-family: Arial, sans-serif;
     margin: 0;
-    padding: 20px;
-    text-align: center;
+    padding: 0;
+    background-color: #f8f9fa;
 }
 
-/* Title */
-.title {
-    font-size: 2rem;
-    font-weight: 600;
-    color: #333;
-    margin-bottom: 20px;
-    animation: fadeIn 1s ease-in-out;
-}
-
-/* Controls */
-.controls {
-    margin-bottom: 20px;
+header {
     display: flex;
-    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: center;
+    background-color: #ff5733;
+    color: white;
+    padding: 15px 20px;
+}
+
+h1 {
+    margin: 0;
+}
+
+.cart-btn {
+    background: white;
+    color: #ff5733;
+    border: none;
+    padding: 10px 15px;
+    cursor: pointer;
+    font-size: 16px;
+    font-weight: bold;
+    border-radius: 5px;
+}
+
+.cart-btn:hover {
+    background: #ffc1a8;
+}
+
+/* Search & Filter Controls */
+.controls {
+    display: flex;
     justify-content: center;
     gap: 10px;
+    padding: 15px;
+    background-color: white;
 }
 
 input, select {
     padding: 10px;
-    border: 1px solid #ccc;
-    border-radius: 8px;
-    font-size: 1rem;
-    transition: all 0.3s ease;
-}
-
-input:focus, select:focus {
-    border-color: #007bff;
-    outline: none;
+    border: 1px solid #ddd;
+    border-radius: 5px;
 }
 
 /* Food Grid */
 .food-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-    gap: 20px; /* Adjusted for better spacing */
+    display: flex;
+    flex-wrap: wrap;
+    gap: 15px;
     padding: 20px;
     justify-content: center;
-    align-items: stretch;
 }
 
-/* Food Card */
 .food-card {
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
     background: white;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     padding: 15px;
-    border-radius: 12px;
-    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
     text-align: center;
-    height: auto;
-    min-height: 400px; /* Ensures uniform card height */
-}
-
-.food-card:hover {
-    transform: translateY(-5px);
-    box-shadow: 0px 6px 12px rgba(0, 0, 0, 0.15);
+    width: 250px;
 }
 
 .food-card img {
     width: 100%;
-    height: 180px;
-    object-fit: cover;
     border-radius: 10px;
 }
 
-.food-card h3 {
-    font-size: 1.2rem;
-    font-weight: 600;
-    color: #333;
+.price {
+    font-weight: bold;
+    color: #ff5733;
 }
 
-.food-card p {
-    font-size: 0.9rem;
-    color: #666;
-    flex-grow: 1;
-}
-
-.food-card .price {
-    font-size: 1.1rem;
-    font-weight: 600;
-    color: #28a745;
-}
-
-/* Buttons */
-button {
-    background: #007bff;
+.add-to-cart {
+    background: #ff5733;
     color: white;
     border: none;
-    padding: 10px 15px;
-    border-radius: 8px;
+    padding: 10px;
     cursor: pointer;
-    font-size: 1rem;
-    transition: all 0.3s ease;
+    border-radius: 5px;
 }
 
-button:hover {
-    background: #0056b3;
-}
-
-/* Add to Cart Button */
-.add-to-cart {
-    width: 100%;
-    padding: 12px;
-    margin-top: auto;
-}
-
-/* 🛑 Fix for Large "Add to Cart" Bar */
-.add-to-cart-large-bar {
-    display: none !important; /* Ensures it doesn't appear */
-}
-
-/* Cart Button */
-.cart-btn {
-    background: #28a745;
-    font-weight: 600;
-    padding: 12px 20px;
-    position: fixed;
-    top: 20px;
-    right: 20px;
-    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
-    transition: transform 0.3s ease;
-    border-radius: 8px;
-}
-
-.cart-btn:hover {
-    background: #218838;
-    transform: scale(1.05);
+.add-to-cart:hover {
+    background: #ff7653;
 }
 
 /* Cart Modal */
@@ -150,85 +99,34 @@ button:hover {
     transform: translate(-50%, -50%);
     background: white;
     padding: 20px;
-    border-radius: 12px;
-    box-shadow: 0px 6px 12px rgba(0, 0, 0, 0.2);
-    animation: fadeIn 0.5s ease;
-    width: 90%;
-    max-width: 500px;
-    z-index: 1000;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+    border-radius: 10px;
+    min-width: 300px;
 }
 
-.cart-content h2 {
-    font-size: 1.8rem;
-    color: #333;
+.cart-item {
+    display: flex;
+    justify-content: space-between;
+    border-bottom: 1px solid #ddd;
+    padding: 5px 0;
 }
 
-/* Close Button */
-.close-btn {
-    position: absolute;
-    top: 10px;
-    right: 15px;
-    font-size: 1.5rem;
+.remove-cart {
+    background: #dc3545;
+    color: white;
+    border: none;
+    padding: 5px 10px;
     cursor: pointer;
+    border-radius: 3px;
 }
 
-/* Animations */
-@keyframes fadeIn {
-    from { opacity: 0; }
-    to { opacity: 1; }
+.remove-cart:hover {
+    background: #c82333;
 }
 
-@keyframes bounce {
-    0%, 100% { transform: translateY(0); }
-    50% { transform: translateY(-5px); }
-}
-
-.bounce {
-    animation: bounce 0.3s ease-in-out;
-}
-
-/* Responsive Design */
-@media (max-width: 768px) {
-    .title {
-        font-size: 1.8rem;
-    }
-    
-    .controls {
-        flex-direction: column;
-    }
-    
-    input, select {
-        width: 100%;
-        font-size: 1rem;
-    }
-
-    .food-grid {
-        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-    }
-
-    .food-card {
-        padding: 12px;
-    }
-
-    .cart-btn {
-        top: auto;
-        bottom: 20px;
-        right: 10px;
-        padding: 10px 15px;
-    }
-}
-
-@media (max-width: 480px) {
-    .title {
-        font-size: 1.6rem;
-    }
-
-    .food-grid {
-        grid-template-columns: 1fr;
-    }
-
-    .cart-btn {
-        font-size: 0.9rem;
-        padding: 10px;
-    }
+/* Order Status */
+#order-status {
+    text-align: center;
+    font-weight: bold;
+    margin-top: 20px;
 }
