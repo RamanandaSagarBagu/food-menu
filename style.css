@@ -45,7 +45,7 @@ input:focus, select:focus {
 .food-grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-    gap: 20px; /* Adjusted for better spacing */
+    gap: 20px;
     padding: 20px;
     justify-content: center;
     align-items: stretch;
@@ -63,6 +63,7 @@ input:focus, select:focus {
     text-align: center;
     height: auto;
     min-height: 400px; /* Ensures uniform card height */
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 
 .food-card:hover {
@@ -116,11 +117,7 @@ button:hover {
     width: 100%;
     padding: 12px;
     margin-top: auto;
-}
-
-/* 🛑 Fix for Large "Add to Cart" Bar */
-.add-to-cart-large-bar {
-    display: none !important; /* Ensures it doesn't appear */
+    font-weight: bold;
 }
 
 /* Cart Button */
@@ -170,6 +167,50 @@ button:hover {
     right: 15px;
     font-size: 1.5rem;
     cursor: pointer;
+}
+
+/* Cart Items */
+.cart-item {
+    display: flex;
+    align-items: center;
+    padding: 10px;
+    border-bottom: 1px solid #ddd;
+    justify-content: space-between;
+}
+
+.cart-img {
+    width: 50px;
+    height: 50px;
+    border-radius: 5px;
+    margin-right: 10px;
+}
+
+.cart-details {
+    flex: 1;
+    text-align: left;
+}
+
+.cart-total {
+    font-size: 18px;
+    margin-top: 10px;
+    font-weight: bold;
+}
+
+/* Payment Button */
+.payment-btn {
+    background: #ff9800;
+    color: white;
+    border: none;
+    padding: 12px;
+    width: 100%;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 1rem;
+    transition: all 0.3s ease;
+}
+
+.payment-btn:hover {
+    background: #e68900;
 }
 
 /* Animations */
