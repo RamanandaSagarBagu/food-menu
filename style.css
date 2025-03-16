@@ -1,126 +1,153 @@
-/* General Styles */
+/* General styles */
 body {
     font-family: Arial, sans-serif;
     margin: 0;
-    padding: 0;
-    background-color: #f8f9fa;
+    padding: 20px;
+    background-color: #f5f5f5;
+}
+
+/* Container for the menu */
+.container {
+    max-width: 1200px;
+    margin: auto;
+    background: white;
+    padding: 20px;
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+    border-radius: 10px;
 }
 
 /* Header */
-header {
+h1 {
+    text-align: center;
+    color: #333;
+}
+
+/* Search bar and filters */
+.search-bar {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    background-color: #ff5733;
-    color: white;
-    padding: 15px 20px;
+    margin-bottom: 20px;
 }
 
-h1 {
-    margin: 0;
-}
-
-.cart-btn {
-    background: white;
-    color: #ff5733;
-    border: none;
-    padding: 10px 15px;
-    cursor: pointer;
-    font-size: 16px;
-    font-weight: bold;
-    border-radius: 5px;
-    transition: background 0.3s ease;
-}
-
-.cart-btn:hover {
-    background: #ffc1a8;
-}
-
-/* Controls (Search & Filters) */
-.controls {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
-    gap: 10px;
-    padding: 15px;
-    background-color: white;
-}
-
-input, select {
+.search-bar input,
+.search-bar select {
     padding: 10px;
-    border: 1px solid #ddd;
+    width: 30%;
+    border: 1px solid #ccc;
     border-radius: 5px;
 }
 
-/* Food Grid */
-.food-grid {
+/* Food items grid */
+.food-menu {
     display: flex;
     flex-wrap: wrap;
-    gap: 15px;
-    padding: 20px;
     justify-content: center;
+    gap: 15px;
 }
 
-/* Food Cards */
+/* Each food card */
 .food-card {
+    width: 220px;
     background: white;
+    padding: 10px;
     border-radius: 10px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    padding: 15px;
     text-align: center;
-    width: 250px;
-    transition: transform 0.3s ease;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
 }
 
-.food-card:hover {
-    transform: scale(1.05);
-}
-
-/* Responsive Image Fix */
 .food-card img {
     width: 100%;
-    height: auto;
-    max-height: 200px;
-    border-radius: 10px;
+    height: 150px;
     object-fit: cover;
-}
-
-.price {
-    font-weight: bold;
-    color: #ff5733;
-}
-
-.add-to-cart {
-    background: #ff5733;
-    color: white;
-    border: none;
-    padding: 10px;
-    cursor: pointer;
     border-radius: 5px;
 }
 
-.add-to-cart:hover {
-    background: #ff7653;
+.food-card h3 {
+    margin: 10px 0;
+    color: #333;
 }
 
-/* Cart Modal */
-.cart-modal {
-    display: none;
+.food-card p {
+    font-size: 16px;
+    color: #ff6600;
+    font-weight: bold;
+}
+
+/* Add to cart button */
+.food-card button {
+    background: #ff6600;
+    color: white;
+    border: none;
+    padding: 10px;
+    width: 100%;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 14px;
+}
+
+.food-card button:hover {
+    background: #cc5500;
+}
+
+/* Cart section */
+.cart {
     position: fixed;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
+    top: 20px;
+    right: 20px;
     background: white;
-    padding: 20px;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+    padding: 15px;
     border-radius: 10px;
-    min-width: 300px;
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
 }
 
-/* Mobile Responsive */
+.cart h2 {
+    text-align: center;
+    color: #333;
+}
+
+/* Cart items */
+.cart-items {
+    max-height: 200px;
+    overflow-y: auto;
+    margin-bottom: 10px;
+}
+
+/* Checkout button */
+.checkout {
+    background: #28a745;
+    color: white;
+    border: none;
+    padding: 10px;
+    width: 100%;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 14px;
+}
+
+.checkout:hover {
+    background: #218838;
+}
+
+/* Responsive Design */
 @media (max-width: 768px) {
-    .controls {
+    .food-menu {
         flex-direction: column;
         align-items: center;
+    }
+
+    .search-bar {
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    .search-bar input,
+    .search-bar select {
+        width: 100%;
+    }
+
+    .cart {
+        width: 80%;
+        right: 10%;
     }
 }
