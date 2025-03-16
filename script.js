@@ -23,7 +23,6 @@ function displayFoods(foods) {
         </div>
     `).join('');
 
-    // Attach event listeners after rendering new items
     attachCartEventListeners();
 }
 
@@ -74,11 +73,8 @@ function sortFoods() {
     displayFoods(sortedFoods);
 }
 
-// Cart Functions
+// Add Item to Cart
 function addToCart(name, price) {
-    let cartButton = document.querySelector(".cart-btn");
-    let cartCount = document.querySelector(".cart-btn span");
-
     let existingItem = cart.find(item => item.name === name);
     if (existingItem) {
         existingItem.quantity += 1;
@@ -86,14 +82,55 @@ function addToCart(name, price) {
         cart.push({ name, price, quantity: 1 });
     }
 
-    updateCartCount();
+    updateCart();
 }
 
-// Update cart count in button
-function updateCartCount() {
+// Update Cart UI
+function updateCart() {
+    let cartList = document.getElementById("cart-items");
+    let cartTotal = document.getElementById("cart-total");
     let cartCount = document.querySelector(".cart-btn span");
+
     let totalItems = cart.reduce((sum, item) => sum + item.quantity, 0);
     cartCount.textContent = `(${totalItems})`;
+
+    if (cart.length === 0) {
+        cartList.innerHTML = "<p>Your cart is empty.</p>";
+        cartTotal.textContent = "Total: ₹0";
+        return;
+    }
+
+    cartList.innerHTML = cart.map(item => `
+        <div class="cart-item">
+            <img src="images/${item.name.toLowerCase().replace(/\s/g, '-')}.jpg" class="cart-img">
+            <div class="cart-details">
+                <p>${item.name} (x${item.quantity})</p>
+                <p>₹${item.price * item.quantity}</p>
+                <button onclick="updateQuantity('${item.name}', 1)">+</button>
+                <button onclick="updateQuantity('${item.name}', -1)">-</button>
+                <button onclick="removeFromCart('${item.name}')">Remove</button>
+            </div>
+        </div>
+    `).join('');
+
+    let totalAmount = cart.reduce((sum, item) => sum + item.price * item.quantity, 0);
+    cartTotal.textContent = `Total: ₹${totalAmount}`;
+}
+
+// Update Item Quantity in Cart
+function updateQuantity(name, change) {
+    let item = cart.find(item => item.name === name);
+    if (item) {
+        item.quantity += change;
+        if (item.quantity <= 0) removeFromCart(name);
+        updateCart();
+    }
+}
+
+// Remove Item from Cart
+function removeFromCart(name) {
+    cart = cart.filter(item => item.name !== name);
+    updateCart();
 }
 
 // Toggle Cart Display
@@ -102,24 +139,8 @@ function toggleCart() {
     cartModal.style.display = cartModal.style.display === "block" ? "none" : "block";
 }
 
-// Remove Item from Cart
-function removeFromCart(name) {
-    cart = cart.filter(item => item.name !== name);
-    updateCartCount();
-    displayCartItems();
-}
-
-// Display Cart Items
-function displayCartItems() {
-    let cartList = document.getElementById("cart-items");
-    if (!cartList) return;
-
-    cartList.innerHTML = cart.length === 0
-        ? "<p>Cart is empty.</p>"
-        : cart.map(item => `
-            <div class="cart-item">
-                <p>${item.name} (x${item.quantity}) - ₹${item.price * item.quantity}</p>
-                <button class="remove-cart" onclick="removeFromCart('${item.name}')">Remove</button>
-            </div>
-        `).join('');
+// Payment Processing (Example Integration)
+function proceedToPayment() {
+    alert("Redirecting to Payment...");
+    // Here, integrate Razorpay or any payment gateway
 }
