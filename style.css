@@ -152,9 +152,12 @@ button:hover {
     animation: fadeIn 0.5s ease;
     width: 90%;
     max-width: 500px;
+    max-height: 80vh; /* Ensure it doesn't overflow */
+    overflow-y: auto; /* Enable vertical scrolling */
     z-index: 1000;
 }
 
+/* Cart Content */
 .cart-content h2 {
     font-size: 1.8rem;
     color: #333;
@@ -178,16 +181,17 @@ button:hover {
     justify-content: space-between;
 }
 
+/* Ensure Cart Images Load Properly */
 .cart-item img {
     width: 50px;
     height: 50px;
     border-radius: 5px;
     object-fit: cover;
     margin-right: 10px;
+    display: block;
 }
 
-}
-
+/* Fix Missing Bracket */
 .cart-details {
     flex: 1;
     text-align: left;
@@ -197,24 +201,6 @@ button:hover {
     font-size: 18px;
     margin-top: 10px;
     font-weight: bold;
-}
-/* Cart Modal - Fix Scrolling */
-.cart-modal {
-    display: none;
-    position: fixed;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    background: white;
-    padding: 20px;
-    border-radius: 12px;
-    box-shadow: 0px 6px 12px rgba(0, 0, 0, 0.2);
-    animation: fadeIn 0.5s ease;
-    width: 90%;
-    max-width: 500px;
-    max-height: 80vh; /* Ensure it doesn't overflow */
-    overflow-y: auto; /* Enable vertical scrolling */
-    z-index: 1000;
 }
 
 /* Payment Button */
@@ -278,6 +264,11 @@ button:hover {
         right: 10px;
         padding: 10px 15px;
     }
+
+    .cart-modal {
+        width: 95%;
+        max-height: 85vh;
+    }
 }
 
 @media (max-width: 480px) {
@@ -292,5 +283,10 @@ button:hover {
     .cart-btn {
         font-size: 0.9rem;
         padding: 10px;
+    }
+
+    .cart-modal {
+        width: 98%;
+        max-height: 90vh;
     }
 }
