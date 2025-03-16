@@ -55,9 +55,7 @@ function addToCart(name, price) {
 
 // Update cart count in button
 function updateCartCount() {
-    let cartCount = document.querySelector(".cart-btn span");
-    let totalItems = cart.reduce((sum, item) => sum + item.quantity, 0);
-    cartCount.textContent = `(${totalItems})`;
+    document.getElementById("cart-count").textContent = cart.reduce((sum, item) => sum + item.quantity, 0);
 }
 
 // Display Cart Items
@@ -75,8 +73,7 @@ function displayCartItems() {
             </div>
         `).join('');
     
-    let total = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
-    cartTotal.textContent = `Total: ₹${total}`;
+    cartTotal.textContent = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
 }
 
 // Remove Item from Cart
@@ -96,26 +93,22 @@ function toggleCart() {
 // Search Function
 function searchFood() {
     let query = document.getElementById('searchBox').value.toLowerCase();
-    let filteredFoods = allFoods.filter(food => food.name.toLowerCase().includes(query));
-    displayFoods(filteredFoods);
+    displayFoods(allFoods.filter(food => food.name.toLowerCase().includes(query)));
 }
 
 // Category Filter
 function populateCategoryFilter() {
     let categories = [...new Set(allFoods.map(food => food.category))];
     let categoryFilter = document.getElementById('categoryFilter');
+    categoryFilter.innerHTML = `<option value="all">All Categories</option>`;
     categories.forEach(category => {
-        let option = document.createElement('option');
-        option.value = category;
-        option.textContent = category;
-        categoryFilter.appendChild(option);
+        categoryFilter.innerHTML += `<option value="${category}">${category}</option>`;
     });
 }
 
 function filterFoods() {
     let category = document.getElementById('categoryFilter').value;
-    let filteredFoods = category === "all" ? allFoods : allFoods.filter(food => food.category === category);
-    displayFoods(filteredFoods);
+    displayFoods(category === "all" ? allFoods : allFoods.filter(food => food.category === category));
 }
 
 // Sorting
@@ -127,4 +120,30 @@ function sortFoods() {
     if (option === "price-high") sortedFoods.sort((a, b) => b.price - a.price);
 
     displayFoods(sortedFoods);
+}
+
+// Razorpay Payment
+function checkout() {
+    let totalAmount = cart.reduce((sum, item) => sum + item.price * item.quantity, 0);
+    let options = {
+        "key": "YOUR_RAZORPAY_KEY",
+        "amount": totalAmount * 100,
+        "currency": "INR",
+        "name": "Food Order",
+        "description": "Payment for food order",
+        "handler": function(response) {
+            alert("Payment Successful! Order ID: " + response.razorpay_payment_id);
+            trackOrder(response.razorpay_payment_id);
+        },
+    };
+    let rzp = new Razorpay(options);
+    rzp.open();
+}
+
+// Order Tracking
+function trackOrder(orderId) {
+    let orderStatus = document.getElementById("order-status");
+    orderStatus.innerHTML = `<p>Order ID: ${orderId} - Status: Preparing</p>`;
+    setTimeout(() => orderStatus.innerHTML = `<p>Order ID: ${orderId} - Status: Out for Delivery</p>`, 5000);
+    setTimeout(() => orderStatus.innerHTML = `<p>Order ID: ${orderId} - Status: Delivered</p>`, 10000);
 }
