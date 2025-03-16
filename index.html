@@ -8,11 +8,12 @@
     <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
 </head>
 <body>
+
     <header>
         <h1>Food Menu</h1>
-        <button class="cart-btn" onclick="toggleCart()">View Cart (<span>0</span>)</button>
+        <button class="cart-btn" onclick="toggleCart()">View Cart (<span id="cart-count">0</span>)</button>
     </header>
-    
+
     <div class="controls">
         <input type="text" id="searchBox" placeholder="Search food..." onkeyup="searchFood()">
         <select id="categoryFilter" onchange="filterFoods()">
@@ -24,9 +25,9 @@
             <option value="price-high">Price High to Low</option>
         </select>
     </div>
-    
+
     <div id="foodContainer" class="food-grid"></div>
-    
+
     <div id="cart-modal" class="cart-modal">
         <h2>Your Cart</h2>
         <div id="cart-items"></div>
@@ -34,7 +35,9 @@
         <button onclick="checkout()">Checkout</button>
         <button onclick="toggleCart()">Close</button>
     </div>
-    
+
+    <div id="order-status"></div>
+
     <script src="script.js"></script>
 </body>
 </html>
