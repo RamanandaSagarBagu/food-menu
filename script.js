@@ -33,9 +33,14 @@ function displayFoods(foods) {
         <div class="food-card">
             <img src="${food.image}" alt="${food.name}">
             <h3>${food.name}</h3>
-            <p class="price">₹${food.price}</p>
+            <p class="price">₹${food.price.toFixed(2)}</p>
             <p>${food.description}</p>
-            <button class="add-to-cart" data-id="${food.id}" data-name="${food.name}" data-price="${food.price}" data-image="${food.image}">Add to Cart</button>
+            <button class="add-to-cart" data-id="${food.id}" 
+                data-name="${food.name}" 
+                data-price="${food.price}" 
+                data-image="${food.image}">
+                Add to Cart
+            </button>
         </div>
     `).join("");
 
@@ -46,16 +51,36 @@ function displayFoods(foods) {
 function attachCartEventListeners() {
     document.querySelectorAll(".add-to-cart").forEach(button => {
         button.addEventListener("click", function () {
+            let foodId = this.getAttribute("data-id");
+            let foodName = this.getAttribute("data-name");
+            let foodPrice = parseFloat(this.getAttribute("data-price")) || 0; // Fix NaN issue
+            let foodImage = this.getAttribute("data-image");
+
             let foodItem = {
-                id: this.getAttribute("data-id"),
-                name: this.getAttribute("data-name"),
-                price: parseFloat(this.getAttribute("data-price")),
-                image: this.getAttribute("data-image"),
+                id: foodId,
+                name: foodName,
+                price: foodPrice,
+                image: foodImage,
                 quantity: 1
             };
+
             addToCart(foodItem);
         });
     });
+}
+
+// Add to Cart Function
+function addToCart(foodItem) {
+    let existingItem = cart.find(item => item.id === foodItem.id);
+    
+    if (existingItem) {
+        existingItem.quantity += 1;
+    } else {
+        cart.push(foodItem);
+    }
+
+    localStorage.setItem("cart", JSON.stringify(cart));
+    updateCartUI();
 }
 
 // Populate Category Filter
@@ -92,17 +117,6 @@ function sortFoods() {
     displayFoods(sortedFoods);
 }
 
-// Load cart from localStorage
-let cart = JSON.parse(localStorage.getItem("cart")) || [];
-
-// Ensure all items have correct properties
-cart = cart.map(item => ({
-    name: item.name || "Unknown Item",
-    price: parseFloat(item.price) || 0,  // Fix NaN issue
-    quantity: item.quantity || 1,
-    image: item.image || "placeholder.jpg"
-}));
-
 // Function to update the cart display
 function updateCartDisplay() {
     let cartContainer = document.getElementById("cart-items");
@@ -129,9 +143,30 @@ function updateCartDisplay() {
     document.getElementById("total-price").innerText = `Total: ₹${totalAmount.toFixed(2)}`;
 }
 
-// Update cart display when page loads
-updateCartDisplay();
+// Increase Quantity
+function increaseQuantity(index) {
+    cart[index].quantity += 1;
+    localStorage.setItem("cart", JSON.stringify(cart));
+    updateCartDisplay();
+}
 
+// Decrease Quantity
+function decreaseQuantity(index) {
+    if (cart[index].quantity > 1) {
+        cart[index].quantity -= 1;
+    } else {
+        cart.splice(index, 1); // Remove item if quantity is 0
+    }
+    localStorage.setItem("cart", JSON.stringify(cart));
+    updateCartDisplay();
+}
+
+// Remove Item from Cart
+function removeItem(index) {
+    cart.splice(index, 1);
+    localStorage.setItem("cart", JSON.stringify(cart));
+    updateCartDisplay();
+}
 
 // Update Cart UI
 function updateCartUI() {
@@ -145,3 +180,6 @@ function updateCartUI() {
 function openCartPage() {
     window.location.href = "cart.html"; 
 }
+
+// Run when the page loads
+updateCartDisplay();
