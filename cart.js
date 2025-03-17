@@ -11,42 +11,51 @@ function displayCart() {
         return;
     }
 
-    cart.forEach(item => {
+    let totalAmount = 0;
+
+    cart.forEach((item, index) => {
+        // Ensure price is a number to avoid NaN
+        item.price = parseFloat(item.price) || 0;
+
+        let itemTotal = item.price * item.quantity;
+        totalAmount += itemTotal;
+
         let cartItem = document.createElement("div");
         cartItem.classList.add("cart-item");
 
         cartItem.innerHTML = `
-            <img src="${item.image}" class="cart-img">
+            <img src="${item.image}" class="cart-img" alt="${item.name}">
             <div class="cart-details">
                 <h4>${item.name} (x${item.quantity})</h4>
-                <p>₹${item.price * item.quantity}</p>
-                <button onclick="updateQuantity('${item.id}', 1)">+</button>
-                <button onclick="updateQuantity('${item.id}', -1)">-</button>
-                <button onclick="removeFromCart('${item.id}')">Remove</button>
+                <p>₹${itemTotal.toFixed(2)}</p>
+                <button onclick="updateQuantity(${index}, 1)">+</button>
+                <button onclick="updateQuantity(${index}, -1)">-</button>
+                <button onclick="removeFromCart(${index})">Remove</button>
             </div>
         `;
 
         cartContainer.appendChild(cartItem);
     });
 
-    let totalAmount = cart.reduce((sum, item) => sum + item.price * item.quantity, 0);
-    cartTotal.textContent = totalAmount;
+    cartTotal.textContent = totalAmount.toFixed(2);
 }
 
 // Update Quantity
-function updateQuantity(id, change) {
-    let item = cart.find(item => item.id === id);
-    if (item) {
-        item.quantity += change;
-        if (item.quantity <= 0) removeFromCart(id);
-        localStorage.setItem("cart", JSON.stringify(cart));
-        displayCart();
+function updateQuantity(index, change) {
+    if (cart[index]) {
+        cart[index].quantity += change;
+        if (cart[index].quantity <= 0) {
+            removeFromCart(index);
+        } else {
+            localStorage.setItem("cart", JSON.stringify(cart));
+            displayCart();
+        }
     }
 }
 
 // Remove Item
-function removeFromCart(id) {
-    cart = cart.filter(item => item.id !== id);
+function removeFromCart(index) {
+    cart.splice(index, 1);
     localStorage.setItem("cart", JSON.stringify(cart));
     displayCart();
 }
@@ -54,7 +63,7 @@ function removeFromCart(id) {
 // Proceed to Payment (Example)
 function proceedToPayment() {
     alert("Redirecting to Payment...");
-    // Razorpay or other payment gateway logic here
+    // Add payment gateway integration here
 }
 
 // Initialize cart display on page load
