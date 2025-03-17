@@ -1,5 +1,6 @@
 let cart = JSON.parse(localStorage.getItem("cart")) || [];
 
+// Function to Display Cart Items
 function displayCart() {
     let cartContainer = document.getElementById("cart-items");
     let cartTotal = document.getElementById("cart-total");
@@ -7,18 +8,13 @@ function displayCart() {
 
     if (cart.length === 0) {
         cartContainer.innerHTML = "<p>Your cart is empty.</p>";
-        cartTotal.textContent = "0";
+        cartTotal.textContent = "0.00";
         return;
     }
 
     let totalAmount = 0;
-
     cart.forEach((item, index) => {
-        // Ensure price is a number to avoid NaN
-        item.price = parseFloat(item.price) || 0;
-
-        let itemTotal = item.price * item.quantity;
-        totalAmount += itemTotal;
+        if (!item || !item.name || !item.price) return; // Skip invalid items
 
         let cartItem = document.createElement("div");
         cartItem.classList.add("cart-item");
@@ -26,8 +22,8 @@ function displayCart() {
         cartItem.innerHTML = `
             <img src="${item.image}" class="cart-img" alt="${item.name}">
             <div class="cart-details">
-                <h4>${item.name} (x${item.quantity})</h4>
-                <p>₹${itemTotal.toFixed(2)}</p>
+                <h4>${item.name} (x${item.quantity || 1})</h4>
+                <p>₹${(item.price * (item.quantity || 1)).toFixed(2)}</p>
                 <button onclick="updateQuantity(${index}, 1)">+</button>
                 <button onclick="updateQuantity(${index}, -1)">-</button>
                 <button onclick="removeFromCart(${index})">Remove</button>
@@ -35,6 +31,7 @@ function displayCart() {
         `;
 
         cartContainer.appendChild(cartItem);
+        totalAmount += item.price * (item.quantity || 1);
     });
 
     cartTotal.textContent = totalAmount.toFixed(2);
@@ -43,19 +40,20 @@ function displayCart() {
 // Update Quantity
 function updateQuantity(index, change) {
     if (cart[index]) {
-        cart[index].quantity += change;
-        if (cart[index].quantity <= 0) {
-            removeFromCart(index);
-        } else {
-            localStorage.setItem("cart", JSON.stringify(cart));
-            displayCart();
-        }
+        cart[index].quantity = (cart[index].quantity || 1) + change;
+        if (cart[index].quantity <= 0) removeFromCart(index);
+        else saveCart();
     }
 }
 
 // Remove Item
 function removeFromCart(index) {
     cart.splice(index, 1);
+    saveCart();
+}
+
+// Save & Refresh Cart
+function saveCart() {
     localStorage.setItem("cart", JSON.stringify(cart));
     displayCart();
 }
@@ -63,7 +61,7 @@ function removeFromCart(index) {
 // Proceed to Payment (Example)
 function proceedToPayment() {
     alert("Redirecting to Payment...");
-    // Add payment gateway integration here
+    // Razorpay or other payment logic here
 }
 
 // Initialize cart display on page load
