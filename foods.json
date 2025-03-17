@@ -1,5 +1,6 @@
 [
     {
+        "id": 1,
         "name": "Chicken Biryani",
         "price": 250,
         "image": "https://github.com/RamanandaSagarBagu/food-menu/blob/main/chicken-hyderabadi-biryani-01.jpg?raw=true",
@@ -7,6 +8,7 @@
         "category": "Non-Veg"
     },
     {
+        "id": 2,
         "name": "Paneer Butter Masala",
         "price": 200,
         "image": "https://github.com/RamanandaSagarBagu/food-menu/blob/main/download%20(1).jpeg?raw=true",
@@ -14,6 +16,7 @@
         "category": "Veg"
     },
     {
+        "id": 3,
         "name": "Mutton Rogan Josh",
         "price": 350,
         "image": "https://github.com/RamanandaSagarBagu/food-menu/blob/main/Mutton%20Rogan%20Josh%20Recipe.JPG?raw=true",
@@ -21,6 +24,7 @@
         "category": "Non-Veg"
     },
     {
+        "id": 4,
         "name": "Masala Dosa",
         "price": 120,
         "image": "https://github.com/RamanandaSagarBagu/food-menu/blob/main/masala%20dosa.jpg?raw=true",
@@ -28,6 +32,7 @@
         "category": "Veg"
     },
     {
+        "id": 5,
         "name": "Butter Naan",
         "price": 50,
         "image": "https://raw.githubusercontent.com/RamanandaSagarBagu/food-menu/refs/heads/main/butter-naan-recipe1.webp",
@@ -35,6 +40,7 @@
         "category": "Veg"
     },
     {
+        "id": 6,
         "name": "Tandoori Chicken",
         "price": 300,
         "image": "https://github.com/RamanandaSagarBagu/food-menu/blob/main/fs-tandoori-chicken.jpg?raw=true",
@@ -42,6 +48,7 @@
         "category": "Non-Veg"
     },
     {
+        "id": 7,
         "name": "Palak Paneer",
         "price": 220,
         "image": "https://github.com/RamanandaSagarBagu/food-menu/blob/main/pallak-Paneer-.jpg?raw=true",
@@ -49,6 +56,7 @@
         "category": "Veg"
     },
     {
+        "id": 8,
         "name": "Veg Pulao",
         "price": 180,
         "image": "https://github.com/RamanandaSagarBagu/food-menu/blob/main/Veg-Pulao.jpg?raw=true",
@@ -56,6 +64,7 @@
         "category": "Veg"
     },
     {
+        "id": 9,
         "name": "Dal Tadka",
         "price": 160,
         "image": "https://github.com/RamanandaSagarBagu/food-menu/blob/main/Dal-tadka.jpg?raw=true",
@@ -63,6 +72,7 @@
         "category": "Veg"
     },
     {
+        "id": 10,
         "name": "Fish Curry",
         "price": 280,
         "image": "https://github.com/RamanandaSagarBagu/food-menu/blob/main/fish%20curry.jpg?raw=true",
@@ -70,6 +80,7 @@
         "category": "Non-Veg"
     },
     {
+        "id": 11,
         "name": "Chole Bhature",
         "price": 150,
         "image": "https://github.com/RamanandaSagarBagu/food-menu/blob/main/chole-bhature-recipe.jpg?raw=true",
@@ -77,6 +88,7 @@
         "category": "Veg"
     },
     {
+        "id": 12,
         "name": "Gulab Jamun",
         "price": 100,
         "image": "https://github.com/RamanandaSagarBagu/food-menu/blob/main/gulab%20jamun.jpeg?raw=true",
@@ -84,6 +96,7 @@
         "category": "Dessert"
     },
     {
+        "id": 13,
         "name": "Rasgulla",
         "price": 110,
         "image": "https://github.com/RamanandaSagarBagu/food-menu/blob/main/Rasgulla.jpg?raw=true",
@@ -91,6 +104,7 @@
         "category": "Dessert"
     },
     {
+        "id": 14,
         "name": "Paneer Tikka",
         "price": 230,
         "image": "https://github.com/RamanandaSagarBagu/food-menu/blob/main/paneer%20tikka.jpg?raw=true",
@@ -98,6 +112,7 @@
         "category": "Veg"
     },
     {
+        "id": 15,
         "name": "Mango Lassi",
         "price": 80,
         "image": "https://github.com/RamanandaSagarBagu/food-menu/blob/main/mango%20lassi.jpeg?raw=true",
@@ -105,6 +120,7 @@
         "category": "Beverage"
     },
     {
+        "id": 16,
         "name": "Veg Manchurian",
         "price": 190,
         "image": "https://github.com/RamanandaSagarBagu/food-menu/blob/main/veg%20manchuria.jpeg?raw=true",
@@ -112,6 +128,7 @@
         "category": "Veg"
     },
     {
+        "id": 17,
         "name": "Egg Curry",
         "price": 210,
         "image": "https://raw.githubusercontent.com/RamanandaSagarBagu/food-menu/refs/heads/main/Egg-Masala-Curry.webp",
@@ -119,6 +136,7 @@
         "category": "Non-Veg"
     },
     {
+        "id": 18,
         "name": "Mixed Fruit Salad",
         "price": 130,
         "image": "https://github.com/RamanandaSagarBagu/food-menu/blob/main/mixed%20fruit%20salad.jpeg?raw=true",
@@ -126,6 +144,7 @@
         "category": "Dessert"
     },
     {
+        "id": 19,
         "name": "Cold Coffee",
         "price": 90,
         "image": "https://github.com/RamanandaSagarBagu/food-menu/blob/main/cold%20coffee.jpeg?raw=true",
@@ -133,6 +152,7 @@
         "category": "Beverage"
     },
     {
+        "id": 20,
         "name": "Chicken Lollipop",
         "price": 260,
         "image": "https://github.com/RamanandaSagarBagu/food-menu/blob/main/chicken%20lollipop.jpeg?raw=true",
