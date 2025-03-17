@@ -139,11 +139,11 @@ function removeFromCart(id) {
     updateCartUI();
 }
 
-// Toggle Cart Display
-function toggleCart() {
-    let cartModal = document.getElementById("cart-modal");
-    cartModal.style.display = cartModal.style.display === "block" ? "none" : "block";
+function openCartPage() {
+    window.location.href = "cart.html"; // Redirect to cart page
 }
+
+document.querySelector(".cart-btn").addEventListener("click", openCartPage);
 
 // Payment Processing (Example Integration)
 function proceedToPayment() {
