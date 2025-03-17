@@ -117,30 +117,32 @@ function sortFoods() {
     displayFoods(sortedFoods);
 }
 
-// Function to update the cart display
 function updateCartDisplay() {
-    let cartContainer = document.getElementById("cart-items");
-    let totalAmount = 0;
+    let cart = JSON.parse(localStorage.getItem("cart")) || [];  // Get cart from local storage
 
-    cartContainer.innerHTML = "";  // Clear previous content
+    // Find the cart count element
+    let cartCountElement = document.getElementById("cart-count");
+    if (cartCountElement) {
+        let totalItems = cart.reduce((sum, item) => sum + item.quantity, 0);
+        cartCountElement.textContent = `(${totalItems})`;
+    } else {
+        console.warn("Cart count element not found.");  // This will warn you in the console
+    }
 
-    cart.forEach((item, index) => {
-        let itemTotal = item.price * item.quantity;
-        totalAmount += itemTotal;
+    // Find the cart items container
+    let cartItemsContainer = document.getElementById("cart-items");
+    if (cartItemsContainer) {
+        cartItemsContainer.innerHTML = "";  // Clear old items
 
-        cartContainer.innerHTML += `
-            <div class="cart-item">
-                <img src="${item.image}" alt="${item.name}" width="50">
-                <span>${item.name} (${item.quantity}x)</span>
-                <span>₹${itemTotal.toFixed(2)}</span>
-                <button onclick="increaseQuantity(${index})">+</button>
-                <button onclick="decreaseQuantity(${index})">-</button>
-                <button onclick="removeItem(${index})">Remove</button>
-            </div>
-        `;
-    });
-
-    document.getElementById("total-price").innerText = `Total: ₹${totalAmount.toFixed(2)}`;
+        // Add new cart items
+        cart.forEach(item => {
+            let itemElement = document.createElement("div");
+            itemElement.innerHTML = `${item.name} (x${item.quantity}) - ₹${item.price}`;
+            cartItemsContainer.appendChild(itemElement);
+        });
+    } else {
+        console.warn("Cart items container not found.");
+    }
 }
 
 // Increase Quantity
