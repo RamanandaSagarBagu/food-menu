@@ -150,3 +150,73 @@ function proceedToPayment() {
     alert("Redirecting to Payment...");
     // Integrate Razorpay or other payment gateway here
 }
+function displayCartItems() {
+    let cart = JSON.parse(localStorage.getItem("cart")) || [];
+    let cartContainer = document.getElementById("cart-items");
+    let cartTotal = document.getElementById("cart-total");
+
+    cartContainer.innerHTML = ""; // Clear previous items
+    let totalAmount = 0;
+
+    cart.forEach(item => {
+        let cartItem = document.createElement("div");
+        cartItem.classList.add("cart-item");
+
+        cartItem.innerHTML = `
+            <img src="${item.image}" alt="${item.name}" class="cart-img">
+            <div class="cart-details">
+                <h4>${item.name} (x${item.quantity})</h4>
+                <p>₹${item.price * item.quantity}</p>
+                <button onclick="updateQuantity('${item.name}', 1)">+</button>
+                <button onclick="updateQuantity('${item.name}', -1)">-</button>
+                <button onclick="removeFromCart('${item.name}')">Remove</button>
+            </div>
+        `;
+
+        cartContainer.appendChild(cartItem);
+        totalAmount += item.price * item.quantity;
+    });
+
+    cartTotal.textContent = `Total: ₹${totalAmount}`;
+}
+
+window.onload = function() {
+    if (window.location.pathname.includes("cart.html")) {
+        displayCartItems(); // Load cart when on cart.html
+    }
+};
+function updateQuantity(name, change) {
+    let cart = JSON.parse(localStorage.getItem("cart")) || [];
+    let item = cart.find(item => item.name === name);
+
+    if (item) {
+        item.quantity += change;
+        if (item.quantity <= 0) {
+            cart = cart.filter(i => i.name !== name);
+        }
+    }
+
+    localStorage.setItem("cart", JSON.stringify(cart));
+    displayCartItems(); // Refresh cart
+}
+
+function removeFromCart(name) {
+    let cart = JSON.parse(localStorage.getItem("cart")) || [];
+    cart = cart.filter(item => item.name !== name);
+    localStorage.setItem("cart", JSON.stringify(cart));
+    displayCartItems();
+}
+
+function clearCart() {
+    localStorage.removeItem("cart");
+    displayCartItems();
+}
+
+function proceedToCheckout() {
+    alert("Redirecting to payment..."); 
+    // Integrate Razorpay or UPI payment here
+}
+
+function goBack() {
+    window.location.href = "index.html"; // Change to your main menu page
+}
