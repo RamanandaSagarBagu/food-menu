@@ -76,17 +76,17 @@ function sortFoods() {
 }
 
 // Add Item to Cart
-function addToCart(foodItem) {
-    let existingItem = cart.find(item => item.id === foodItem.id);
+function addToCart(name, price, image) {
+    let cart = JSON.parse(localStorage.getItem("cart")) || [];
 
+    let existingItem = cart.find(item => item.name === name);
     if (existingItem) {
         existingItem.quantity += 1;
     } else {
-        cart.push({ ...foodItem, quantity: 1 });
+        cart.push({ name, price, image, quantity: 1 });
     }
 
     localStorage.setItem("cart", JSON.stringify(cart));
-    updateCartUI();
 }
 
 // Update Cart UI
