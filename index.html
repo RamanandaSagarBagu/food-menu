@@ -5,10 +5,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Food Menu</title>
     <link rel="stylesheet" href="style.css">
-    <a href="cart.html" class="cart-btn">View Cart (<span id="cart-count">0</span>)</a>
 </head>
 <body>
-    <h1 class="title">Food Menu</h1>
+    <!-- Header -->
+    <header>
+        <h1 class="title">Food Menu</h1>
+        <a href="cart.html" class="cart-btn">🛒 View Cart (<span id="cart-count">0</span>)</a>
+    </header>
 
     <!-- Search, Filter, Sort -->
     <div class="controls">
@@ -25,20 +28,6 @@
 
     <!-- Food List -->
     <div id="foodContainer" class="food-grid"></div>
-
-    <!-- Cart Button -->
-    <button class="cart-btn" onclick="toggleCart()">🛒 View Cart (<span id="cart-count">0</span>)</button>
-
-    <!-- Cart Modal -->
-    <div id="cart-modal" class="cart-modal">
-        <div class="cart-content">
-            <span class="close-btn" onclick="toggleCart()">&times;</span>
-            <h2>Your Cart</h2>
-            <ul id="cart-items"></ul>
-            <h3>Total: ₹<span id="cart-total">0</span></h3>
-            <button onclick="checkout()">Checkout</button>
-        </div>
-    </div>
 
     <script src="script.js"></script>
 </body>
