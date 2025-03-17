@@ -131,6 +131,8 @@ button:hover {
     box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
     transition: transform 0.3s ease;
     border-radius: 8px;
+    text-decoration: none;
+    color: white;
 }
 
 .cart-btn:hover {
@@ -158,6 +160,11 @@ button:hover {
 }
 
 /* Cart Content */
+.cart-content {
+    position: relative;
+    text-align: left;
+}
+
 .cart-content h2 {
     font-size: 1.8rem;
     color: #333;
@@ -188,15 +195,15 @@ button:hover {
     border-radius: 5px;
     object-fit: cover;
     margin-right: 10px;
-    display: block;
 }
 
-/* Fix Missing Bracket */
+/* Cart Details */
 .cart-details {
     flex: 1;
     text-align: left;
 }
 
+/* Cart Total */
 .cart-total {
     font-size: 18px;
     margin-top: 10px;
