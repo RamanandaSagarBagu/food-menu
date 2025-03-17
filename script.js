@@ -4,9 +4,7 @@ let cart = JSON.parse(localStorage.getItem("cart")) || [];
 // Fetch Foods from foods.json
 fetch("foods.json")
     .then(response => {
-        if (!response.ok) {
-            throw new Error("Failed to load food data.");
-        }
+        if (!response.ok) throw new Error("Failed to load food data.");
         return response.json();
     })
     .then(foods => {
@@ -51,16 +49,11 @@ function displayFoods(foods) {
 function attachCartEventListeners() {
     document.querySelectorAll(".add-to-cart").forEach(button => {
         button.addEventListener("click", function () {
-            let foodId = this.getAttribute("data-id");
-            let foodName = this.getAttribute("data-name");
-            let foodPrice = parseFloat(this.getAttribute("data-price")) || 0; // Fix NaN issue
-            let foodImage = this.getAttribute("data-image");
-
             let foodItem = {
-                id: foodId,
-                name: foodName,
-                price: foodPrice,
-                image: foodImage,
+                id: this.getAttribute("data-id"),
+                name: this.getAttribute("data-name"),
+                price: parseFloat(this.getAttribute("data-price")) || 0,
+                image: this.getAttribute("data-image"),
                 quantity: 1
             };
 
@@ -72,12 +65,8 @@ function attachCartEventListeners() {
 // Add to Cart Function
 function addToCart(foodItem) {
     let existingItem = cart.find(item => item.id === foodItem.id);
-    
-    if (existingItem) {
-        existingItem.quantity += 1;
-    } else {
-        cart.push(foodItem);
-    }
+
+    existingItem ? existingItem.quantity++ : cart.push(foodItem);
 
     localStorage.setItem("cart", JSON.stringify(cart));
     updateCartUI();
@@ -87,23 +76,19 @@ function addToCart(foodItem) {
 function populateCategoryFilter() {
     let categories = ["all", ...new Set(allFoods.map(food => food.category))];
     let categoryFilter = document.getElementById("categoryFilter");
-    categoryFilter.innerHTML = categories.map(category => `
-        <option value="${category}">${category}</option>
-    `).join("");
+    categoryFilter.innerHTML = categories.map(category => `<option value="${category}">${category}</option>`).join("");
 }
 
 // Filter Foods by Category
 function filterFoods() {
     let category = document.getElementById("categoryFilter").value;
-    let filteredFoods = category === "all" ? allFoods : allFoods.filter(food => food.category === category);
-    displayFoods(filteredFoods);
+    displayFoods(category === "all" ? allFoods : allFoods.filter(food => food.category === category));
 }
 
 // Search Foods
 function searchFood() {
     let query = document.getElementById("searchBox").value.toLowerCase();
-    let filteredFoods = allFoods.filter(food => food.name.toLowerCase().includes(query));
-    displayFoods(filteredFoods);
+    displayFoods(allFoods.filter(food => food.name.toLowerCase().includes(query)));
 }
 
 // Sorting Function
@@ -117,29 +102,20 @@ function sortFoods() {
     displayFoods(sortedFoods);
 }
 
+// Update Cart Display
 function updateCartDisplay() {
-    let cart = JSON.parse(localStorage.getItem("cart")) || [];  // Get cart from local storage
-
-    // Find the cart count element
     let cartCountElement = document.getElementById("cart-count");
+    let cartItemsContainer = document.getElementById("cart-items");
+
     if (cartCountElement) {
         let totalItems = cart.reduce((sum, item) => sum + item.quantity, 0);
         cartCountElement.textContent = `(${totalItems})`;
     } else {
-        console.warn("Cart count element not found.");  // This will warn you in the console
+        console.warn("Cart count element not found.");
     }
 
-    // Find the cart items container
-    let cartItemsContainer = document.getElementById("cart-items");
     if (cartItemsContainer) {
-        cartItemsContainer.innerHTML = "";  // Clear old items
-
-        // Add new cart items
-        cart.forEach(item => {
-            let itemElement = document.createElement("div");
-            itemElement.innerHTML = `${item.name} (x${item.quantity}) - ₹${item.price}`;
-            cartItemsContainer.appendChild(itemElement);
-        });
+        cartItemsContainer.innerHTML = cart.map(item => `<div>${item.name} (x${item.quantity}) - ₹${item.price}</div>`).join("");
     } else {
         console.warn("Cart items container not found.");
     }
@@ -147,7 +123,7 @@ function updateCartDisplay() {
 
 // Increase Quantity
 function increaseQuantity(index) {
-    cart[index].quantity += 1;
+    cart[index].quantity++;
     localStorage.setItem("cart", JSON.stringify(cart));
     updateCartDisplay();
 }
@@ -155,9 +131,9 @@ function increaseQuantity(index) {
 // Decrease Quantity
 function decreaseQuantity(index) {
     if (cart[index].quantity > 1) {
-        cart[index].quantity -= 1;
+        cart[index].quantity--;
     } else {
-        cart.splice(index, 1); // Remove item if quantity is 0
+        cart.splice(index, 1);
     }
     localStorage.setItem("cart", JSON.stringify(cart));
     updateCartDisplay();
@@ -173,14 +149,13 @@ function removeItem(index) {
 // Update Cart UI
 function updateCartUI() {
     let cartCount = document.querySelector(".cart-btn span");
-    let cart = JSON.parse(localStorage.getItem("cart")) || [];
     let totalItems = cart.reduce((sum, item) => sum + item.quantity, 0);
-    cartCount.textContent = `(${totalItems})`;
+    if (cartCount) cartCount.textContent = `(${totalItems})`;
 }
 
 // Open Cart Page
 function openCartPage() {
-    window.location.href = "cart.html"; 
+    window.location.href = "cart.html";
 }
 
 // Run when the page loads
