@@ -92,20 +92,46 @@ function sortFoods() {
     displayFoods(sortedFoods);
 }
 
-// Add to Cart
-function addToCart(foodItem) {
-    let cart = JSON.parse(localStorage.getItem("cart")) || [];
+// Load cart from localStorage
+let cart = JSON.parse(localStorage.getItem("cart")) || [];
 
-    let existingItem = cart.find(item => item.id === foodItem.id);
-    if (existingItem) {
-        existingItem.quantity += 1;
-    } else {
-        cart.push(foodItem);
-    }
+// Ensure all items have correct properties
+cart = cart.map(item => ({
+    name: item.name || "Unknown Item",
+    price: parseFloat(item.price) || 0,  // Fix NaN issue
+    quantity: item.quantity || 1,
+    image: item.image || "placeholder.jpg"
+}));
 
-    localStorage.setItem("cart", JSON.stringify(cart));
-    updateCartUI();
+// Function to update the cart display
+function updateCartDisplay() {
+    let cartContainer = document.getElementById("cart-items");
+    let totalAmount = 0;
+
+    cartContainer.innerHTML = "";  // Clear previous content
+
+    cart.forEach((item, index) => {
+        let itemTotal = item.price * item.quantity;
+        totalAmount += itemTotal;
+
+        cartContainer.innerHTML += `
+            <div class="cart-item">
+                <img src="${item.image}" alt="${item.name}" width="50">
+                <span>${item.name} (${item.quantity}x)</span>
+                <span>₹${itemTotal.toFixed(2)}</span>
+                <button onclick="increaseQuantity(${index})">+</button>
+                <button onclick="decreaseQuantity(${index})">-</button>
+                <button onclick="removeItem(${index})">Remove</button>
+            </div>
+        `;
+    });
+
+    document.getElementById("total-price").innerText = `Total: ₹${totalAmount.toFixed(2)}`;
 }
+
+// Update cart display when page loads
+updateCartDisplay();
+
 
 // Update Cart UI
 function updateCartUI() {
