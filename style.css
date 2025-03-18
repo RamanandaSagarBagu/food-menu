@@ -136,12 +136,12 @@ button:hover {
 }
 
 /* Cart Item Image */
+/* Ensure uniform size for cart images */
 .cart-item img {
-    width: 80px;
-    height: 80px;
+    width: 60px;  /* Fixed width */
+    height: 60px; /* Fixed height */
+    object-fit: cover; /* Maintains aspect ratio without stretching */
     border-radius: 5px;
-    object-fit: cover;
-    margin-right: 15px;
 }
 
 /* Cart Item Details */
