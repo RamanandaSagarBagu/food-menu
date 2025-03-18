@@ -198,6 +198,9 @@ button:hover {
 
 /* View Cart Button */
 .view-cart {
+    position: absolute;
+    top: 20px;
+    right: 20px;
     font-size: 1rem;
     font-weight: 600;
     text-decoration: none;
@@ -206,7 +209,6 @@ button:hover {
     padding: 10px 15px;
     border-radius: 8px;
     transition: all 0.3s ease;
-    display: inline-block;
 }
 
 .view-cart:hover {
