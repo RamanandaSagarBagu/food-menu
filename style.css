@@ -136,11 +136,11 @@ button:hover {
 }
 
 /* Cart Item Image */
-/* Ensure uniform size for cart images */
+/* Ensure all cart images are the same size */
 .cart-item img {
-    width: 60px;  /* Fixed width */
-    height: 60px; /* Fixed height */
-    object-fit: cover; /* Maintains aspect ratio without stretching */
+    width: 70px;  /* Set a fixed width */
+    height: 70px; /* Set a fixed height */
+    object-fit: cover; /* Ensures proper image display without distortion */
     border-radius: 5px;
 }
 
@@ -196,11 +196,11 @@ button:hover {
     background: darkred;
 }
 
-/* View Cart Button */
+/* Move View Cart button to the top right */
 .view-cart {
     position: absolute;
-    top: 20px;
-    right: 20px;
+    top: 20px;  /* Adjust vertical position */
+    right: 20px; /* Move to the right */
     font-size: 1rem;
     font-weight: 600;
     text-decoration: none;
@@ -209,6 +209,7 @@ button:hover {
     padding: 10px 15px;
     border-radius: 8px;
     transition: all 0.3s ease;
+    display: inline-block;
 }
 
 .view-cart:hover {
