@@ -94,12 +94,19 @@ function searchFood() {
 // Sorting Function
 function sortFoods() {
     let option = document.getElementById("sortOptions").value;
-    let sortedFoods = [...allFoods];
+    let category = document.getElementById("categoryFilter").value;
 
-    if (option === "price-low") sortedFoods.sort((a, b) => a.price - b.price);
-    if (option === "price-high") sortedFoods.sort((a, b) => b.price - a.price);
+    // Filter foods based on category first
+    let filteredFoods = category === "all" ? allFoods : allFoods.filter(food => food.category === category);
 
-    displayFoods(sortedFoods);
+    // Apply sorting
+    if (option === "price-low") {
+        filteredFoods.sort((a, b) => a.price - b.price);
+    } else if (option === "price-high") {
+        filteredFoods.sort((a, b) => b.price - a.price);
+    }
+
+    displayFoods(filteredFoods);
 }
 
 // Update Cart Display
