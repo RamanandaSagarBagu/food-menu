@@ -133,15 +133,16 @@ button:hover {
     padding: 10px;
     border-bottom: 1px solid #ddd;
     justify-content: space-between;
+    gap: 15px;
 }
 
 /* Cart Item Image */
-/* Ensure all cart images are the same size */
 .cart-item img {
-    width: 70px;  /* Set a fixed width */
-    height: 70px; /* Set a fixed height */
-    object-fit: cover; /* Ensures proper image display without distortion */
-    border-radius: 5px;
+    width: 100px;
+    height: 100px;
+    object-fit: cover;
+    border-radius: 10px;
+    box-shadow: 0px 2px 6px rgba(0, 0, 0, 0.1);
 }
 
 /* Cart Item Details */
@@ -196,11 +197,11 @@ button:hover {
     background: darkred;
 }
 
-/* Move View Cart button to the top right */
+/* View Cart Button - fixed to top right */
 .view-cart {
-    position: absolute;
-    top: 20px;  /* Adjust vertical position */
-    right: 20px; /* Move to the right */
+    position: fixed;
+    top: 20px;
+    right: 20px;
     font-size: 1rem;
     font-weight: 600;
     text-decoration: none;
@@ -209,7 +210,7 @@ button:hover {
     padding: 10px 15px;
     border-radius: 8px;
     transition: all 0.3s ease;
-    display: inline-block;
+    z-index: 999;
 }
 
 .view-cart:hover {
@@ -269,11 +270,11 @@ button:hover {
     .title {
         font-size: 1.8rem;
     }
-    
+
     .controls {
         flex-direction: column;
     }
-    
+
     input, select {
         width: 100%;
         font-size: 1rem;
