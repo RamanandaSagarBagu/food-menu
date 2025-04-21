@@ -153,11 +153,11 @@ function removeItem(index) {
     updateCartDisplay();
 }
 
-// Update Cart UI
+// Update Cart UI (for floating cart button)
 function updateCartUI() {
-    let cartCount = document.querySelector(".cart-btn span");
+    let cartCount = document.getElementById("cart-count");
     let totalItems = cart.reduce((sum, item) => sum + item.quantity, 0);
-    if (cartCount) cartCount.textContent = `(${totalItems})`;
+    if (cartCount) cartCount.textContent = totalItems;
 }
 
 // Open Cart Page
