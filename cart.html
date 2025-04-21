@@ -1,32 +1,31 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Your Cart</title>
-    <link rel="stylesheet" href="cart.css">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Your Cart</title>
+  <link rel="stylesheet" href="cart.css" />
 </head>
 <body>
-
-    <header class="cart-header">
-        <h1>Your Cart</h1>
-        <a href="index.html" class="back-link">← Back to Menu</a>
-    </header>
-
-    <div class="cart-container">
-        <div id="cart-items" class="cart-items"></div>
-
-        <div class="coupon-container">
-            <input type="text" id="coupon-code" placeholder="Enter coupon code">
-            <button onclick="applyCoupon()">Apply</button>
-        </div>
-
-        <div class="cart-summary">
-            <h2>Total: ₹<span id="cart-total">0.00</span></h2>
-            <button id="checkout-btn" class="checkout-btn" onclick="proceedToPayment()">🛍️ Checkout</button>
-        </div>
+  <header class="cart-header">
+    <div class="cart-header-top">
+      <h1>Your Shopping Cart</h1>
+      <a href="index.html" class="back-link">← Back to Menu</a>
+      <div class="cart-icon">
+        🛒 <span id="cart-count">0</span>
+      </div>
     </div>
+  </header>
 
-    <script src="cart.js"></script>
+  <div class="cart-container">
+    <div id="cart-items" class="cart-items"></div>
+    <div class="cart-summary">
+      <h2>Total: ₹<span id="cart-total">0.00</span></h2>
+      <button id="checkout-btn" onclick="proceedToPayment()">🛍️ Checkout</button>
+    </div>
+  </div>
+
+  <script src="cart.js"></script>
 </body>
 </html>
+
