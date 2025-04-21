@@ -326,3 +326,56 @@ button:hover {
         margin-top: 10px;
     }
 }
+/* Floating View Cart Button */
+.view-cart-floating {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    background: #ff5722;
+    color: white;
+    padding: 14px 16px;
+    border-radius: 50px;
+    font-size: 1.2rem;
+    font-weight: bold;
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    z-index: 999;
+    transition: all 0.3s ease;
+}
+
+.view-cart-floating:hover {
+    background: #e64a19;
+    transform: scale(1.08);
+}
+
+/* Cart Badge Count */
+.cart-badge {
+    background: #dc3545;
+    color: white;
+    font-size: 0.8rem;
+    font-weight: 600;
+    padding: 2px 6px;
+    border-radius: 999px;
+    margin-left: 8px;
+    animation: pop 0.3s ease;
+}
+
+/* Badge Pop Animation */
+@keyframes pop {
+    0% { transform: scale(0); opacity: 0; }
+    100% { transform: scale(1); opacity: 1; }
+}
+
+/* Responsive Floating Cart Button */
+@media (max-width: 480px) {
+    .view-cart-floating {
+        font-size: 1rem;
+        padding: 12px 14px;
+        bottom: 15px;
+        right: 15px;
+    }
+}
+
