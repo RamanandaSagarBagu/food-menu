@@ -8,16 +8,18 @@
 </head>
 <body>
 
-    <header>
+    <header class="cart-header">
         <h1>Your Shopping Cart</h1>
-        <a href="index.html">← Back to Menu</a>
+        <a href="index.html" class="back-link">← Back to Menu</a>
     </header>
 
     <div class="cart-container">
-        <div id="cart-items"></div>
-        <h2>Total: ₹<span id="cart-total">0.00</span></h2>
-        
-        <button id="checkout-btn" onclick="proceedToPayment()">Checkout</button>
+        <div id="cart-items" class="cart-items"></div>
+
+        <div class="cart-summary">
+            <h2>Total: ₹<span id="cart-total">0.00</span></h2>
+            <button id="checkout-btn" onclick="proceedToPayment()">🛍️ Checkout</button>
+        </div>
     </div>
 
     <script src="cart.js"></script>
