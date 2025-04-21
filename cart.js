@@ -66,3 +66,13 @@ function proceedToPayment() {
 
 // Initialize cart display on page load
 window.onload = displayCart;
+cartItem.innerHTML = `
+    <img src="${item.image}" class="cart-img" alt="${item.name}" onerror="this.src='fallback.jpg';">
+    <div class="cart-details">
+        <h4>${item.name} (x${item.quantity || 1})</h4>
+        <p>₹${(item.price * (item.quantity || 1)).toFixed(2)}</p>
+        <button onclick="updateQuantity(${index}, 1)">+</button>
+        <button onclick="updateQuantity(${index}, -1)">-</button>
+        <button onclick="removeFromCart(${index})">Remove</button>
+    </div>
+`;
