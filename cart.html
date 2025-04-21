@@ -9,16 +9,21 @@
 <body>
 
     <header class="cart-header">
-        <h1>Your  Cart</h1>
+        <h1>Your Cart</h1>
         <a href="index.html" class="back-link">← Back to Menu</a>
     </header>
 
     <div class="cart-container">
         <div id="cart-items" class="cart-items"></div>
 
+        <div class="coupon-container">
+            <input type="text" id="coupon-code" placeholder="Enter coupon code">
+            <button onclick="applyCoupon()">Apply</button>
+        </div>
+
         <div class="cart-summary">
             <h2>Total: ₹<span id="cart-total">0.00</span></h2>
-            <button class="checkout-btn" onclick="proceedToPayment()">🛍️ Checkout</button>
+            <button id="checkout-btn" class="checkout-btn" onclick="proceedToPayment()">🛍️ Checkout</button>
         </div>
     </div>
 
