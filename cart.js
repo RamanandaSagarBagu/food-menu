@@ -1,9 +1,9 @@
 let cart = JSON.parse(localStorage.getItem("cart")) || [];
 
-// Function to Display Cart Items
+// Display Cart
 function displayCart() {
-    let cartContainer = document.getElementById("cart-items");
-    let cartTotal = document.getElementById("cart-total");
+    const cartContainer = document.getElementById("cart-items");
+    const cartTotal = document.getElementById("cart-total");
     cartContainer.innerHTML = "";
 
     if (cart.length === 0) {
@@ -12,18 +12,23 @@ function displayCart() {
         return;
     }
 
-    let totalAmount = 0;
-    cart.forEach((item, index) => {
-        if (!item || !item.name || !item.price) return; // Skip invalid items
+    let total = 0;
 
-        let cartItem = document.createElement("div");
-        cartItem.classList.add("cart-item");
+    cart.forEach((item, index) => {
+        if (!item || !item.name || !item.price) return;
+
+        const quantity = item.quantity || 1;
+        const itemTotal = item.price * quantity;
+        total += itemTotal;
+
+        const cartItem = document.createElement("div");
+        cartItem.className = "cart-item";
 
         cartItem.innerHTML = `
-            <img src="${item.image}" class="cart-img" alt="${item.name}">
+            <img src="${item.image}" class="cart-img" alt="${item.name}" onerror="this.src='fallback.jpg'">
             <div class="cart-details">
-                <h4>${item.name} (x${item.quantity || 1})</h4>
-                <p>₹${(item.price * (item.quantity || 1)).toFixed(2)}</p>
+                <h4>${item.name} (x${quantity})</h4>
+                <p>₹${itemTotal.toFixed(2)}</p>
                 <button onclick="updateQuantity(${index}, 1)">+</button>
                 <button onclick="updateQuantity(${index}, -1)">-</button>
                 <button onclick="removeFromCart(${index})">Remove</button>
@@ -31,10 +36,9 @@ function displayCart() {
         `;
 
         cartContainer.appendChild(cartItem);
-        totalAmount += item.price * (item.quantity || 1);
     });
 
-    cartTotal.textContent = totalAmount.toFixed(2);
+    cartTotal.textContent = total.toFixed(2);
 }
 
 // Update Quantity
@@ -46,33 +50,23 @@ function updateQuantity(index, change) {
     }
 }
 
-// Remove Item
+// Remove
 function removeFromCart(index) {
     cart.splice(index, 1);
     saveCart();
 }
 
-// Save & Refresh Cart
+// Save and Refresh
 function saveCart() {
     localStorage.setItem("cart", JSON.stringify(cart));
     displayCart();
 }
 
-// Proceed to Payment (Example)
+// Proceed to Checkout
 function proceedToPayment() {
-    alert("Redirecting to Payment...");
-    // Razorpay or other payment logic here
+    alert("Redirecting to payment gateway...");
+    // Integrate Razorpay, Paytm, etc.
 }
 
-// Initialize cart display on page load
+// Initialize
 window.onload = displayCart;
-cartItem.innerHTML = `
-    <img src="${item.image}" class="cart-img" alt="${item.name}" onerror="this.src='fallback.jpg';">
-    <div class="cart-details">
-        <h4>${item.name} (x${item.quantity || 1})</h4>
-        <p>₹${(item.price * (item.quantity || 1)).toFixed(2)}</p>
-        <button onclick="updateQuantity(${index}, 1)">+</button>
-        <button onclick="updateQuantity(${index}, -1)">-</button>
-        <button onclick="removeFromCart(${index})">Remove</button>
-    </div>
-`;
