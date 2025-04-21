@@ -7,13 +7,13 @@
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
+
     <!-- Header -->
     <header>
         <h1 class="title">Food Menu</h1>
-        <a href="cart.html" class="cart-btn">🛒 View Cart (<span id="cart-count">0</span>)</a>
     </header>
 
-    <!-- Search, Filter, Sort -->
+    <!-- Search, Filter, Sort Controls -->
     <div class="controls">
         <input type="text" id="searchBox" placeholder="Search food..." onkeyup="searchFood()">
         <select id="categoryFilter" onchange="filterFoods()">
@@ -28,6 +28,11 @@
 
     <!-- Food List -->
     <div id="foodContainer" class="food-grid"></div>
+
+    <!-- Floating Cart Button -->
+    <a href="cart.html" class="view-cart-floating" id="floatingCartBtn">
+        🛒 <span class="cart-badge" id="cart-count">0</span>
+    </a>
 
     <script src="script.js"></script>
 </body>
