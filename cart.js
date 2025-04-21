@@ -1,6 +1,6 @@
 let cart = JSON.parse(localStorage.getItem("cart")) || [];
+let discount = 0;
 
-// Display Cart
 function displayCart() {
     const cartContainer = document.getElementById("cart-items");
     const cartTotal = document.getElementById("cart-total");
@@ -13,7 +13,6 @@ function displayCart() {
     }
 
     let total = 0;
-
     cart.forEach((item, index) => {
         if (!item || !item.name || !item.price) return;
 
@@ -21,11 +20,11 @@ function displayCart() {
         const itemTotal = item.price * quantity;
         total += itemTotal;
 
-        const cartItem = document.createElement("div");
-        cartItem.className = "cart-item";
+        const itemDiv = document.createElement("div");
+        itemDiv.classList.add("cart-item");
 
-        cartItem.innerHTML = `
-            <img src="${item.image}" class="cart-img" alt="${item.name}" onerror="this.src='fallback.jpg'">
+        itemDiv.innerHTML = `
+            <img src="${item.image}" class="cart-img" alt="${item.name}" onerror="this.src='fallback.jpg';">
             <div class="cart-details">
                 <h4>${item.name} (x${quantity})</h4>
                 <p>₹${itemTotal.toFixed(2)}</p>
@@ -35,13 +34,14 @@ function displayCart() {
             </div>
         `;
 
-        cartContainer.appendChild(cartItem);
+        cartContainer.appendChild(itemDiv);
     });
 
+    total -= discount;
+    if (total < 0) total = 0;
     cartTotal.textContent = total.toFixed(2);
 }
 
-// Update Quantity
 function updateQuantity(index, change) {
     if (cart[index]) {
         cart[index].quantity = (cart[index].quantity || 1) + change;
@@ -50,23 +50,32 @@ function updateQuantity(index, change) {
     }
 }
 
-// Remove
 function removeFromCart(index) {
     cart.splice(index, 1);
     saveCart();
 }
 
-// Save and Refresh
 function saveCart() {
     localStorage.setItem("cart", JSON.stringify(cart));
     displayCart();
 }
 
-// Proceed to Checkout
-function proceedToPayment() {
-    alert("Redirecting to payment gateway...");
-    // Integrate Razorpay, Paytm, etc.
+function applyCoupon() {
+    const code = document.getElementById("coupon-code").value.trim().toLowerCase();
+    if (code === "save50") {
+        discount = 50;
+        alert("₹50 discount applied!");
+    } else {
+        discount = 0;
+        alert("Invalid coupon code.");
+    }
+    displayCart();
 }
 
-// Initialize
+function proceedToPayment() {
+    const total = parseFloat(document.getElementById("cart-total").textContent);
+    alert(`Redirecting to payment gateway for ₹${total.toFixed(2)}...`);
+    // Razorpay integration will go here
+}
+
 window.onload = displayCart;
