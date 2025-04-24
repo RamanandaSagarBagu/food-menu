@@ -19,14 +19,16 @@
 
   <div class="cart-container">
     <div id="cart-items" class="cart-items"></div>
-    
+
     <div class="coupon-section">
-      <input type="text" id="coupon-code" class="coupon-input" placeholder="Enter coupon code">
-      <button class="coupon-btn" onclick="applyCoupon()">Apply</button>
+      <input type="text" id="coupon-code" placeholder="Enter Coupon Code" />
+      <button onclick="applyCoupon()">Apply Coupon</button>
+      <p id="coupon-message" class="error-message"></p>
     </div>
 
     <div class="cart-summary">
       <h2>Total: ₹<span id="cart-total">0.00</span></h2>
+      <p>Tax (5%): ₹<span id="tax-amount">0.00</span></p>
       <button id="checkout-btn" onclick="proceedToPayment()">🛍️ Checkout</button>
     </div>
   </div>
