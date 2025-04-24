@@ -5,21 +5,21 @@ let couponDiscount = 0;
 // Function to display cart
 function displayCart() {
   const cartContainer = document.getElementById("cart-items");
-  const subtotalElement = document.getElementById("subtotal");
   const cartTotal = document.getElementById("cart-total");
   const cartCount = document.getElementById("cart-count");
   const taxAmount = document.getElementById("tax-amount");
   const couponDiscountElement = document.getElementById("coupon-discount");
+  const subtotalElement = document.getElementById("subtotal");
 
   cartContainer.innerHTML = "";
 
   if (cart.length === 0) {
     cartContainer.innerHTML = "<p>Your cart is empty.</p>";
-    subtotalElement.textContent = "0.00";
     cartTotal.textContent = "0.00";
     cartCount.textContent = "0";
     taxAmount.textContent = "0.00";
     couponDiscountElement.textContent = "0.00";
+    subtotalElement.textContent = "0.00";
     return;
   }
 
@@ -56,11 +56,11 @@ function displayCart() {
   let tax = totalAmount * 0.05; // 5% GST
 
   // Update UI elements
-  subtotalElement.textContent = totalAmount.toFixed(2);
-  couponDiscountElement.textContent = couponDiscount.toFixed(2);
-  taxAmount.textContent = tax.toFixed(2);
   cartTotal.textContent = (totalAmount + tax).toFixed(2);
   cartCount.textContent = totalItems;
+  couponDiscountElement.textContent = couponDiscount.toFixed(2);
+  subtotalElement.textContent = totalAmount.toFixed(2);
+  taxAmount.textContent = tax.toFixed(2);
 }
 
 // Function to update item quantity
@@ -108,8 +108,22 @@ function applyCoupon() {
     couponDiscount = 0;
     couponMessage.textContent = "Invalid coupon code.";
   }
-  
+
   saveCart();
+}
+
+// Toggle the price breakdown section
+function togglePriceBreakdown() {
+  const priceBreakdown = document.getElementById("price-breakdown");
+  const arrow = document.getElementById("toggle-arrow");
+
+  if (priceBreakdown.style.display === "none" || priceBreakdown.style.display === "") {
+    priceBreakdown.style.display = "block";
+    arrow.textContent = "➖"; // Change to minus symbol
+  } else {
+    priceBreakdown.style.display = "none";
+    arrow.textContent = "➕"; // Change to plus symbol
+  }
 }
 
 window.onload = displayCart;
