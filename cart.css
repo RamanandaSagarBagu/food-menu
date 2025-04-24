@@ -195,6 +195,35 @@ body {
   .coupon-section input {
     width: 70%;
   }
+/* Add this to the existing cart.css file */
+
+/* Price breakdown hidden by default */
+.price-breakdown {
+  display: none;
+  margin-top: 10px;
+  padding: 10px;
+  background-color: #f1f1f1;
+  border-radius: 8px;
+  font-size: 0.9rem;
+  color: #555;
+}
+
+/* Toggle section style */
+.price-breakdown-toggle {
+  margin-top: 20px;
+  cursor: pointer;
+  font-size: 1.1rem;
+  color: #007bff;
+  font-weight: 600;
+}
+
+.price-breakdown-toggle:hover {
+  text-decoration: underline;
+}
+
+#toggle-arrow {
+  margin-right: 8px;
+}
 
   .coupon-section button {
     width: 25%;
