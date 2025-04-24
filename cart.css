@@ -119,34 +119,38 @@ body {
 
 /* Coupon Section */
 .coupon-section {
-  margin-top: 20px;
   display: flex;
   justify-content: space-between;
+  margin: 20px 0;
 }
 
-.coupon-input {
-  padding: 8px;
-  font-size: 1rem;
-  width: 150px;
+.coupon-section input {
+  width: 60%;
+  padding: 10px;
   border: 1px solid #ddd;
   border-radius: 5px;
 }
 
-.coupon-btn {
-  padding: 8px 12px;
+.coupon-section button {
+  padding: 10px 15px;
   background-color: #28a745;
   color: white;
-  font-size: 1rem;
   border: none;
   border-radius: 5px;
   cursor: pointer;
 }
 
-.coupon-btn:hover {
+.coupon-section button:hover {
   background-color: #218838;
 }
 
-/* Summary and Checkout */
+.error-message {
+  color: red;
+  font-size: 0.9rem;
+  margin-top: 10px;
+}
+
+/* Cart Summary */
 .cart-summary {
   text-align: right;
   margin-top: 30px;
@@ -186,5 +190,13 @@ body {
 
   .cart-summary {
     text-align: center;
+  }
+
+  .coupon-section input {
+    width: 70%;
+  }
+
+  .coupon-section button {
+    width: 25%;
   }
 }
