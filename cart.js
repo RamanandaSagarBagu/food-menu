@@ -1,4 +1,5 @@
 let cart = JSON.parse(localStorage.getItem("cart")) || [];
+let coupon = null;
 
 function displayCart() {
   const cartContainer = document.getElementById("cart-items");
@@ -39,6 +40,14 @@ function displayCart() {
     cartContainer.appendChild(cartItem);
   });
 
+  let tax = totalAmount * 0.05; // 5% GST
+  totalAmount += tax;
+
+  if (coupon) {
+    totalAmount -= coupon.discount;
+    alert(`Coupon applied: ₹${coupon.discount} off`);
+  }
+
   cartTotal.textContent = totalAmount.toFixed(2);
   cartCount.textContent = totalItems;
 }
@@ -64,9 +73,53 @@ function saveCart() {
   displayCart();
 }
 
+function applyCoupon() {
+  const couponCode = document.getElementById("coupon-code").value.toUpperCase();
+
+  if (couponCode === "FLAT50") {
+    coupon = { code: "FLAT50", discount: 50 };
+    displayCart();
+  } else {
+    alert("Invalid coupon code.");
+  }
+}
+
 function proceedToPayment() {
+  const totalAmount = parseFloat(document.getElementById("cart-total").textContent);
+  
+  if (totalAmount === 0) {
+    alert("Your cart is empty!");
+    return;
+  }
+
   alert("Redirecting to Razorpay/UPI Payment...");
   // Razorpay/UPI integration logic goes here
+  // Example for Razorpay integration (assuming Razorpay is set up on your server)
+  var options = {
+    key: 'YOUR_RAZORPAY_KEY', // Replace with your Razorpay key
+    amount: totalAmount * 100, // Amount in paise
+    currency: 'INR',
+    name: 'Your Company Name',
+    description: 'Test transaction',
+    handler: function(response) {
+      alert('Payment successful!');
+      // Handle payment success
+    },
+    prefill: {
+      name: 'Customer Name',
+      email: 'customer@example.com',
+      contact: '1234567890'
+    },
+    notes: {
+      address: 'address'
+    },
+    theme: {
+      color: '#28a745'
+    }
+  };
+  
+  var rzp1 = new Razorpay(options);
+  rzp1.open();
 }
 
 window.onload = displayCart;
