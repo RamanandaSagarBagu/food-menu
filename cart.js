@@ -225,3 +225,18 @@ function renderStars(index) {
 }
 
 window.onload = displayCart;
+function attachRatingEvents() {
+  const starContainers = document.querySelectorAll(".rating-stars");
+  starContainers.forEach(container => {
+    const index = container.getAttribute("data-index");
+    const stars = container.querySelectorAll(".star");
+
+    stars.forEach(star => {
+      star.addEventListener("click", () => {
+        const rating = parseInt(star.getAttribute("data-star"));
+        cart[index].rating = rating;
+        saveCart();
+      });
+    });
+  });
+}
