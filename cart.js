@@ -1,15 +1,9 @@
 let cart = JSON.parse(localStorage.getItem("cart")) || [];
 let couponApplied = false;
 let couponDiscount = 0;
+let appliedCouponCode = "";
 
-// Define multiple coupons (as an example)
-const coupons = {
-  "FLAT50": 50,
-  "SAVE20": 20,
-  "OFF100": 100
-};
-
-// Function to display cart
+// Display cart
 function displayCart() {
   const cartContainer = document.getElementById("cart-items");
   const cartTotal = document.getElementById("cart-total");
@@ -19,7 +13,6 @@ function displayCart() {
   const subtotalElement = document.getElementById("subtotal");
 
   cartContainer.innerHTML = "";
-
   if (cart.length === 0) {
     cartContainer.innerHTML = "<p>Your cart is empty.</p>";
     cartTotal.textContent = "0.00";
@@ -30,15 +23,16 @@ function displayCart() {
     return;
   }
 
-  let totalAmount = 0;
+  let subtotal = 0;
   let totalItems = 0;
 
   cart.forEach((item, index) => {
     if (!item || !item.name || !item.price) return;
 
     const quantity = item.quantity || 1;
+    const isDelivered = item.status === "Delivered";
     totalItems += quantity;
-    totalAmount += item.price * quantity;
+    subtotal += item.price * quantity;
 
     const cartItem = document.createElement("div");
     cartItem.classList.add("cart-item");
@@ -48,30 +42,29 @@ function displayCart() {
       <div class="cart-details">
         <h4>${item.name} (x${quantity})</h4>
         <p>₹${(item.price * quantity).toFixed(2)}</p>
-        <p>Status: <span class="status">${item.status || "Processing"}</span></p>
-        <button onclick="updateQuantity(${index}, 1)">+</button>
-        <button onclick="updateQuantity(${index}, -1)">-</button>
-        <button class="remove-btn" onclick="removeFromCart(${index})">Remove</button>
+        <p class="status">Status: ${item.status || "Processing"}</p>
+        ${isDelivered ? renderStars(index) : `
+          <button onclick="updateQuantity(${index}, 1)">+</button>
+          <button onclick="updateQuantity(${index}, -1)">-</button>
+          <button class="remove-btn" onclick="removeFromCart(${index})">Remove</button>
+        `}
       </div>
     `;
     cartContainer.appendChild(cartItem);
   });
 
-  // Calculate tax (5%)
-  let tax = totalAmount * 0.05;
+  let discountedSubtotal = subtotal - couponDiscount;
+  let tax = discountedSubtotal * 0.05;
+  let total = discountedSubtotal + tax;
 
-  // Apply coupon discount if any
-  let finalAmount = totalAmount - couponDiscount;
-  
-  // Update UI elements
-  subtotalElement.textContent = totalAmount.toFixed(2);
-  couponDiscountElement.textContent = couponDiscount.toFixed(2);
-  taxAmount.textContent = tax.toFixed(2);
-  cartTotal.textContent = (finalAmount + tax).toFixed(2);
+  cartTotal.textContent = total.toFixed(2);
   cartCount.textContent = totalItems;
+  couponDiscountElement.textContent = couponDiscount.toFixed(2);
+  subtotalElement.textContent = subtotal.toFixed(2);
+  taxAmount.textContent = tax.toFixed(2);
 }
 
-// Function to update item quantity
+// Quantity update
 function updateQuantity(index, change) {
   if (cart[index]) {
     cart[index].quantity = (cart[index].quantity || 1) + change;
@@ -83,46 +76,44 @@ function updateQuantity(index, change) {
   }
 }
 
-// Function to update item status
-function updateStatus(index, status) {
-  if (cart[index]) {
-    cart[index].status = status;
-    saveCart();
-  }
-}
-
-// Function to remove item from cart
+// Remove item
 function removeFromCart(index) {
   cart.splice(index, 1);
   saveCart();
 }
 
-// Save cart to localStorage
+// Save
 function saveCart() {
   localStorage.setItem("cart", JSON.stringify(cart));
   displayCart();
 }
 
-// Proceed to payment
+// Payment
 function proceedToPayment() {
   alert("Redirecting to Razorpay/UPI Payment...");
-  // Razorpay/UPI integration logic goes here
+  // Add Razorpay logic here
 }
 
-// Apply coupon discount
+// Coupon
 function applyCoupon() {
-  const couponCode = document.getElementById("coupon-code").value.trim().toUpperCase();
-  const couponMessage = document.getElementById("coupon-message");
+  const code = document.getElementById("coupon-code").value.trim().toUpperCase();
+  const msg = document.getElementById("coupon-message");
 
-  // Check if the coupon code is valid
-  if (coupons[couponCode]) {
+  const validCoupons = {
+    "SAVE10": 10,
+    "FOODIE20": 20,
+    "FREEMEAL": 30
+  };
+
+  if (validCoupons[code]) {
     couponApplied = true;
-    couponDiscount = coupons[couponCode];
-    couponMessage.textContent = "Coupon applied successfully!";
+    couponDiscount = validCoupons[code];
+    appliedCouponCode = code;
+    msg.textContent = `Coupon "${code}" applied!`;
   } else {
     couponApplied = false;
     couponDiscount = 0;
-    couponMessage.textContent = "Invalid coupon code.";
+    msg.textContent = "Invalid coupon code.";
   }
 
   saveCart();
@@ -132,39 +123,33 @@ function applyCoupon() {
 function removeCoupon() {
   couponApplied = false;
   couponDiscount = 0;
-  document.getElementById("coupon-code").value = ""; // Clear the coupon code input
-  document.getElementById("coupon-message").textContent = "";
+  appliedCouponCode = "";
+  document.getElementById("coupon-message").textContent = "Coupon removed.";
+  document.getElementById("coupon-code").value = "";
   saveCart();
 }
 
-// Toggle the price breakdown section
+// Toggle breakdown
 function togglePriceBreakdown() {
-  const priceBreakdown = document.getElementById("price-breakdown");
+  const section = document.getElementById("price-breakdown");
   const arrow = document.getElementById("toggle-arrow");
 
-  if (priceBreakdown.style.display === "none" || priceBreakdown.style.display === "") {
-    priceBreakdown.style.display = "block";
-    arrow.textContent = "➖"; // Change to minus symbol
+  if (section.style.display === "none" || section.style.display === "") {
+    section.style.display = "block";
+    arrow.textContent = "➖";
   } else {
-    priceBreakdown.style.display = "none";
-    arrow.textContent = "➕"; // Change to plus symbol
+    section.style.display = "none";
+    arrow.textContent = "➕";
   }
 }
 
-// Add a simple order tracking section
-function displayOrderTracking() {
-  const orderTrackingSection = document.getElementById("order-tracking");
-
-  // Add some dummy status for now
-  const status = "Processing"; // Change based on your actual order status logic
-
-  orderTrackingSection.innerHTML = `
-    <h4>Order Tracking</h4>
-    <p>Status: <strong>${status}</strong></p>
+// Star rating
+function renderStars(index) {
+  return `
+    <div class="stars" data-index="${index}">
+      ⭐⭐⭐⭐⭐
+    </div>
   `;
 }
 
-window.onload = function() {
-  displayCart();
-  displayOrderTracking();
-};
+window.onload = displayCart;
