@@ -229,3 +229,47 @@ body {
     width: 25%;
   }
 }
+/* Cart Badge on Cart Icon */
+.cart-icon {
+  position: relative;
+  font-size: 1.4rem;
+}
+
+#cart-count {
+  background-color: red;
+  color: white;
+  padding: 2px 6px;
+  font-size: 0.8rem;
+  border-radius: 50%;
+  position: absolute;
+  top: -8px;
+  right: -10px;
+}
+
+/* Price Breakdown Section */
+.price-breakdown {
+  display: none;
+  margin-top: 10px;
+  padding: 10px;
+  background-color: #f1f1f1;
+  border-radius: 8px;
+  font-size: 0.9rem;
+  color: #555;
+}
+
+/* Toggle section style */
+.price-breakdown-toggle {
+  margin-top: 20px;
+  cursor: pointer;
+  font-size: 1.1rem;
+  color: #007bff;
+  font-weight: 600;
+}
+
+.price-breakdown-toggle:hover {
+  text-decoration: underline;
+}
+
+#toggle-arrow {
+  margin-right: 8px;
+}
