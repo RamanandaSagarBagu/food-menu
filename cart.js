@@ -2,6 +2,8 @@ let cart = JSON.parse(localStorage.getItem("cart")) || [];
 let couponApplied = false;
 let couponDiscount = 0;
 let appliedCouponCode = "";
+
+// Display cart items
 function displayCart() {
   const cartContainer = document.getElementById("cart-items");
   const cartTotal = document.getElementById("cart-total");
@@ -12,79 +14,6 @@ function displayCart() {
 
   cartContainer.innerHTML = "";
 
-  if (cart.length === 0) {
-    cartContainer.innerHTML = "<p>Your cart is empty.</p>";
-    cartTotal.textContent = "0.00";
-    cartCount.textContent = "0";
-    taxAmount.textContent = "0.00";
-    couponDiscountElement.textContent = "0.00";
-    subtotalElement.textContent = "0.00";
-    return;
-  }
-
-  let subtotal = 0;
-  let totalItems = 0;
-
-  cart.forEach((item, index) => {
-    if (!item || !item.name || !item.price) return;
-
-    const quantity = item.quantity || 1;
-    totalItems += quantity;
-    subtotal += item.price * quantity;
-
-    const cartItem = document.createElement("div");
-    cartItem.classList.add("cart-item");
-
-    // Create star rating HTML if delivered
-    let ratingHTML = "";
-    if (item.status === "Delivered") {
-      ratingHTML = `
-        <div class="rating-stars" data-index="${index}">
-          ${[1, 2, 3, 4, 5].map(i => `
-            <span class="star" data-star="${i}">${(item.rating >= i) ? '★' : '☆'}</span>
-          `).join("")}
-        </div>`;
-    }
-
-    cartItem.innerHTML = `
-      <img src="${item.image}" class="cart-img" alt="${item.name}" onerror="this.src='fallback.jpg';" />
-      <div class="cart-details">
-        <h4>${item.name} (x${quantity})</h4>
-        <p>₹${(item.price * quantity).toFixed(2)}</p>
-        <p>Status: <strong>${item.status || 'Processing'}</strong></p>
-        ${item.status === "Delivered" ? '' : `
-          <button onclick="updateQuantity(${index}, 1)">+</button>
-          <button onclick="updateQuantity(${index}, -1)">-</button>
-          <button class="remove-btn" onclick="removeFromCart(${index})">Remove</button>
-        `}
-        ${ratingHTML}
-      </div>
-    `;
-    cartContainer.appendChild(cartItem);
-  });
-
-  let discountedTotal = subtotal - couponDiscount;
-  let tax = discountedTotal * 0.05;
-
-  cartTotal.textContent = (discountedTotal + tax).toFixed(2);
-  cartCount.textContent = totalItems;
-  couponDiscountElement.textContent = couponDiscount.toFixed(2);
-  subtotalElement.textContent = subtotal.toFixed(2);
-  taxAmount.textContent = tax.toFixed(2);
-
-  attachRatingEvents();
-}
-
-// Display cart
-function displayCart() {
-  const cartContainer = document.getElementById("cart-items");
-  const cartTotal = document.getElementById("cart-total");
-  const cartCount = document.getElementById("cart-count");
-  const taxAmount = document.getElementById("tax-amount");
-  const couponDiscountElement = document.getElementById("coupon-discount");
-  const subtotalElement = document.getElementById("subtotal");
-
-  cartContainer.innerHTML = "";
   if (cart.length === 0) {
     cartContainer.innerHTML = "<p>Your cart is empty.</p>";
     cartTotal.textContent = "0.00";
@@ -109,17 +38,29 @@ function displayCart() {
     const cartItem = document.createElement("div");
     cartItem.classList.add("cart-item");
 
+    // Rating stars only if item is delivered
+    let ratingHTML = "";
+    if (isDelivered) {
+      ratingHTML = `
+        <div class="rating-stars" data-index="${index}">
+          ${[1, 2, 3, 4, 5].map(i => `
+            <span class="star" data-star="${i}">${(item.rating >= i) ? '★' : '☆'}</span>
+          `).join("")}
+        </div>`;
+    }
+
     cartItem.innerHTML = `
       <img src="${item.image}" class="cart-img" alt="${item.name}" onerror="this.src='fallback.jpg';" />
       <div class="cart-details">
         <h4>${item.name} (x${quantity})</h4>
         <p>₹${(item.price * quantity).toFixed(2)}</p>
         <p class="status">Status: ${item.status || "Processing"}</p>
-        ${isDelivered ? renderStars(index) : `
+        ${isDelivered ? "" : `
           <button onclick="updateQuantity(${index}, 1)">+</button>
           <button onclick="updateQuantity(${index}, -1)">-</button>
           <button class="remove-btn" onclick="removeFromCart(${index})">Remove</button>
         `}
+        ${ratingHTML}
       </div>
     `;
     cartContainer.appendChild(cartItem);
@@ -134,6 +75,14 @@ function displayCart() {
   couponDiscountElement.textContent = couponDiscount.toFixed(2);
   subtotalElement.textContent = subtotal.toFixed(2);
   taxAmount.textContent = tax.toFixed(2);
+
+  attachRatingEvents();
+}
+
+// Save cart to localStorage
+function saveCart() {
+  localStorage.setItem("cart", JSON.stringify(cart));
+  displayCart();
 }
 
 // Quantity update
@@ -148,25 +97,13 @@ function updateQuantity(index, change) {
   }
 }
 
-// Remove item
+// Remove item from cart
 function removeFromCart(index) {
   cart.splice(index, 1);
   saveCart();
 }
 
-// Save
-function saveCart() {
-  localStorage.setItem("cart", JSON.stringify(cart));
-  displayCart();
-}
-
-// Payment
-function proceedToPayment() {
-  alert("Redirecting to Razorpay/UPI Payment...");
-  // Add Razorpay logic here
-}
-
-// Coupon
+// Coupon apply
 function applyCoupon() {
   const code = document.getElementById("coupon-code").value.trim().toUpperCase();
   const msg = document.getElementById("coupon-message");
@@ -185,6 +122,7 @@ function applyCoupon() {
   } else {
     couponApplied = false;
     couponDiscount = 0;
+    appliedCouponCode = "";
     msg.textContent = "Invalid coupon code.";
   }
 
@@ -201,7 +139,13 @@ function removeCoupon() {
   saveCart();
 }
 
-// Toggle breakdown
+// Razorpay/UPI (dummy for now)
+function proceedToPayment() {
+  alert("Redirecting to Razorpay/UPI Payment...");
+  // Implement payment logic here
+}
+
+// Toggle breakdown UI
 function togglePriceBreakdown() {
   const section = document.getElementById("price-breakdown");
   const arrow = document.getElementById("toggle-arrow");
@@ -215,56 +159,7 @@ function togglePriceBreakdown() {
   }
 }
 
-// Star rating
-function renderStars(index) {
-  return `
-    <div class="stars" data-index="${index}">
-      ⭐⭐⭐⭐⭐
-    </div>
-  `;
-}
-
-window.onload = displayCart;
-function attachRatingEvents() {
-  const starContainers = document.querySelectorAll(".rating-stars");
-  starContainers.forEach(container => {
-    const index = container.getAttribute("data-index");
-    const stars = container.querySelectorAll(".star");
-
-    stars.forEach(star => {
-      star.addEventListener("click", () => {
-        const rating = parseInt(star.getAttribute("data-star"));
-        cart[index].rating = rating;
-        saveCart();
-      });
-    });
-  });
-}
-function showToast(message) {
-  const toast = document.getElementById("toast");
-  toast.textContent = message;
-  toast.classList.add("show");
-
-  setTimeout(() => {
-    toast.classList.remove("show");
-  }, 2000);
-}
-function attachRatingEvents() {
-  const starContainers = document.querySelectorAll(".rating-stars");
-  starContainers.forEach(container => {
-    const index = container.getAttribute("data-index");
-    const stars = container.querySelectorAll(".star");
-
-    stars.forEach(star => {
-      star.addEventListener("click", () => {
-        const rating = parseInt(star.getAttribute("data-star"));
-        cart[index].rating = rating;
-        saveCart();
-        showToast("Thanks for rating!");
-      });
-    });
-  });
-}
+// Handle star ratings
 function attachRatingEvents() {
   const starContainers = document.querySelectorAll(".rating-stars");
   starContainers.forEach(container => {
@@ -277,8 +172,7 @@ function attachRatingEvents() {
         const currentRating = cart[index].rating || 0;
 
         if (selectedRating === currentRating) {
-          // Unrate if same star clicked again
-          cart[index].rating = 0;
+          cart[index].rating = 0; // Unrate
           showToast("Rating removed.");
         } else {
           cart[index].rating = selectedRating;
@@ -290,3 +184,16 @@ function attachRatingEvents() {
     });
   });
 }
+
+// Toast message
+function showToast(message) {
+  const toast = document.getElementById("toast");
+  toast.textContent = message;
+  toast.classList.add("show");
+
+  setTimeout(() => {
+    toast.classList.remove("show");
+  }, 2000);
+}
+
+window.onload = displayCart;
