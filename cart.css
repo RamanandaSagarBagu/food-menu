@@ -231,6 +231,21 @@ body {
   .coupon-section input {
     width: 70%;
   }
+.rating-stars {
+  margin-top: 10px;
+}
+
+.rating-stars .star {
+  font-size: 1.5rem;
+  color: #ffcc00;
+  cursor: pointer;
+  margin-right: 3px;
+  transition: transform 0.2s;
+}
+
+.rating-stars .star:hover {
+  transform: scale(1.2);
+}
 
   .coupon-section button {
     width: 25%;
