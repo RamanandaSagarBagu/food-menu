@@ -2,6 +2,13 @@ let cart = JSON.parse(localStorage.getItem("cart")) || [];
 let couponApplied = false;
 let couponDiscount = 0;
 
+// Define multiple coupons (as an example)
+const coupons = {
+  "FLAT50": 50,
+  "SAVE20": 20,
+  "OFF100": 100
+};
+
 // Function to display cart
 function displayCart() {
   const cartContainer = document.getElementById("cart-items");
@@ -49,18 +56,18 @@ function displayCart() {
     cartContainer.appendChild(cartItem);
   });
 
+  // Calculate tax (5%)
+  let tax = totalAmount * 0.05;
+
   // Apply coupon discount if any
-  totalAmount -= couponDiscount;
-
-  // Tax calculation
-  let tax = totalAmount * 0.05; // 5% GST
-
+  let finalAmount = totalAmount - couponDiscount;
+  
   // Update UI elements
-  cartTotal.textContent = (totalAmount + tax).toFixed(2);
-  cartCount.textContent = totalItems;
-  couponDiscountElement.textContent = couponDiscount.toFixed(2);
   subtotalElement.textContent = totalAmount.toFixed(2);
+  couponDiscountElement.textContent = couponDiscount.toFixed(2);
   taxAmount.textContent = tax.toFixed(2);
+  cartTotal.textContent = (finalAmount + tax).toFixed(2);
+  cartCount.textContent = totalItems;
 }
 
 // Function to update item quantity
@@ -87,32 +94,10 @@ function saveCart() {
   displayCart();
 }
 
-// Proceed to payment (Razorpay/UPI integration)
+// Proceed to payment
 function proceedToPayment() {
-  const totalAmount = parseFloat(document.getElementById("cart-total").textContent);
-
-  if (totalAmount > 0) {
-    const options = {
-      key: "YOUR_RAZORPAY_KEY_ID", // Replace with your Razorpay Key ID
-      amount: totalAmount * 100, // Amount in paise
-      currency: "INR",
-      name: "Your Store Name",
-      description: "Food Order Payment",
-      handler: function (response) {
-        alert("Payment successful!");
-        // Save order and show tracking
-        showOrderTracking(response.razorpay_payment_id);
-      },
-      theme: {
-        color: "#F37254"
-      }
-    };
-
-    const rzp = new Razorpay(options);
-    rzp.open();
-  } else {
-    alert("Your cart is empty!");
-  }
+  alert("Redirecting to Razorpay/UPI Payment...");
+  // Razorpay/UPI integration logic goes here
 }
 
 // Apply coupon discount
@@ -120,10 +105,10 @@ function applyCoupon() {
   const couponCode = document.getElementById("coupon-code").value.trim().toUpperCase();
   const couponMessage = document.getElementById("coupon-message");
 
-  // Example coupon check
-  if (couponCode === "FLAT50") {
+  // Check if the coupon code is valid
+  if (coupons[couponCode]) {
     couponApplied = true;
-    couponDiscount = 50; // ₹50 discount
+    couponDiscount = coupons[couponCode];
     couponMessage.textContent = "Coupon applied successfully!";
   } else {
     couponApplied = false;
@@ -134,11 +119,13 @@ function applyCoupon() {
   saveCart();
 }
 
-// Show order tracking info
-function showOrderTracking(paymentId) {
-  const trackingBox = document.getElementById("order-tracking");
-  trackingBox.style.display = "block";
-  document.getElementById("order-status").textContent = `Your payment (ID: ${paymentId}) has been successfully processed. Your order is on the way!`;
+// Remove coupon
+function removeCoupon() {
+  couponApplied = false;
+  couponDiscount = 0;
+  document.getElementById("coupon-code").value = ""; // Clear the coupon code input
+  document.getElementById("coupon-message").textContent = "";
+  saveCart();
 }
 
 // Toggle the price breakdown section
@@ -155,4 +142,20 @@ function togglePriceBreakdown() {
   }
 }
 
-window.onload = displayCart;
+// Add a simple order tracking section
+function displayOrderTracking() {
+  const orderTrackingSection = document.getElementById("order-tracking");
+
+  // Add some dummy status for now
+  const status = "Processing"; // Change based on your actual order status logic
+
+  orderTrackingSection.innerHTML = `
+    <h4>Order Tracking</h4>
+    <p>Status: <strong>${status}</strong></p>
+  `;
+}
+
+window.onload = function() {
+  displayCart();
+  displayOrderTracking();
+};
