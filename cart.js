@@ -87,10 +87,32 @@ function saveCart() {
   displayCart();
 }
 
-// Proceed to payment
+// Proceed to payment (Razorpay/UPI integration)
 function proceedToPayment() {
-  alert("Redirecting to Razorpay/UPI Payment...");
-  // Razorpay/UPI integration logic goes here
+  const totalAmount = parseFloat(document.getElementById("cart-total").textContent);
+
+  if (totalAmount > 0) {
+    const options = {
+      key: "YOUR_RAZORPAY_KEY_ID", // Replace with your Razorpay Key ID
+      amount: totalAmount * 100, // Amount in paise
+      currency: "INR",
+      name: "Your Store Name",
+      description: "Food Order Payment",
+      handler: function (response) {
+        alert("Payment successful!");
+        // Save order and show tracking
+        showOrderTracking(response.razorpay_payment_id);
+      },
+      theme: {
+        color: "#F37254"
+      }
+    };
+
+    const rzp = new Razorpay(options);
+    rzp.open();
+  } else {
+    alert("Your cart is empty!");
+  }
 }
 
 // Apply coupon discount
@@ -110,6 +132,13 @@ function applyCoupon() {
   }
 
   saveCart();
+}
+
+// Show order tracking info
+function showOrderTracking(paymentId) {
+  const trackingBox = document.getElementById("order-tracking");
+  trackingBox.style.display = "block";
+  document.getElementById("order-status").textContent = `Your payment (ID: ${paymentId}) has been successfully processed. Your order is on the way!`;
 }
 
 // Toggle the price breakdown section
