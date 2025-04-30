@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Your Cart</title>
   <link rel="stylesheet" href="cart.css" />
+  <script src="https://checkout.razorpay.com/v1/checkout.js"></script> <!-- Razorpay Script -->
 </head>
 <body>
   <header class="cart-header">
@@ -30,7 +31,7 @@
     <div class="cart-summary">
       <h3>Total: ₹<span id="cart-total">0.00</span></h3>
       <button id="checkout-btn" onclick="proceedToPayment()">🛍️ Checkout</button>
-      
+
       <!-- Collapsible Price Breakdown -->
       <div id="price-breakdown-toggle" class="price-breakdown-toggle" onclick="togglePriceBreakdown()">
         <span id="toggle-arrow">➕</span> Price Breakdown
@@ -40,6 +41,12 @@
         <p>Coupon Discount: -₹<span id="coupon-discount">0.00</span></p>
         <p>Tax (5%): ₹<span id="tax-amount">0.00</span></p>
       </div>
+    </div>
+
+    <!-- Order Tracking (hidden initially) -->
+    <div id="order-tracking" style="display:none; margin-top: 30px;">
+      <h3>Order Tracking</h3>
+      <p id="order-status">Your order is being processed.</p>
     </div>
   </div>
 
