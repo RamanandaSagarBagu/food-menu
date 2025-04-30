@@ -11,9 +11,7 @@
     <div class="cart-header-top">
       <h1>Your Shopping Cart</h1>
       <a href="index.html" class="back-link">← Back to Menu</a>
-      <div class="cart-icon">
-        🛒 <span id="cart-count">0</span>
-      </div>
+      <div class="cart-icon">🛒 <span id="cart-count">0</span></div>
     </div>
   </header>
 
@@ -27,12 +25,9 @@
       <p id="coupon-message" class="error-message"></p>
     </div>
 
-    <!-- Final Price Display -->
     <div class="cart-summary">
       <h3>Total: ₹<span id="cart-total">0.00</span></h3>
-      <button id="checkout-btn" onclick="proceedToPayment()">🛍️ Checkout</button>
-      
-      <!-- Collapsible Price Breakdown -->
+
       <div id="price-breakdown-toggle" class="price-breakdown-toggle" onclick="togglePriceBreakdown()">
         <span id="toggle-arrow">➕</span> Price Breakdown
       </div>
@@ -41,10 +36,9 @@
         <p>Coupon Discount: -₹<span id="coupon-discount">0.00</span></p>
         <p>Tax (5%): ₹<span id="tax-amount">0.00</span></p>
       </div>
-    </div>
 
-    <!-- Order Tracking -->
-    <div id="order-tracking"></div>
+      <button id="checkout-btn" onclick="proceedToPayment()">🛍️ Checkout</button>
+    </div>
   </div>
 
   <script src="cart.js"></script>
