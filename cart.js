@@ -265,3 +265,28 @@ function attachRatingEvents() {
     });
   });
 }
+function attachRatingEvents() {
+  const starContainers = document.querySelectorAll(".rating-stars");
+  starContainers.forEach(container => {
+    const index = container.getAttribute("data-index");
+    const stars = container.querySelectorAll(".star");
+
+    stars.forEach(star => {
+      star.addEventListener("click", () => {
+        const selectedRating = parseInt(star.getAttribute("data-star"));
+        const currentRating = cart[index].rating || 0;
+
+        if (selectedRating === currentRating) {
+          // Unrate if same star clicked again
+          cart[index].rating = 0;
+          showToast("Rating removed.");
+        } else {
+          cart[index].rating = selectedRating;
+          showToast("Thanks for rating!");
+        }
+
+        saveCart();
+      });
+    });
+  });
+}
