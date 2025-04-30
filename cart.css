@@ -231,6 +231,12 @@ body {
   .coupon-section input {
     width: 70%;
   }
+
+  .coupon-section button {
+    width: 25%;
+  }
+}
+
 .rating-stars {
   margin-top: 10px;
 }
@@ -246,6 +252,7 @@ body {
 .rating-stars .star:hover {
   transform: scale(1.2);
 }
+
 .toast {
   visibility: hidden;
   min-width: 200px;
@@ -267,9 +274,4 @@ body {
 .toast.show {
   visibility: visible;
   opacity: 1;
-}
-
-  .coupon-section button {
-    width: 25%;
-  }
 }
