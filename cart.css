@@ -13,7 +13,6 @@ body {
   color: #333;
 }
 
-/* Header */
 .cart-header-top {
   display: flex;
   justify-content: space-between;
@@ -53,7 +52,6 @@ body {
   right: -10px;
 }
 
-/* Cart Container */
 .cart-container {
   max-width: 900px;
   margin: auto;
@@ -117,10 +115,24 @@ body {
   background-color: darkred;
 }
 
-/* Coupon Section */
+.cart-details .status {
+  font-size: 0.9rem;
+  font-weight: bold;
+  margin-top: 5px;
+  color: #555;
+}
+
+.stars {
+  margin-top: 10px;
+  font-size: 1.2rem;
+  color: gold;
+}
+
 .coupon-section {
   display: flex;
   justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 10px;
   margin: 20px 0;
 }
 
@@ -150,7 +162,6 @@ body {
   margin-top: 10px;
 }
 
-/* Cart Summary */
 .cart-summary {
   text-align: right;
   margin-top: 30px;
@@ -174,7 +185,32 @@ body {
   background-color: #218838;
 }
 
-/* Mobile */
+.price-breakdown {
+  display: none;
+  margin-top: 10px;
+  padding: 10px;
+  background-color: #f1f1f1;
+  border-radius: 8px;
+  font-size: 0.9rem;
+  color: #555;
+}
+
+.price-breakdown-toggle {
+  margin-top: 20px;
+  cursor: pointer;
+  font-size: 1.1rem;
+  color: #007bff;
+  font-weight: 600;
+}
+
+.price-breakdown-toggle:hover {
+  text-decoration: underline;
+}
+
+#toggle-arrow {
+  margin-right: 8px;
+}
+
 @media (max-width: 768px) {
   .cart-item {
     flex-direction: column;
@@ -195,81 +231,8 @@ body {
   .coupon-section input {
     width: 70%;
   }
-/* Add this to the existing cart.css file */
-
-/* Price breakdown hidden by default */
-.price-breakdown {
-  display: none;
-  margin-top: 10px;
-  padding: 10px;
-  background-color: #f1f1f1;
-  border-radius: 8px;
-  font-size: 0.9rem;
-  color: #555;
-}
-
-/* Toggle section style */
-.price-breakdown-toggle {
-  margin-top: 20px;
-  cursor: pointer;
-  font-size: 1.1rem;
-  color: #007bff;
-  font-weight: 600;
-}
-
-.price-breakdown-toggle:hover {
-  text-decoration: underline;
-}
-
-#toggle-arrow {
-  margin-right: 8px;
-}
 
   .coupon-section button {
     width: 25%;
   }
-}
-/* Cart Badge on Cart Icon */
-.cart-icon {
-  position: relative;
-  font-size: 1.4rem;
-}
-
-#cart-count {
-  background-color: red;
-  color: white;
-  padding: 2px 6px;
-  font-size: 0.8rem;
-  border-radius: 50%;
-  position: absolute;
-  top: -8px;
-  right: -10px;
-}
-
-/* Price Breakdown Section */
-.price-breakdown {
-  display: none;
-  margin-top: 10px;
-  padding: 10px;
-  background-color: #f1f1f1;
-  border-radius: 8px;
-  font-size: 0.9rem;
-  color: #555;
-}
-
-/* Toggle section style */
-.price-breakdown-toggle {
-  margin-top: 20px;
-  cursor: pointer;
-  font-size: 1.1rem;
-  color: #007bff;
-  font-weight: 600;
-}
-
-.price-breakdown-toggle:hover {
-  text-decoration: underline;
-}
-
-#toggle-arrow {
-  margin-right: 8px;
 }
