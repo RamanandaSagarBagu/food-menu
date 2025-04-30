@@ -48,6 +48,7 @@ function displayCart() {
       <div class="cart-details">
         <h4>${item.name} (x${quantity})</h4>
         <p>₹${(item.price * quantity).toFixed(2)}</p>
+        <p>Status: <span class="status">${item.status || "Processing"}</span></p>
         <button onclick="updateQuantity(${index}, 1)">+</button>
         <button onclick="updateQuantity(${index}, -1)">-</button>
         <button class="remove-btn" onclick="removeFromCart(${index})">Remove</button>
@@ -79,6 +80,14 @@ function updateQuantity(index, change) {
     } else {
       saveCart();
     }
+  }
+}
+
+// Function to update item status
+function updateStatus(index, status) {
+  if (cart[index]) {
+    cart[index].status = status;
+    saveCart();
   }
 }
 
