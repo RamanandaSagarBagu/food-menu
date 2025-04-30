@@ -3,7 +3,9 @@ let couponApplied = false;
 let couponDiscount = 0;
 let appliedCouponCode = "";
 
-// Display cart items
+window.onload = displayCart;
+
+// ------------------ CART DISPLAY ------------------
 function displayCart() {
   const cartContainer = document.getElementById("cart-items");
   const cartTotal = document.getElementById("cart-total");
@@ -38,7 +40,7 @@ function displayCart() {
     const cartItem = document.createElement("div");
     cartItem.classList.add("cart-item");
 
-    // Rating stars only if item is delivered
+    // Star rating HTML
     let ratingHTML = "";
     if (isDelivered) {
       ratingHTML = `
@@ -54,12 +56,12 @@ function displayCart() {
       <div class="cart-details">
         <h4>${item.name} (x${quantity})</h4>
         <p>₹${(item.price * quantity).toFixed(2)}</p>
-        <p class="status">Status: ${item.status || "Processing"}</p>
-        ${isDelivered ? "" : `
+        <p>Status: <strong>${item.status || 'Processing'}</strong></p>
+        ${!isDelivered ? `
           <button onclick="updateQuantity(${index}, 1)">+</button>
           <button onclick="updateQuantity(${index}, -1)">-</button>
           <button class="remove-btn" onclick="removeFromCart(${index})">Remove</button>
-        `}
+        ` : ''}
         ${ratingHTML}
       </div>
     `;
@@ -79,13 +81,7 @@ function displayCart() {
   attachRatingEvents();
 }
 
-// Save cart to localStorage
-function saveCart() {
-  localStorage.setItem("cart", JSON.stringify(cart));
-  displayCart();
-}
-
-// Quantity update
+// ------------------ CART ACTIONS ------------------
 function updateQuantity(index, change) {
   if (cart[index]) {
     cart[index].quantity = (cart[index].quantity || 1) + change;
@@ -97,13 +93,17 @@ function updateQuantity(index, change) {
   }
 }
 
-// Remove item from cart
 function removeFromCart(index) {
   cart.splice(index, 1);
   saveCart();
 }
 
-// Coupon apply
+function saveCart() {
+  localStorage.setItem("cart", JSON.stringify(cart));
+  displayCart();
+}
+
+// ------------------ COUPONS ------------------
 function applyCoupon() {
   const code = document.getElementById("coupon-code").value.trim().toUpperCase();
   const msg = document.getElementById("coupon-message");
@@ -129,7 +129,6 @@ function applyCoupon() {
   saveCart();
 }
 
-// Remove coupon
 function removeCoupon() {
   couponApplied = false;
   couponDiscount = 0;
@@ -139,13 +138,39 @@ function removeCoupon() {
   saveCart();
 }
 
-// Razorpay/UPI (dummy for now)
-function proceedToPayment() {
-  alert("Redirecting to Razorpay/UPI Payment...");
-  // Implement payment logic here
+// ------------------ RATINGS ------------------
+function attachRatingEvents() {
+  const starContainers = document.querySelectorAll(".rating-stars");
+  starContainers.forEach(container => {
+    const index = container.getAttribute("data-index");
+    const stars = container.querySelectorAll(".star");
+
+    stars.forEach(star => {
+      star.addEventListener("click", () => {
+        const selectedRating = parseInt(star.getAttribute("data-star"));
+        const currentRating = cart[index].rating || 0;
+
+        if (selectedRating === currentRating) {
+          cart[index].rating = 0;
+          showToast("Rating removed.");
+        } else {
+          cart[index].rating = selectedRating;
+          showToast("Thanks for rating!");
+        }
+
+        saveCart();
+      });
+    });
+  });
 }
 
-// Toggle breakdown UI
+// ------------------ PAYMENT ------------------
+function proceedToPayment() {
+  alert("Redirecting to Razorpay/UPI Payment...");
+  // Razorpay logic goes here
+}
+
+// ------------------ PRICE BREAKDOWN TOGGLE ------------------
 function togglePriceBreakdown() {
   const section = document.getElementById("price-breakdown");
   const arrow = document.getElementById("toggle-arrow");
@@ -159,33 +184,7 @@ function togglePriceBreakdown() {
   }
 }
 
-// Handle star ratings
-function attachRatingEvents() {
-  const starContainers = document.querySelectorAll(".rating-stars");
-  starContainers.forEach(container => {
-    const index = container.getAttribute("data-index");
-    const stars = container.querySelectorAll(".star");
-
-    stars.forEach(star => {
-      star.addEventListener("click", () => {
-        const selectedRating = parseInt(star.getAttribute("data-star"));
-        const currentRating = cart[index].rating || 0;
-
-        if (selectedRating === currentRating) {
-          cart[index].rating = 0; // Unrate
-          showToast("Rating removed.");
-        } else {
-          cart[index].rating = selectedRating;
-          showToast("Thanks for rating!");
-        }
-
-        saveCart();
-      });
-    });
-  });
-}
-
-// Toast message
+// ------------------ TOAST ------------------
 function showToast(message) {
   const toast = document.getElementById("toast");
   toast.textContent = message;
@@ -195,5 +194,3 @@ function showToast(message) {
     toast.classList.remove("show");
   }, 2000);
 }
-
-window.onload = displayCart;
