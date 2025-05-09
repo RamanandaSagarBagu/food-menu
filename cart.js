@@ -1,111 +1,123 @@
-// --- Cart Data Management ---
+// cart.js - Updated logic for cart behavior
+
+const cartItemsContainer = document.getElementById("cart-items");
+const cartTotalEl = document.getElementById("cart-total");
+const subtotalEl = document.getElementById("subtotal");
+const couponDiscountEl = document.getElementById("coupon-discount");
+const taxAmountEl = document.getElementById("tax-amount");
+const cartCountEl = document.getElementById("cart-count");
+const couponCodeInput = document.getElementById("coupon-code");
+const couponMessage = document.getElementById("coupon-message");
+const priceBreakdown = document.getElementById("price-breakdown");
+const toggleArrow = document.getElementById("toggle-arrow");
+
 let cart = JSON.parse(localStorage.getItem("cart")) || [];
-let appliedCoupon = null;
+let appliedCoupon = localStorage.getItem("coupon") || "";
 
 function saveCart() {
   localStorage.setItem("cart", JSON.stringify(cart));
+  updateCart();
 }
 
-function updateCartUI() {
-  const cartItemsEl = document.getElementById("cart-items");
-  const cartCountEl = document.getElementById("cart-count");
-  const cartTotalEl = document.getElementById("cart-total");
-  const subtotalEl = document.getElementById("subtotal");
-  const couponDiscountEl = document.getElementById("coupon-discount");
-  const taxAmountEl = document.getElementById("tax-amount");
-
-  cartItemsEl.innerHTML = "";
-  let subtotal = 0;
-
+function renderCart() {
+  cartItemsContainer.innerHTML = "";
   cart.forEach((item, index) => {
     const itemEl = document.createElement("div");
     itemEl.className = "cart-item";
     itemEl.innerHTML = `
-      <img src="${item.image || 'fallback.jpg'}" alt="${item.name}" class="cart-img" />
+      <img src="${item.image || 'fallback.jpg'}" class="cart-img" alt="${item.name}" />
       <div class="cart-details">
         <h4>${item.name}</h4>
         <p>₹${item.price}</p>
-        <button onclick="removeItem(${index})" class="remove-btn">Remove</button>
-        <div class="status">Status: In Cart</div>
+        <p class="status">Status: ${item.status}</p>
+        <div>
+          <button onclick="updateQuantity(${index}, -1)" ${item.status === 'Delivered' ? 'disabled' : ''}>-</button>
+          <span>${item.quantity}</span>
+          <button onclick="updateQuantity(${index}, 1)" ${item.status === 'Delivered' ? 'disabled' : ''}>+</button>
+        </div>
+        <button class="remove-btn" onclick="removeItem(${index})" ${item.status === 'Delivered' ? 'disabled' : ''}>Remove</button>
         <div class="rating-stars">
-          ${[...Array(5)].map((_, i) =>
-            `<span class="star" onclick="rateItem(${index}, ${i + 1})">${i < (item.rating || 0) ? '★' : '☆'}</span>`
-          ).join('')}
+          ${[...Array(5)].map((_, i) => `<span class="star">★</span>`).join('')}
         </div>
       </div>
     `;
-    cartItemsEl.appendChild(itemEl);
-    subtotal += item.price;
+    cartItemsContainer.appendChild(itemEl);
   });
+}
 
-  let discount = appliedCoupon ? 50 : 0;
+function updateCart() {
+  let subtotal = 0;
+  cart.forEach(item => subtotal += item.price * item.quantity);
+  let discount = appliedCoupon === "FOOD10" ? subtotal * 0.1 : 0;
   let tax = (subtotal - discount) * 0.05;
   let total = subtotal - discount + tax;
 
-  cartCountEl.textContent = cart.length;
   cartTotalEl.textContent = total.toFixed(2);
   subtotalEl.textContent = subtotal.toFixed(2);
   couponDiscountEl.textContent = discount.toFixed(2);
   taxAmountEl.textContent = tax.toFixed(2);
+  cartCountEl.textContent = cart.reduce((sum, item) => sum + item.quantity, 0);
+
+  renderCart();
 }
 
-// --- Cart Actions ---
 function removeItem(index) {
+  if (cart[index].status === "Delivered") return;
   cart.splice(index, 1);
   saveCart();
-  updateCartUI();
 }
 
-function rateItem(index, stars) {
-  cart[index].rating = stars;
+function updateQuantity(index, change) {
+  if (cart[index].status === "Delivered") return;
+  cart[index].quantity = Math.max(1, cart[index].quantity + change);
   saveCart();
-  updateCartUI();
-  showToast("Thanks for rating!");
 }
 
-// --- Coupon ---
 function applyCoupon() {
-  const code = document.getElementById("coupon-code").value.trim();
-  const messageEl = document.getElementById("coupon-message");
-
-  if (code === "SAVE50") {
+  const code = couponCodeInput.value.trim();
+  if (code === "FOOD10") {
     appliedCoupon = code;
-    messageEl.textContent = "Coupon applied successfully!";
+    localStorage.setItem("coupon", code);
+    couponMessage.textContent = "Coupon Applied!";
+    couponMessage.style.color = "green";
   } else {
-    messageEl.textContent = "Invalid coupon code.";
+    couponMessage.textContent = "Invalid Coupon Code";
+    couponMessage.style.color = "red";
   }
-  updateCartUI();
+  updateCart();
 }
 
 function removeCoupon() {
-  appliedCoupon = null;
-  document.getElementById("coupon-code").value = "";
-  document.getElementById("coupon-message").textContent = "";
-  updateCartUI();
+  appliedCoupon = "";
+  localStorage.removeItem("coupon");
+  couponCodeInput.value = "";
+  couponMessage.textContent = "Coupon removed.";
+  couponMessage.style.color = "red";
+  updateCart();
 }
 
-// --- Toast ---
-function showToast(message) {
-  const toast = document.getElementById("toast");
-  toast.textContent = message;
-  toast.classList.add("show");
-  setTimeout(() => toast.classList.remove("show"), 2500);
-}
-
-// --- Toggle Breakdown ---
 function togglePriceBreakdown() {
-  const section = document.getElementById("price-breakdown");
-  const arrow = document.getElementById("toggle-arrow");
-  const isVisible = section.style.display === "block";
-  section.style.display = isVisible ? "none" : "block";
-  arrow.textContent = isVisible ? "➕" : "➖";
+  if (priceBreakdown.style.display === "none" || priceBreakdown.style.display === "") {
+    priceBreakdown.style.display = "block";
+    toggleArrow.textContent = "➖";
+  } else {
+    priceBreakdown.style.display = "none";
+    toggleArrow.textContent = "➕";
+  }
 }
 
-// --- Payment Stub ---
 function proceedToPayment() {
-  showToast("Proceeding to payment (mock)...");
-  // Implement Razorpay or UPI logic here if needed
+  cart = cart.map(item => {
+    if (item.status === "In Cart") return { ...item, status: "Processing" };
+    if (item.status === "Processing") return { ...item, status: "Delivered" };
+    return item;
+  });
+  saveCart();
+  alert("Order status updated. Check cart again.");
 }
 
-// --- Initialize ---
-document.addEventListener("DOMContentLoaded", updateCartUI);
+// Initial load
+document.addEventListener("DOMContentLoaded", () => {
+  if (appliedCoupon) couponCodeInput.value = appliedCoupon;
+  updateCart();
+});
