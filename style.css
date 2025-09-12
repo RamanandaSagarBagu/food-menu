@@ -538,3 +538,134 @@ button:hover {
         margin: 0.3rem 0.2rem;
     }
 }
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap');
+
+:root{
+  --accent:#ff7043;
+  --accent-dark:#e64a19;
+  --green:#28a745;
+  --muted:#666;
+  --card:#ffffff;
+  --bg:#f8f9fa;
+}
+
+*{box-sizing:border-box}
+html,body{height:100%}
+body{
+  margin:0;
+  font-family:'Poppins',sans-serif;
+  background:var(--bg);
+  color:#222;
+  padding:18px;
+}
+
+/* Header */
+.header{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:10px;
+  margin-bottom:18px;
+}
+.title{
+  font-size:1.6rem;
+  font-weight:600;
+  margin:0;
+}
+.cart-btn{
+  background:var(--accent);
+  color:#fff;
+  padding:10px 14px;
+  border-radius:10px;
+  text-decoration:none;
+  font-weight:600;
+  box-shadow:0 6px 14px rgba(0,0,0,0.08);
+  display:inline-flex;
+  align-items:center;
+  gap:8px;
+}
+.cart-btn:hover{background:var(--accent-dark); transform:translateY(-2px);}
+
+/* Controls */
+.controls{
+  display:flex;
+  gap:10px;
+  align-items:center;
+  margin-bottom:18px;
+  flex-wrap:wrap;
+}
+.controls input, .controls select{
+  padding:10px;
+  border-radius:8px;
+  border:1px solid #dcdcdc;
+  font-size:0.95rem;
+}
+
+/* Food Grid */
+.food-grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(260px,1fr));
+  gap:18px;
+}
+
+/* Food Card */
+.food-card{
+  background:var(--card);
+  border-radius:12px;
+  padding:14px;
+  box-shadow:0 6px 18px rgba(0,0,0,0.06);
+  display:flex;
+  flex-direction:column;
+  height:100%;
+  transition:transform .18s ease, box-shadow .18s ease;
+}
+.food-card:hover{ transform:translateY(-6px); box-shadow:0 12px 28px rgba(0,0,0,0.08) }
+.food-card img{
+  width:100%;
+  height:160px;
+  object-fit:cover;
+  border-radius:10px;
+  margin-bottom:10px;
+}
+.food-card h3{font-size:1.05rem; margin:2px 0 6px}
+.food-card p{color:var(--muted); flex-grow:1; margin-bottom:8px}
+.price{font-weight:700; color:var(--green); margin-bottom:8px}
+
+/* Buttons */
+.btn{
+  display:inline-block;
+  padding:10px 12px;
+  border-radius:8px;
+  border:none;
+  cursor:pointer;
+  font-weight:600;
+  text-align:center;
+}
+.add-to-cart{
+  background:var(--accent);
+  color:white;
+  width:100%;
+}
+.add-to-cart:hover{background:var(--accent-dark)}
+
+/* Toast */
+.toast{
+  position:fixed;
+  right:20px;
+  bottom:20px;
+  background:#333;
+  color:#fff;
+  padding:12px 16px;
+  border-radius:10px;
+  box-shadow:0 6px 20px rgba(0,0,0,0.15);
+  opacity:0;
+  transform:translateY(10px);
+  transition:opacity .18s ease, transform .18s ease;
+  z-index:9999;
+}
+
+/* Responsive */
+@media (max-width:600px){
+  .food-card img{height:140px}
+  .controls{flex-direction:column; align-items:stretch}
+}
