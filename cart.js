@@ -1,123 +1,118 @@
-// cart.js - Updated logic for cart behavior
-
-const cartItemsContainer = document.getElementById("cart-items");
-const cartTotalEl = document.getElementById("cart-total");
-const subtotalEl = document.getElementById("subtotal");
-const couponDiscountEl = document.getElementById("coupon-discount");
-const taxAmountEl = document.getElementById("tax-amount");
-const cartCountEl = document.getElementById("cart-count");
-const couponCodeInput = document.getElementById("coupon-code");
-const couponMessage = document.getElementById("coupon-message");
-const priceBreakdown = document.getElementById("price-breakdown");
-const toggleArrow = document.getElementById("toggle-arrow");
-
 let cart = JSON.parse(localStorage.getItem("cart")) || [];
-let appliedCoupon = localStorage.getItem("coupon") || "";
+let appliedCoupon = null;
+const TAX_RATE = 0.05; // 5%
 
-function saveCart() {
-  localStorage.setItem("cart", JSON.stringify(cart));
-  updateCart();
-}
+// Display Cart
+function displayCart() {
+  let container = document.getElementById("cart-items");
+  let subtotalEl = document.getElementById("subtotal");
+  let discountEl = document.getElementById("discount");
+  let taxEl = document.getElementById("tax");
+  let totalEl = document.getElementById("cart-total");
 
-function renderCart() {
-  cartItemsContainer.innerHTML = "";
+  container.innerHTML = "";
+  if (cart.length === 0) {
+    container.innerHTML = "<p>Your cart is empty.</p>";
+    subtotalEl.textContent = "0.00";
+    discountEl.textContent = "0.00";
+    taxEl.textContent = "0.00";
+    totalEl.textContent = "0.00";
+    return;
+  }
+
+  let subtotal = 0;
   cart.forEach((item, index) => {
-    const itemEl = document.createElement("div");
-    itemEl.className = "cart-item";
-    itemEl.innerHTML = `
-      <img src="${item.image || 'fallback.jpg'}" class="cart-img" alt="${item.name}" />
+    let qty = item.quantity || 1;
+    subtotal += item.price * qty;
+
+    let div = document.createElement("div");
+    div.classList.add("cart-item");
+    div.innerHTML = `
+      <img src="${item.image}" class="cart-img" alt="${item.name}" onerror="this.src='fallback.png';">
       <div class="cart-details">
-        <h4>${item.name}</h4>
-        <p>₹${item.price}</p>
-        <p class="status">Status: ${item.status}</p>
-        <div>
-          <button onclick="updateQuantity(${index}, -1)" ${item.status === 'Delivered' ? 'disabled' : ''}>-</button>
-          <span>${item.quantity}</span>
-          <button onclick="updateQuantity(${index}, 1)" ${item.status === 'Delivered' ? 'disabled' : ''}>+</button>
-        </div>
-        <button class="remove-btn" onclick="removeItem(${index})" ${item.status === 'Delivered' ? 'disabled' : ''}>Remove</button>
-        <div class="rating-stars">
-          ${[...Array(5)].map((_, i) => `<span class="star">★</span>`).join('')}
+        <h4>${item.name} (x${qty})</h4>
+        <p>₹${(item.price * qty).toFixed(2)}</p>
+        <div class="cart-controls">
+          <button onclick="updateQuantity(${index}, 1)">+</button>
+          <button onclick="updateQuantity(${index}, -1)">-</button>
+          <button class="remove-btn" onclick="removeFromCart(${index})">Remove</button>
         </div>
       </div>
     `;
-    cartItemsContainer.appendChild(itemEl);
+    container.appendChild(div);
   });
-}
 
-function updateCart() {
-  let subtotal = 0;
-  cart.forEach(item => subtotal += item.price * item.quantity);
-  let discount = appliedCoupon === "FOOD10" ? subtotal * 0.1 : 0;
-  let tax = (subtotal - discount) * 0.05;
-  let total = subtotal - discount + tax;
+  // Coupon
+  let discount = 0;
+  if (appliedCoupon === "FOOD10") discount = subtotal * 0.10;
 
-  cartTotalEl.textContent = total.toFixed(2);
+  // Tax
+  let taxable = subtotal - discount;
+  let tax = taxable * TAX_RATE;
+
+  // Final Total
+  let total = taxable + tax;
+
   subtotalEl.textContent = subtotal.toFixed(2);
-  couponDiscountEl.textContent = discount.toFixed(2);
-  taxAmountEl.textContent = tax.toFixed(2);
-  cartCountEl.textContent = cart.reduce((sum, item) => sum + item.quantity, 0);
-
-  renderCart();
+  discountEl.textContent = discount.toFixed(2);
+  taxEl.textContent = tax.toFixed(2);
+  totalEl.textContent = total.toFixed(2);
 }
 
-function removeItem(index) {
-  if (cart[index].status === "Delivered") return;
-  cart.splice(index, 1);
-  saveCart();
-}
-
+// Quantity
 function updateQuantity(index, change) {
-  if (cart[index].status === "Delivered") return;
-  cart[index].quantity = Math.max(1, cart[index].quantity + change);
+  if (!cart[index]) return;
+  cart[index].quantity = (cart[index].quantity || 1) + change;
+  if (cart[index].quantity <= 0) cart.splice(index, 1);
   saveCart();
 }
+function removeFromCart(index) { cart.splice(index, 1); saveCart(); }
+function saveCart() { localStorage.setItem("cart", JSON.stringify(cart)); displayCart(); }
 
+// Coupons
 function applyCoupon() {
-  const code = couponCodeInput.value.trim();
+  let code = document.getElementById("coupon-code").value.trim().toUpperCase();
   if (code === "FOOD10") {
     appliedCoupon = code;
-    localStorage.setItem("coupon", code);
-    couponMessage.textContent = "Coupon Applied!";
-    couponMessage.style.color = "green";
+    alert("Coupon applied: 10% OFF!");
   } else {
-    couponMessage.textContent = "Invalid Coupon Code";
-    couponMessage.style.color = "red";
+    alert("Invalid coupon!");
   }
-  updateCart();
+  displayCart();
 }
+function removeCoupon() { appliedCoupon = null; displayCart(); }
 
-function removeCoupon() {
-  appliedCoupon = "";
-  localStorage.removeItem("coupon");
-  couponCodeInput.value = "";
-  couponMessage.textContent = "Coupon removed.";
-  couponMessage.style.color = "red";
-  updateCart();
-}
-
-function togglePriceBreakdown() {
-  if (priceBreakdown.style.display === "none" || priceBreakdown.style.display === "") {
-    priceBreakdown.style.display = "block";
-    toggleArrow.textContent = "➖";
-  } else {
-    priceBreakdown.style.display = "none";
-    toggleArrow.textContent = "➕";
-  }
-}
-
+// Payment (Razorpay Example)
 function proceedToPayment() {
-  cart = cart.map(item => {
-    if (item.status === "In Cart") return { ...item, status: "Processing" };
-    if (item.status === "Processing") return { ...item, status: "Delivered" };
-    return item;
-  });
-  saveCart();
-  alert("Order status updated. Check cart again.");
+  let total = parseFloat(document.getElementById("cart-total").textContent) * 100; // paise
+  if (total <= 0) { alert("Cart is empty!"); return; }
+
+  let options = {
+    key: "rzp_test_1234567890", // Replace with your Razorpay key
+    amount: total,
+    currency: "INR",
+    name: "Food Order",
+    description: "Checkout Payment",
+    handler: function (response) {
+      alert("Payment Successful! ID: " + response.razorpay_payment_id);
+      updateOrderStatus();
+    },
+    theme: { color: "#ff5722" }
+  };
+
+  let rzp = new Razorpay(options);
+  rzp.open();
 }
 
-// Initial load
-document.addEventListener("DOMContentLoaded", () => {
-  if (appliedCoupon) couponCodeInput.value = appliedCoupon;
-  updateCart();
-});
+// Order Tracking
+function updateOrderStatus() {
+  document.getElementById("status-cart").classList.remove("active");
+  document.getElementById("status-processing").classList.add("active");
+  setTimeout(() => {
+    document.getElementById("status-processing").classList.remove("active");
+    document.getElementById("status-delivered").classList.add("active");
+  }, 5000);
+}
+
+// Init
+window.onload = displayCart;
