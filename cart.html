@@ -1,57 +1,56 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>Your Cart</title>
   <link rel="stylesheet" href="cart.css">
 </head>
 <body>
-
-  <!-- Header -->
   <header class="cart-header">
-    <a href="index.html" class="back-link">← Back to Menu</a>
+    <div class="left">
+      <a class="back-link" href="index.html">← Back to Menu</a>
+    </div>
     <h1>Your Shopping Cart</h1>
+    <div class="right" aria-hidden="true"></div>
   </header>
 
-  <!-- Cart Container -->
-  <div class="cart-container">
-    <!-- Cart Items -->
-    <div id="cart-items" class="cart-items"></div>
+  <main class="cart-container">
+    <section id="cart-items" class="cart-items" aria-live="polite"></section>
 
-    <!-- Price Summary -->
-    <div class="cart-summary">
+    <aside class="cart-summary">
+      <div class="coupon-box">
+        <input id="coupon-code" placeholder="Coupon code e.g. FOOD10 or FLAT50">
+        <button id="apply-coupon" onclick="applyCoupon()">Apply</button>
+        <button id="remove-coupon" onclick="removeCoupon()">Remove</button>
+        <div id="coupon-message" class="coupon-message" aria-live="polite"></div>
+      </div>
+
       <div class="price-breakdown">
-        <p>Subtotal: ₹<span id="cart-subtotal">0.00</span></p>
-        <p>Tax (5% GST): ₹<span id="cart-tax">0.00</span></p>
-        <p>Coupon Discount: -₹<span id="cart-discount">0.00</span></p>
-        <hr>
+        <p>Subtotal: ₹<span id="subtotal">0.00</span></p>
+        <p>Discount: -₹<span id="discount">0.00</span></p>
+        <p>Tax (5% GST): ₹<span id="tax">0.00</span></p>
         <h2>Total: ₹<span id="cart-total">0.00</span></h2>
       </div>
 
-      <!-- Coupon -->
-      <div class="coupon-box">
-        <input type="text" id="coupon-code" placeholder="Enter Coupon Code">
-        <button onclick="applyCoupon()">Apply</button>
+      <div class="checkout-actions">
+        <button id="checkout-btn" class="checkout-btn" onclick="openCheckoutOptions()">Proceed to Payment</button>
       </div>
+    </aside>
 
-      <!-- Checkout -->
-      <div class="checkout-options">
-        <button id="checkout-btn" onclick="checkoutOptions()">🛍️ Checkout</button>
-      </div>
-    </div>
-  </div>
+    <section id="order-tracking" class="order-tracking">
+      <h3>Order Tracking</h3>
+      <ul id="tracking-steps">
+        <li id="step-placed" class="active">🛒 In Cart</li>
+        <li id="step-processing">⚙️ Processing</li>
+        <li id="step-out">🛵 Out for Delivery</li>
+        <li id="step-delivered">✅ Delivered</li>
+      </ul>
+      <div id="tracking-message" class="tracking-message"></div>
+    </section>
+  </main>
 
-  <!-- Modal for Checkout -->
-  <div id="checkout-modal" class="modal">
-    <div class="modal-content">
-      <span class="close" onclick="closeModal()">&times;</span>
-      <h2>Choose Payment Option</h2>
-      <button class="pay-now" onclick="proceedToPayment()">💳 Pay Now</button>
-      <button class="pay-later" onclick="payLater()">⌛ Pay Later</button>
-    </div>
-  </div>
-
+  <!-- Razorpay script -->
   <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
   <script src="cart.js"></script>
 </body>
