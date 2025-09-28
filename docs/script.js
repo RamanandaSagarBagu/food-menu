@@ -48,7 +48,7 @@ function displayFoods(foods){
   if(!foods || foods.length===0){ container.innerHTML = "<p>No items found.</p>"; return; }
   container.innerHTML = foods.map(f => `
     <article class="food-card" data-id="${f.id}">
-      <img loading="lazy" src="${f.image}" alt="${f.name}" onerror="this.src='fallback.jpg'">
+      <img loading="lazy" src="${f.image}" alt="${f.name}" onerror="this.src='fallback.png'">
       <h3>${f.name}</h3>
       <div class="price">₹${Number(f.price).toFixed(2)}</div>
       <p>${f.description}</p>
