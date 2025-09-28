@@ -7,6 +7,7 @@
   <link rel="stylesheet" href="cart.css">
 </head>
 <body>
+  <!-- Header -->
   <header class="cart-header">
     <div class="left">
       <a class="back-link" href="index.html">← Back to Menu</a>
@@ -15,9 +16,14 @@
     <div class="right" aria-hidden="true"></div>
   </header>
 
+  <!-- Main Cart Container -->
   <main class="cart-container">
-    <section id="cart-items" class="cart-items" aria-live="polite"></section>
+    <!-- Items Section -->
+    <section id="cart-items" class="cart-items" aria-live="polite">
+      <!-- Items injected by cart.js -->
+    </section>
 
+    <!-- Summary Section -->
     <aside class="cart-summary">
       <div class="coupon-box">
         <input id="coupon-code" placeholder="Coupon code e.g. FOOD10 or FLAT50">
@@ -34,10 +40,11 @@
       </div>
 
       <div class="checkout-actions">
-        <button id="checkout-btn" class="checkout-btn" onclick="openCheckoutOptions()">Proceed to Payment</button>
+        <button id="checkout-btn" class="checkout-btn" onclick="openCheckoutOptions()">🛍️ Proceed to Payment</button>
       </div>
     </aside>
 
+    <!-- Tracking Section -->
     <section id="order-tracking" class="order-tracking">
       <h3>Order Tracking</h3>
       <ul id="tracking-steps">
