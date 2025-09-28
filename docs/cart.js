@@ -1,37 +1,48 @@
 /* cart.js
    Handles:
-   - Displaying cart (read from localStorage 'cart')
+   - Displaying cart (from localStorage 'cart')
    - Coupons (FOOD10 = 10% off, FLAT50 = ₹50 off)
    - Tax 5% (applied after discount)
    - Checkout: Razorpay integration (test key) + UPI fallback modal
    - Order creation and tracking with persistence in localStorage
 */
 
-// ---------- Helpers ----------
+// ---------- Constants ----------
 const TAX_RATE = 0.05;
 const COUPONS = {
-  'FOOD10': { type:'percent', value:10, label:'10% off' },
-  'FLAT50': { type:'flat', value:50, label:'₹50 off' }
+  'FOOD10': { type: 'percent', value: 10, label: '10% off' },
+  'FLAT50': { type: 'flat', value: 50, label: '₹50 off' }
 };
 
-function getCart(){ return JSON.parse(localStorage.getItem('cart')) || []; }
-function saveCart(cart){ localStorage.setItem('cart', JSON.stringify(cart)); displayCart(); }
-
-// Toast
-function showToast(msg, time=1800){
-  let t = document.querySelector('.toast');
-  if(!t){
-    t = document.createElement('div'); t.className='toast'; document.body.appendChild(t);
-  }
-  t.textContent = msg; t.style.opacity='1'; t.style.transform='translateY(0)';
-  clearTimeout(t._timeout); t._timeout = setTimeout(()=>{ t.style.opacity='0'; t.style.transform='translateY(8px)'; }, time);
-}
-
-// ---------- Coupon state ----------
 let appliedCoupon = null;
 
+// ---------- Helpers ----------
+function getCart() {
+  return JSON.parse(localStorage.getItem('cart')) || [];
+}
+function saveCart(cart) {
+  localStorage.setItem('cart', JSON.stringify(cart));
+  displayCart();
+}
+
+// Toast
+function showToast(msg, time = 1800) {
+  let t = document.querySelector('.toast');
+  if (!t) {
+    t = document.createElement('div');
+    t.className = 'toast';
+    document.body.appendChild(t);
+  }
+  t.textContent = msg;
+  t.classList.add('show');
+  clearTimeout(t._timeout);
+  t._timeout = setTimeout(() => {
+    t.classList.remove('show');
+  }, time);
+}
+
 // ---------- Display ----------
-function displayCart(){
+function displayCart() {
   const container = document.getElementById('cart-items');
   const subtotalEl = document.getElementById('subtotal');
   const discountEl = document.getElementById('discount');
@@ -43,15 +54,18 @@ function displayCart(){
   couponMsg.textContent = '';
 
   const cart = getCart();
-  if(cart.length === 0){
+  if (cart.length === 0) {
     container.innerHTML = '<p style="padding:12px;color:#666">Your cart is empty.</p>';
-    subtotalEl.textContent = '0.00'; discountEl.textContent='0.00'; taxEl.textContent='0.00'; totalEl.textContent='0.00';
+    subtotalEl.textContent = '0.00';
+    discountEl.textContent = '0.00';
+    taxEl.textContent = '0.00';
+    totalEl.textContent = '0.00';
     updateCartBadge();
     return;
   }
 
   let subtotal = 0;
-  cart.forEach((item, idx)=>{
+  cart.forEach((item, idx) => {
     const qty = item.quantity || 1;
     const itemTotal = Number(item.price) * qty;
     subtotal += itemTotal;
@@ -59,7 +73,7 @@ function displayCart(){
     const div = document.createElement('div');
     div.className = 'cart-item';
     div.innerHTML = `
-      <img src="${item.image || 'fallback.jpg'}" class="cart-img" onerror="this.src='fallback.jpg'">
+      <img src="${item.image || 'fallback.png'}" class="cart-img" onerror="this.src='fallback.png'">
       <div class="cart-details">
         <h4>${escapeHtml(item.name)} (x${qty})</h4>
         <p>₹${itemTotal.toFixed(2)}</p>
@@ -74,14 +88,9 @@ function displayCart(){
   });
 
   // Discount
-  let discount = 0;
-  if(appliedCoupon && COUPONS[appliedCoupon]){
-    const c = COUPONS[appliedCoupon];
-    if(c.type === 'percent') discount = subtotal * (c.value/100);
-    else discount = c.value;
-  }
+  let discount = calculateDiscount(subtotal);
 
-  // Tax on (subtotal - discount)
+  // Tax
   const taxable = Math.max(0, subtotal - discount);
   const tax = taxable * TAX_RATE;
   const total = Math.max(0, taxable + tax);
@@ -91,42 +100,44 @@ function displayCart(){
   taxEl.textContent = tax.toFixed(2);
   totalEl.textContent = total.toFixed(2);
 
-  if(appliedCoupon){ couponMsg.textContent = `Coupon "${appliedCoupon}" applied.`; }
+  if (appliedCoupon) {
+    couponMsg.textContent = `Coupon "${appliedCoupon}" applied.`;
+  }
+
   updateCartBadge();
 }
 
 // ---------- Utilities ----------
-function updateQuantity(index, delta){
+function updateQuantity(index, delta) {
   let cart = getCart();
-  if(!cart[index]) return;
-  cart[index].quantity = (cart[index].quantity||1) + delta;
-  if(cart[index].quantity <= 0) cart.splice(index,1);
+  if (!cart[index]) return;
+  cart[index].quantity = (cart[index].quantity || 1) + delta;
+  if (cart[index].quantity <= 0) cart.splice(index, 1);
   saveCart(cart);
   showToast('Cart updated');
 }
 
-function removeFromCart(index){
+function removeFromCart(index) {
   let cart = getCart();
-  if(!cart[index]) return;
-  cart.splice(index,1);
+  if (!cart[index]) return;
+  cart.splice(index, 1);
   saveCart(cart);
   showToast('Item removed');
 }
 
-function updateCartBadge(){
+function updateCartBadge() {
   const cart = getCart();
-  const total = cart.reduce((s,i)=> s + (i.quantity||0), 0);
-  // Update menu page cart-count if present
-  const badge = document.getElementById('cart-count') || document.querySelector('#cart-count');
-  if(badge) badge.textContent = total;
+  const total = cart.reduce((s, i) => s + (i.quantity || 0), 0);
+  const badge = document.getElementById('cart-count');
+  if (badge) badge.textContent = total;
 }
 
 // ---------- Coupons ----------
-function applyCoupon(){
+function applyCoupon() {
   const code = document.getElementById('coupon-code').value.trim().toUpperCase();
   const msg = document.getElementById('coupon-message');
-  if(!code){ msg.textContent = 'Enter a coupon code.'; return; }
-  if(COUPONS[code]){
+  if (!code) { msg.textContent = 'Enter a coupon code.'; return; }
+  if (COUPONS[code]) {
     appliedCoupon = code;
     msg.textContent = `Applied: ${COUPONS[code].label}`;
     showToast('Coupon applied');
@@ -137,67 +148,75 @@ function applyCoupon(){
   }
   displayCart();
 }
-function removeCoupon(){ appliedCoupon = null; document.getElementById('coupon-code').value=''; document.getElementById('coupon-message').textContent='Coupon removed'; displayCart(); }
+function removeCoupon() {
+  appliedCoupon = null;
+  document.getElementById('coupon-code').value = '';
+  document.getElementById('coupon-message').textContent = 'Coupon removed';
+  displayCart();
+}
 
-// ---------- Checkout Options (choose Razorpay or UPI) ----------
-function openCheckoutOptions(){
-  // Simple chooser modal created dynamically
+function calculateDiscount(subtotal) {
+  if (!appliedCoupon) return 0;
+  const c = COUPONS[appliedCoupon];
+  if (!c) return 0;
+  if (c.type === 'percent') return subtotal * (c.value / 100);
+  return c.value;
+}
+
+// ---------- Checkout ----------
+function openCheckoutOptions() {
   const modal = document.createElement('div');
-  modal.className = 'upi-modal';
+  modal.className = 'upi-modal active';
   modal.innerHTML = `
     <div class="upi-card">
       <h3>Select Payment</h3>
       <p style="margin:6px 0 12px 0">Total: ₹${document.getElementById('cart-total').textContent}</p>
       <div style="display:flex;gap:8px;justify-content:center;flex-wrap:wrap">
-        <button id="pay-razor" style="background:#3b82f6;color:#fff;padding:10px 14px;border-radius:8px;border:none;cursor:pointer">Pay with Razorpay</button>
-        <button id="pay-upi" style="background:#10b981;color:#fff;padding:10px 14px;border-radius:8px;border:none;cursor:pointer">Pay with UPI</button>
-        <button id="pay-cancel" style="background:#e5e7eb;padding:10px 14px;border-radius:8px;border:none;cursor:pointer">Cancel</button>
+        <button id="pay-razor">Pay with Razorpay</button>
+        <button id="pay-upi">Pay with UPI</button>
+        <button id="pay-cancel" style="background:#ccc;color:#000">Cancel</button>
       </div>
     </div>
   `;
   document.body.appendChild(modal);
 
-  document.getElementById('pay-cancel').onclick = ()=> modal.remove();
-  document.getElementById('pay-upi').onclick = ()=> { modal.remove(); showUPIFallback(); };
-  document.getElementById('pay-razor').onclick = ()=> { modal.remove(); openRazorpay(); };
+  document.getElementById('pay-cancel').onclick = () => modal.remove();
+  document.getElementById('pay-upi').onclick = () => { modal.remove(); showUPIFallback(); };
+  document.getElementById('pay-razor').onclick = () => { modal.remove(); openRazorpay(); };
 }
 
-// ---------- Razorpay integration (demo/test) ----------
-function openRazorpay(){
+// Razorpay
+function openRazorpay() {
   const totalRupees = parseFloat(document.getElementById('cart-total').textContent) || 0;
-  if(totalRupees <= 0){ showToast('Cart total is zero'); return; }
+  if (totalRupees <= 0) { showToast('Cart total is zero'); return; }
 
   const amountPaisas = Math.round(totalRupees * 100);
-
   const options = {
-    key: "rzp_test_1234567890", // << REPLACE with your key in production
+    key: "rzp_test_1234567890", // Replace with your Razorpay key
     amount: amountPaisas,
     currency: "INR",
     name: "Food Order",
     description: "Payment for food order",
-    handler: function (response){
-      // Successful payment
+    handler: function (response) {
       createOrder('razorpay', response.razorpay_payment_id || 'TESTPAYID');
     },
     modal: {
-      ondismiss: function(){
-        // If cancelled, nothing — user can retry or use UPI fallback
+      ondismiss: function () {
         showToast('Payment popup closed');
       }
     },
     theme: { color: "#ff7043" }
   };
-
   const rzp = new Razorpay(options);
   rzp.open();
 }
 
-// ---------- UPI fallback UI ----------
-function showUPIFallback(){
+// UPI fallback
+function showUPIFallback() {
   const amount = document.getElementById('cart-total').textContent;
-  const upiId = "yourupi@upi"; // change to real UPI if needed
+  const upiId = "yourupi@upi"; // Replace with actual
   const modal = document.createElement('div');
-  modal.className = 'upi-modal';
+  modal.className = 'upi-modal active';
   modal.innerHTML = `
     <div class="upi-card">
       <h3>Pay via UPI</h3>
@@ -206,28 +225,26 @@ function showUPIFallback(){
       <img src="upi-qr.png" alt="UPI QR" onerror="this.style.display='none'">
       <p>After paying, click <strong>I have paid</strong> to confirm.</p>
       <div style="display:flex;gap:8px;justify-content:center;margin-top:12px">
-        <button id="upi-paid" style="background:#10b981;color:#fff;padding:10px;border-radius:8px;border:none;cursor:pointer">I have paid</button>
-        <button id="upi-cancel" style="background:#e5e7eb;padding:10px;border-radius:8px;border:none;cursor:pointer">Cancel</button>
+        <button id="upi-paid">I have paid</button>
+        <button id="upi-cancel" style="background:#ccc;color:#000">Cancel</button>
       </div>
     </div>
   `;
   document.body.appendChild(modal);
 
-  document.getElementById('upi-cancel').onclick = ()=> modal.remove();
-  document.getElementById('upi-paid').onclick = ()=> {
+  document.getElementById('upi-cancel').onclick = () => modal.remove();
+  document.getElementById('upi-paid').onclick = () => {
     modal.remove();
-    // In real flow you'd verify payment server-side. We'll assume success here.
     createOrder('upi', 'UPI_TXN_PLACEHOLDER');
   };
 }
 
-// ---------- Order creation & tracking ----------
-function createOrder(paymentMethod, paymentId){
+// ---------- Orders & Tracking ----------
+function createOrder(paymentMethod, paymentId) {
   const cart = getCart();
-  if(!cart || cart.length === 0){ showToast('Cart empty'); return; }
+  if (!cart || cart.length === 0) { showToast('Cart empty'); return; }
 
-  // Build order
-  const subtotal = cart.reduce((s,i)=> s + (i.price * (i.quantity||1)), 0);
+  const subtotal = cart.reduce((s, i) => s + (i.price * (i.quantity || 1)), 0);
   const discount = calculateDiscount(subtotal);
   const tax = Math.max(0, subtotal - discount) * TAX_RATE;
   const total = Math.max(0, subtotal - discount + tax);
@@ -242,135 +259,94 @@ function createOrder(paymentMethod, paymentId){
     createdAt: new Date().toISOString()
   };
 
-  // Save to orders list in localStorage
   const orders = JSON.parse(localStorage.getItem('orders') || '[]');
   orders.push(order);
   localStorage.setItem('orders', JSON.stringify(orders));
 
-  // Clear cart
   localStorage.removeItem('cart');
   appliedCoupon = null;
   showToast('Order placed: ' + orderId);
 
-  // Start simulated tracking and persist tracking state
   simulateTracking(orderId);
-  displayCart(); // refresh cart area
+  displayCart();
   showLastOrder(orderId);
 }
 
-// Calculate discount used in display and order creation
-function calculateDiscount(subtotal){
-  if(!appliedCoupon) return 0;
-  const c = COUPONS[appliedCoupon];
-  if(!c) return 0;
-  if(c.type === 'percent') return subtotal * (c.value / 100);
-  return c.value;
-}
-
-// Simulated order tracking progression and persistence
-function simulateTracking(orderId){
-  // store initial status
+function simulateTracking(orderId) {
   const orders = JSON.parse(localStorage.getItem('orders') || '[]');
-  const orderIndex = orders.findIndex(o=>o.id === orderId);
-  if(orderIndex === -1) return;
+  const idx = orders.findIndex(o => o.id === orderId);
+  if (idx === -1) return;
 
-  orders[orderIndex].status = 'processing';
+  orders[idx].status = 'processing';
   localStorage.setItem('orders', JSON.stringify(orders));
   updateTrackingUI(orderId);
 
-  // After 5s -> out for delivery
-  setTimeout(()=>{
+  setTimeout(() => {
     const olist = JSON.parse(localStorage.getItem('orders') || '[]');
-    const idx = olist.findIndex(o=>o.id === orderId);
-    if(idx !== -1){
-      olist[idx].status = 'out';
+    const i = olist.findIndex(o => o.id === orderId);
+    if (i !== -1) {
+      olist[i].status = 'out';
       localStorage.setItem('orders', JSON.stringify(olist));
       updateTrackingUI(orderId);
     }
   }, 5000);
 
-  // After 10s -> delivered
-  setTimeout(()=>{
+  setTimeout(() => {
     const olist = JSON.parse(localStorage.getItem('orders') || '[]');
-    const idx = olist.findIndex(o=>o.id === orderId);
-    if(idx !== -1){
-      olist[idx].status = 'delivered';
+    const i = olist.findIndex(o => o.id === orderId);
+    if (i !== -1) {
+      olist[i].status = 'delivered';
       localStorage.setItem('orders', JSON.stringify(olist));
       updateTrackingUI(orderId);
     }
   }, 10000);
 }
 
-// Show last order in tracking panel
-function showLastOrder(orderId){
+function showLastOrder(orderId) {
   document.getElementById('order-tracking').style.display = 'block';
   updateTrackingUI(orderId);
 }
 
-// Update tracking UI based on latest orders or specific order
-function updateTrackingUI(orderId){
-  // If no orderId, pick last order
+function updateTrackingUI(orderId) {
   const orders = JSON.parse(localStorage.getItem('orders') || '[]');
-  let order = null;
-  if(orderId){
-    order = orders.find(o=>o.id===orderId);
-  } else {
-    order = orders[orders.length-1];
-  }
-  if(!order){
-    // reset UI to 'In Cart' only
-    setTrackingStep('none');
-    return;
-  }
+  const order = orders.find(o => o.id === orderId) || orders[orders.length - 1];
+  if (!order) { setTrackingStep('none'); return; }
 
-  const status = order.status || 'placed';
-  if(status === 'placed') setTrackingStep('placed');
-  if(status === 'processing') setTrackingStep('processing');
-  if(status === 'out') setTrackingStep('out');
-  if(status === 'delivered') setTrackingStep('delivered');
-
+  setTrackingStep(order.status);
   const msg = document.getElementById('tracking-message');
-  msg.textContent = `Order ${order.id} - Status: ${status.toUpperCase()}`;
+  msg.textContent = `Order ${order.id} - Status: ${order.status.toUpperCase()}`;
 }
 
-// Apply active class to steps
-function setTrackingStep(step){
+function setTrackingStep(step) {
   const placed = document.getElementById('step-placed');
   const processing = document.getElementById('step-processing');
   const out = document.getElementById('step-out');
   const delivered = document.getElementById('step-delivered');
-
-  // reset
-  [placed,processing,out,delivered].forEach(el => el.classList.remove('active'));
-
-  if(step === 'none'){ placed.classList.add('active'); return; }
-  if(step === 'placed'){ placed.classList.add('active'); return; }
-  if(step === 'processing'){ processing.classList.add('active'); return; }
-  if(step === 'out'){ out.classList.add('active'); return; }
-  if(step === 'delivered'){ delivered.classList.add('active'); return; }
+  [placed, processing, out, delivered].forEach(el => el.classList.remove('active'));
+  if (step === 'placed') placed.classList.add('active');
+  if (step === 'processing') processing.classList.add('active');
+  if (step === 'out') out.classList.add('active');
+  if (step === 'delivered') delivered.classList.add('active');
 }
 
-// Escape helper (simple)
-function escapeHtml(s){ return String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'})[c]); }
+// ---------- Escape HTML ----------
+function escapeHtml(s) {
+  return String(s).replace(/[&<>"']/g, c =>
+    ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c]
+  );
+}
 
 // ---------- Init ----------
-function initCartPage(){
+function initCartPage() {
   displayCart();
-  // show last order if exists
   const orders = JSON.parse(localStorage.getItem('orders') || '[]');
-  if(orders.length > 0){
+  if (orders.length > 0) {
     const last = orders[orders.length - 1];
     showLastOrder(last.id);
   } else {
     document.getElementById('order-tracking').style.display = 'none';
   }
-  // update badge in menu if present
-  const cartCountEls = document.querySelectorAll('#cart-count');
-  cartCountEls.forEach(el => {
-    const total = getCart().reduce((s,i)=> s + (i.quantity||0),0);
-    el.textContent = total;
-  });
+  updateCartBadge();
 }
 
-// Run init on load
 window.addEventListener('DOMContentLoaded', initCartPage);
