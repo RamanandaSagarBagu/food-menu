@@ -5,6 +5,7 @@
    - Tax 5% (applied after discount)
    - Checkout: Razorpay integration (test key) + UPI fallback modal
    - Order creation and tracking with persistence in localStorage
+   - Fallback image handling & GitHub raw link fix
 */
 
 const TAX_RATE = 0.05;
@@ -13,10 +14,10 @@ const COUPONS = {
   'FLAT50': { type: 'flat', value: 50, label: '₹50 off' }
 };
 
+// -------------------- Utilities --------------------
 function getCart() {
   return JSON.parse(localStorage.getItem('cart')) || [];
 }
-
 function saveCart(cart) {
   localStorage.setItem('cart', JSON.stringify(cart));
   displayCart();
@@ -31,30 +32,31 @@ function showToast(msg, time = 1800) {
     document.body.appendChild(t);
   }
   t.textContent = msg;
-  t.style.opacity = '1';
-  t.style.transform = 'translateY(0)';
+  t.classList.add('show');
   clearTimeout(t._timeout);
-  t._timeout = setTimeout(() => {
-    t.style.opacity = '0';
-    t.style.transform = 'translateY(8px)';
-  }, time);
+  t._timeout = setTimeout(() => t.classList.remove('show'), time);
 }
 
-// ---------- Fix Image URLs ----------
+// Fix image URLs (GitHub -> raw)
 function fixImageUrl(url) {
   if (!url) return './fallback.jpg';
   if (url.includes('github.com/') && url.includes('/blob/')) {
-    return url
-      .replace('github.com/', 'raw.githubusercontent.com/')
-      .replace('/blob/', '/');
+    return url.replace('github.com/', 'raw.githubusercontent.com/').replace('/blob/', '/');
   }
   return url;
 }
 
-// ---------- Coupon state ----------
+// Escape HTML
+function escapeHtml(s) {
+  return String(s).replace(/[&<>"']/g, c => ({
+    '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'
+  })[c]);
+}
+
+// -------------------- Coupon state --------------------
 let appliedCoupon = null;
 
-// ---------- Display ----------
+// -------------------- Display Cart --------------------
 function displayCart() {
   const container = document.getElementById('cart-items');
   const subtotalEl = document.getElementById('subtotal');
@@ -128,7 +130,7 @@ function displayCart() {
   updateCartBadge();
 }
 
-// ---------- Utilities ----------
+// -------------------- Quantity Updates --------------------
 function updateQuantity(index, delta) {
   let cart = getCart();
   if (!cart[index]) return;
@@ -146,14 +148,15 @@ function removeFromCart(index) {
   showToast('Item removed');
 }
 
+// -------------------- Badge Update --------------------
 function updateCartBadge() {
   const cart = getCart();
   const total = cart.reduce((s, i) => s + (i.quantity || 0), 0);
-  const badge = document.getElementById('cart-count') || document.querySelector('#cart-count');
+  const badge = document.getElementById('cart-count');
   if (badge) badge.textContent = total;
 }
 
-// ---------- Coupons ----------
+// -------------------- Coupons --------------------
 function applyCoupon() {
   const code = document.getElementById('coupon-code').value.trim().toUpperCase();
   const msg = document.getElementById('coupon-message');
@@ -180,17 +183,17 @@ function removeCoupon() {
   displayCart();
 }
 
-// ---------- Checkout ----------
+// -------------------- Checkout Options --------------------
 function openCheckoutOptions() {
   const modal = document.createElement('div');
-  modal.className = 'upi-modal';
+  modal.className = 'upi-modal active';
   modal.innerHTML = `
     <div class="upi-card">
       <h3>Select Payment</h3>
-      <p style="margin:6px 0 12px 0">Total: ₹${document.getElementById('cart-total').textContent}</p>
+      <p>Total: ₹${document.getElementById('cart-total').textContent}</p>
       <div style="display:flex;gap:8px;justify-content:center;flex-wrap:wrap">
-        <button id="pay-razor" style="background:#3b82f6;color:#fff;padding:10px 14px;border-radius:8px;border:none;cursor:pointer">Pay with Razorpay</button>
-        <button id="pay-upi" style="background:#10b981;color:#fff;padding:10px 14px;border-radius:8px;border:none;cursor:pointer">Pay with UPI</button>
+        <button id="pay-razor" style="background:#3b82f6;color:#fff;padding:10px 14px;border-radius:8px;border:none;cursor:pointer">Razorpay</button>
+        <button id="pay-upi" style="background:#10b981;color:#fff;padding:10px 14px;border-radius:8px;border:none;cursor:pointer">UPI</button>
         <button id="pay-cancel" style="background:#e5e7eb;padding:10px 14px;border-radius:8px;border:none;cursor:pointer">Cancel</button>
       </div>
     </div>
@@ -202,51 +205,44 @@ function openCheckoutOptions() {
   document.getElementById('pay-razor').onclick = () => { modal.remove(); openRazorpay(); };
 }
 
-// ---------- Razorpay integration ----------
+// -------------------- Razorpay --------------------
 function openRazorpay() {
   const totalRupees = parseFloat(document.getElementById('cart-total').textContent) || 0;
-  if (totalRupees <= 0) {
-    showToast('Cart total is zero');
-    return;
-  }
+  if (totalRupees <= 0) return showToast('Cart total is zero');
 
-  const amountPaisas = Math.round(totalRupees * 100);
   const options = {
     key: "rzp_test_1234567890",
-    amount: amountPaisas,
+    amount: Math.round(totalRupees * 100),
     currency: "INR",
     name: "Food Order",
-    description: "Payment for food order",
+    description: "Payment for your delicious order",
     handler: function (response) {
-      createOrder('razorpay', response.razorpay_payment_id || 'TESTPAYID');
+      createOrder('razorpay', response.razorpay_payment_id || 'TEST_PAY_ID');
     },
-    modal: { ondismiss: function () { showToast('Payment popup closed'); } },
+    modal: { ondismiss: () => showToast('Payment cancelled') },
     theme: { color: "#ff7043" }
   };
-
   const rzp = new Razorpay(options);
   rzp.open();
 }
 
-// ---------- UPI fallback ----------
+// -------------------- UPI Fallback --------------------
 function showUPIFallback() {
   const amount = document.getElementById('cart-total').textContent;
-  const upiId = "yourupi@upi";
   const modal = document.createElement('div');
-  modal.className = 'upi-modal';
+  modal.className = 'upi-modal active';
   modal.innerHTML = `
     <div class="upi-card">
       <h3>Pay via UPI</h3>
       <p>Total: ₹${amount}</p>
-      <p><strong>UPI ID:</strong> ${upiId}</p>
+      <p><strong>UPI ID:</strong> yourupi@upi</p>
       <img src="upi-qr.png" alt="UPI QR" onerror="this.style.display='none'">
-      <p>After paying, click <strong>I have paid</strong> to confirm.</p>
-      <div style="display:flex;gap:8px;justify-content:center;margin-top:12px">
-        <button id="upi-paid" style="background:#10b981;color:#fff;padding:10px;border-radius:8px;border:none;cursor:pointer">I have paid</button>
+      <p>After payment, click "I Paid".</p>
+      <div style="display:flex;gap:8px;justify-content:center">
+        <button id="upi-paid" style="background:#10b981;color:#fff;padding:10px;border-radius:8px;border:none;cursor:pointer">I Paid</button>
         <button id="upi-cancel" style="background:#e5e7eb;padding:10px;border-radius:8px;border:none;cursor:pointer">Cancel</button>
       </div>
-    </div>
-  `;
+    </div>`;
   document.body.appendChild(modal);
 
   document.getElementById('upi-cancel').onclick = () => modal.remove();
@@ -256,10 +252,10 @@ function showUPIFallback() {
   };
 }
 
-// ---------- Order creation & tracking ----------
+// -------------------- Orders & Tracking --------------------
 function createOrder(paymentMethod, paymentId) {
   const cart = getCart();
-  if (!cart || cart.length === 0) { showToast('Cart empty'); return; }
+  if (!cart.length) return showToast('Cart empty');
 
   const subtotal = cart.reduce((s, i) => s + (i.price * (i.quantity || 1)), 0);
   const discount = calculateDiscount(subtotal);
@@ -293,24 +289,23 @@ function calculateDiscount(subtotal) {
   if (!appliedCoupon) return 0;
   const c = COUPONS[appliedCoupon];
   if (!c) return 0;
-  if (c.type === 'percent') return subtotal * (c.value / 100);
-  return c.value;
+  return c.type === 'percent' ? subtotal * (c.value / 100) : c.value;
 }
 
 function simulateTracking(orderId) {
   const orders = JSON.parse(localStorage.getItem('orders') || '[]');
-  const orderIndex = orders.findIndex(o => o.id === orderId);
-  if (orderIndex === -1) return;
+  const idx = orders.findIndex(o => o.id === orderId);
+  if (idx === -1) return;
 
-  orders[orderIndex].status = 'processing';
+  orders[idx].status = 'processing';
   localStorage.setItem('orders', JSON.stringify(orders));
   updateTrackingUI(orderId);
 
   setTimeout(() => {
     const olist = JSON.parse(localStorage.getItem('orders') || '[]');
-    const idx = olist.findIndex(o => o.id === orderId);
-    if (idx !== -1) {
-      olist[idx].status = 'out';
+    const i = olist.findIndex(o => o.id === orderId);
+    if (i !== -1) {
+      olist[i].status = 'out';
       localStorage.setItem('orders', JSON.stringify(olist));
       updateTrackingUI(orderId);
     }
@@ -318,9 +313,9 @@ function simulateTracking(orderId) {
 
   setTimeout(() => {
     const olist = JSON.parse(localStorage.getItem('orders') || '[]');
-    const idx = olist.findIndex(o => o.id === orderId);
-    if (idx !== -1) {
-      olist[idx].status = 'delivered';
+    const i = olist.findIndex(o => o.id === orderId);
+    if (i !== -1) {
+      olist[i].status = 'delivered';
       localStorage.setItem('orders', JSON.stringify(olist));
       updateTrackingUI(orderId);
     }
@@ -335,16 +330,11 @@ function showLastOrder(orderId) {
 function updateTrackingUI(orderId) {
   const orders = JSON.parse(localStorage.getItem('orders') || '[]');
   let order = orderId ? orders.find(o => o.id === orderId) : orders[orders.length - 1];
-  if (!order) { setTrackingStep('none'); return; }
+  if (!order) return setTrackingStep('none');
 
-  const status = order.status || 'placed';
-  if (status === 'placed') setTrackingStep('placed');
-  if (status === 'processing') setTrackingStep('processing');
-  if (status === 'out') setTrackingStep('out');
-  if (status === 'delivered') setTrackingStep('delivered');
-
+  setTrackingStep(order.status);
   const msg = document.getElementById('tracking-message');
-  msg.textContent = `Order ${order.id} - Status: ${status.toUpperCase()}`;
+  msg.textContent = `Order ${order.id} - Status: ${order.status.toUpperCase()}`;
 }
 
 function setTrackingStep(step) {
@@ -353,13 +343,7 @@ function setTrackingStep(step) {
   if (steps.includes(step)) document.getElementById(`step-${step}`).classList.add('active');
 }
 
-function escapeHtml(s) {
-  return String(s).replace(/[&<>"']/g, c => ({
-    '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'
-  })[c]);
-}
-
-// ---------- Init ----------
+// -------------------- Init --------------------
 function initCartPage() {
   displayCart();
   const orders = JSON.parse(localStorage.getItem('orders') || '[]');
@@ -369,12 +353,7 @@ function initCartPage() {
   } else {
     document.getElementById('order-tracking').style.display = 'none';
   }
-
-  const cartCountEls = document.querySelectorAll('#cart-count');
-  cartCountEls.forEach(el => {
-    const total = getCart().reduce((s, i) => s + (i.quantity || 0), 0);
-    el.textContent = total;
-  });
+  updateCartBadge();
 }
 
 window.addEventListener('DOMContentLoaded', initCartPage);
