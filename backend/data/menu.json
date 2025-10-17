@@ -1,0 +1,4 @@
+[
+  { "id": 1, "name": "Paneer Butter Masala", "price": 180, "category": "Main Course", "available": true },
+  { "id": 2, "name": "Veg Biryani", "price": 150, "category": "Rice", "available": true }
+]
