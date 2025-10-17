@@ -1,0 +1,4 @@
+[
+  { "id": 1, "code": "FOOD10", "type": "percent", "discount": 10 },
+  { "id": 2, "code": "FLAT50", "type": "flat", "discount": 50 }
+]
