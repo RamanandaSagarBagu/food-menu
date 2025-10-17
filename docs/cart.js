@@ -1,11 +1,11 @@
 /* cart.js
    Handles:
-   - Displaying cart (read from localStorage 'cart')
+   - Displaying cart (from localStorage 'cart')
    - Coupons (FOOD10 = 10% off, FLAT50 = ₹50 off)
-   - Tax 5% (applied after discount)
+   - Tax 5% (after discount)
    - Checkout: Razorpay integration (test key) + UPI fallback modal
-   - Order creation and tracking with persistence in localStorage
-   - Fallback image handling & GitHub raw link fix
+   - Order creation & tracking (localStorage)
+   - Fallback image handling + GitHub raw URL fix
 */
 
 const TAX_RATE = 0.05;
@@ -18,6 +18,7 @@ const COUPONS = {
 function getCart() {
   return JSON.parse(localStorage.getItem('cart')) || [];
 }
+
 function saveCart(cart) {
   localStorage.setItem('cart', JSON.stringify(cart));
   displayCart();
@@ -37,13 +38,22 @@ function showToast(msg, time = 1800) {
   t._timeout = setTimeout(() => t.classList.remove('show'), time);
 }
 
-// Fix image URLs (GitHub -> raw)
+// ✅ Fix image URLs (GitHub -> raw + space fix)
 function fixImageUrl(url) {
   if (!url) return './fallback.jpg';
+  
+  // Convert GitHub blob links to raw
   if (url.includes('github.com/') && url.includes('/blob/')) {
-    return url.replace('github.com/', 'raw.githubusercontent.com/').replace('/blob/', '/');
+    url = url.replace('github.com/', 'raw.githubusercontent.com/').replace('/blob/', '/');
   }
-  return url;
+
+  // Decode & re-encode safely to fix %20 or space issues
+  try {
+    const decoded = decodeURI(url);
+    return encodeURI(decoded);
+  } catch {
+    return url;
+  }
 }
 
 // Escape HTML
@@ -53,7 +63,7 @@ function escapeHtml(s) {
   })[c]);
 }
 
-// -------------------- Coupon state --------------------
+// -------------------- Coupon State --------------------
 let appliedCoupon = null;
 
 // -------------------- Display Cart --------------------
@@ -89,10 +99,11 @@ function displayCart() {
     div.className = 'cart-item';
     div.innerHTML = `
       <img 
-        src="${fixImageUrl(item.image)}" 
-        class="cart-img" 
+        src="${fixImageUrl(item.image)}"
+        class="cart-img"
         alt="${escapeHtml(item.name)}"
-        onerror="this.onerror=null;this.src='./fallback.jpg';">
+        onerror="this.onerror=null;this.src='./fallback.jpg';"
+      >
       <div class="cart-details">
         <h4>${escapeHtml(item.name)} (x${qty})</h4>
         <p>₹${itemTotal.toFixed(2)}</p>
@@ -110,11 +121,10 @@ function displayCart() {
   let discount = 0;
   if (appliedCoupon && COUPONS[appliedCoupon]) {
     const c = COUPONS[appliedCoupon];
-    if (c.type === 'percent') discount = subtotal * (c.value / 100);
-    else discount = c.value;
+    discount = c.type === 'percent' ? subtotal * (c.value / 100) : c.value;
   }
 
-  // Tax and total
+  // Tax + total
   const taxable = Math.max(0, subtotal - discount);
   const tax = taxable * TAX_RATE;
   const total = Math.max(0, taxable + tax);
@@ -127,12 +137,13 @@ function displayCart() {
   if (appliedCoupon) {
     couponMsg.textContent = `Coupon "${appliedCoupon}" applied.`;
   }
+
   updateCartBadge();
 }
 
 // -------------------- Quantity Updates --------------------
 function updateQuantity(index, delta) {
-  let cart = getCart();
+  const cart = getCart();
   if (!cart[index]) return;
   cart[index].quantity = (cart[index].quantity || 1) + delta;
   if (cart[index].quantity <= 0) cart.splice(index, 1);
@@ -141,7 +152,7 @@ function updateQuantity(index, delta) {
 }
 
 function removeFromCart(index) {
-  let cart = getCart();
+  const cart = getCart();
   if (!cart[index]) return;
   cart.splice(index, 1);
   saveCart(cart);
@@ -160,10 +171,7 @@ function updateCartBadge() {
 function applyCoupon() {
   const code = document.getElementById('coupon-code').value.trim().toUpperCase();
   const msg = document.getElementById('coupon-message');
-  if (!code) {
-    msg.textContent = 'Enter a coupon code.';
-    return;
-  }
+  if (!code) return msg.textContent = 'Enter a coupon code.';
   if (COUPONS[code]) {
     appliedCoupon = code;
     msg.textContent = `Applied: ${COUPONS[code].label}`;
@@ -215,10 +223,8 @@ function openRazorpay() {
     amount: Math.round(totalRupees * 100),
     currency: "INR",
     name: "Food Order",
-    description: "Payment for your delicious order",
-    handler: function (response) {
-      createOrder('razorpay', response.razorpay_payment_id || 'TEST_PAY_ID');
-    },
+    description: "Payment for your order",
+    handler: response => createOrder('razorpay', response.razorpay_payment_id || 'TEST_PAY_ID'),
     modal: { ondismiss: () => showToast('Payment cancelled') },
     theme: { color: "#ff7043" }
   };
@@ -288,8 +294,7 @@ function createOrder(paymentMethod, paymentId) {
 function calculateDiscount(subtotal) {
   if (!appliedCoupon) return 0;
   const c = COUPONS[appliedCoupon];
-  if (!c) return 0;
-  return c.type === 'percent' ? subtotal * (c.value / 100) : c.value;
+  return c ? (c.type === 'percent' ? subtotal * (c.value / 100) : c.value) : 0;
 }
 
 function simulateTracking(orderId) {
@@ -301,25 +306,18 @@ function simulateTracking(orderId) {
   localStorage.setItem('orders', JSON.stringify(orders));
   updateTrackingUI(orderId);
 
-  setTimeout(() => {
-    const olist = JSON.parse(localStorage.getItem('orders') || '[]');
-    const i = olist.findIndex(o => o.id === orderId);
-    if (i !== -1) {
-      olist[i].status = 'out';
-      localStorage.setItem('orders', JSON.stringify(olist));
-      updateTrackingUI(orderId);
-    }
-  }, 5000);
+  setTimeout(() => updateOrderStatus(orderId, 'out'), 5000);
+  setTimeout(() => updateOrderStatus(orderId, 'delivered'), 10000);
+}
 
-  setTimeout(() => {
-    const olist = JSON.parse(localStorage.getItem('orders') || '[]');
-    const i = olist.findIndex(o => o.id === orderId);
-    if (i !== -1) {
-      olist[i].status = 'delivered';
-      localStorage.setItem('orders', JSON.stringify(olist));
-      updateTrackingUI(orderId);
-    }
-  }, 10000);
+function updateOrderStatus(orderId, status) {
+  const orders = JSON.parse(localStorage.getItem('orders') || '[]');
+  const i = orders.findIndex(o => o.id === orderId);
+  if (i !== -1) {
+    orders[i].status = status;
+    localStorage.setItem('orders', JSON.stringify(orders));
+    updateTrackingUI(orderId);
+  }
 }
 
 function showLastOrder(orderId) {
@@ -329,30 +327,31 @@ function showLastOrder(orderId) {
 
 function updateTrackingUI(orderId) {
   const orders = JSON.parse(localStorage.getItem('orders') || '[]');
-  let order = orderId ? orders.find(o => o.id === orderId) : orders[orders.length - 1];
+  const order = orderId ? orders.find(o => o.id === orderId) : orders[orders.length - 1];
   if (!order) return setTrackingStep('none');
-
   setTrackingStep(order.status);
-  const msg = document.getElementById('tracking-message');
-  msg.textContent = `Order ${order.id} - Status: ${order.status.toUpperCase()}`;
+  document.getElementById('tracking-message').textContent =
+    `Order ${order.id} - Status: ${order.status.toUpperCase()}`;
 }
 
 function setTrackingStep(step) {
   const steps = ['placed', 'processing', 'out', 'delivered'];
-  steps.forEach(id => document.getElementById(`step-${id}`).classList.remove('active'));
-  if (steps.includes(step)) document.getElementById(`step-${step}`).classList.add('active');
+  steps.forEach(id => {
+    const el = document.getElementById(`step-${id}`);
+    if (el) el.classList.remove('active');
+  });
+  if (steps.includes(step)) {
+    const el = document.getElementById(`step-${step}`);
+    if (el) el.classList.add('active');
+  }
 }
 
 // -------------------- Init --------------------
 function initCartPage() {
   displayCart();
   const orders = JSON.parse(localStorage.getItem('orders') || '[]');
-  if (orders.length > 0) {
-    const last = orders[orders.length - 1];
-    showLastOrder(last.id);
-  } else {
-    document.getElementById('order-tracking').style.display = 'none';
-  }
+  if (orders.length) showLastOrder(orders[orders.length - 1].id);
+  else document.getElementById('order-tracking').style.display = 'none';
   updateCartBadge();
 }
 
