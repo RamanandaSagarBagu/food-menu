@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Dashboard</title>
+  <style>
+    body { font-family: Arial; margin: 20px; }
+    h1 { color: #333; }
+    table { border-collapse: collapse; width: 100%; margin-bottom: 20px; }
+    table, th, td { border: 1px solid #ccc; }
+    th, td { padding: 10px; text-align: left; }
+    button { padding: 5px 10px; margin: 2px; }
+    input, select { padding: 5px; }
+  </style>
+</head>
+<body>
+
+<h1>Admin Dashboard</h1>
+
+<h2>Menu Items</h2>
+<table id="menuTable">
+  <thead>
+    <tr>
+      <th>ID</th><th>Name</th><th>Price</th><th>Category</th><th>Available</th><th>Actions</th>
+    </tr>
+  </thead>
+  <tbody></tbody>
+</table>
+
+<h3>Add New Item</h3>
+Name: <input id="newName">
+Price: <input id="newPrice" type="number">
+Category: <input id="newCategory">
+Available: <select id="newAvailable">
+  <option value="true">Yes</option>
+  <option value="false">No</option>
+</select>
+<button id="addItemBtn">Add Item</button>
+
+<h2>Orders</h2>
+<table id="ordersTable">
+  <thead>
+    <tr>
+      <th>ID</th><th>Items</th><th>Total</th><th>Status</th><th>Actions</th>
+    </tr>
+  </thead>
+  <tbody></tbody>
+</table>
+
+<h2>Coupons</h2>
+<table id="couponsTable">
+  <thead>
+    <tr>
+      <th>ID</th><th>Code</th><th>Type</th><th>Discount</th>
+    </tr>
+  </thead>
+  <tbody></tbody>
+</table>
+
+<script src="admin.js"></script>
+</body>
+</html>
