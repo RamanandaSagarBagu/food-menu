@@ -10,8 +10,12 @@ const PORT = 3000;
 app.use(cors());
 app.use(bodyParser.json());
 
-// ✅ Serve all frontend files from /docs folder
-app.use(express.static(path.join(__dirname, "../docs")));
+// 🧩 Log the folder being served (for debugging)
+const docsPath = path.resolve(__dirname, "../docs");
+console.log("🧩 Serving static files from:", docsPath);
+
+// ✅ Serve frontend files
+app.use(express.static(docsPath));
 
 // ✅ API routes
 const menuRoutes = require("./routes/menuRoutes");
@@ -22,15 +26,20 @@ app.use("/api/menu", menuRoutes);
 app.use("/api/orders", orderRoutes);
 app.use("/api/coupons", couponRoutes);
 
-// ✅ Fallback route to handle pages like /admin.html, /cart.html, etc.
-app.get("*", (req, res) => {
-  const filePath = path.join(__dirname, "../docs", req.path);
+// ✅ Serve HTML files correctly
+app.get("/:page", (req, res) => {
+  const file = req.params.page;
+  const filePath = path.join(docsPath, file);
   res.sendFile(filePath, (err) => {
     if (err) {
-      // If file not found, redirect to homepage
-      res.sendFile(path.join(__dirname, "../docs/index.html"));
+      res.status(404).send("Page not found");
     }
   });
+});
+
+// ✅ Default route (homepage)
+app.get("/", (req, res) => {
+  res.sendFile(path.join(docsPath, "index.html"));
 });
 
 // ✅ Start Server
