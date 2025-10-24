@@ -10,10 +10,10 @@ const PORT = 3000;
 app.use(cors());
 app.use(bodyParser.json());
 
-// Serve your frontend (docs folder)
+// ✅ Serve all frontend files from /docs folder
 app.use(express.static(path.join(__dirname, "../docs")));
 
-// Routes
+// ✅ API routes
 const menuRoutes = require("./routes/menuRoutes");
 const orderRoutes = require("./routes/orderRoutes");
 const couponRoutes = require("./routes/couponRoutes");
@@ -22,8 +22,18 @@ app.use("/api/menu", menuRoutes);
 app.use("/api/orders", orderRoutes);
 app.use("/api/coupons", couponRoutes);
 
-// Start Server
+// ✅ Fallback route to handle pages like /admin.html, /cart.html, etc.
+app.get("*", (req, res) => {
+  const filePath = path.join(__dirname, "../docs", req.path);
+  res.sendFile(filePath, (err) => {
+    if (err) {
+      // If file not found, redirect to homepage
+      res.sendFile(path.join(__dirname, "../docs/index.html"));
+    }
+  });
+});
+
+// ✅ Start Server
 app.listen(PORT, () => {
   console.log(`✅ Server running at http://localhost:${PORT}`);
 });
-
