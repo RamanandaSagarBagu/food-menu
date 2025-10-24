@@ -10,12 +10,10 @@ const PORT = 3000;
 app.use(cors());
 app.use(bodyParser.json());
 
-// 🧩 Log the folder being served (for debugging)
-const docsPath = path.resolve(__dirname, "../docs");
-console.log("🧩 Serving static files from:", docsPath);
-
-// ✅ Serve frontend files
-app.use(express.static(docsPath));
+// 🧩 Serve frontend files from /docs folder
+const staticPath = path.join(__dirname, "../docs");
+app.use(express.static(staticPath));
+console.log("🧩 Serving static files from:", staticPath);
 
 // ✅ API routes
 const menuRoutes = require("./routes/menuRoutes");
@@ -26,20 +24,20 @@ app.use("/api/menu", menuRoutes);
 app.use("/api/orders", orderRoutes);
 app.use("/api/coupons", couponRoutes);
 
-// ✅ Serve HTML files correctly
+// ✅ Handle direct HTML page requests (admin.html, cart.html, etc.)
 app.get("/:page", (req, res) => {
-  const file = req.params.page;
-  const filePath = path.join(docsPath, file);
+  const filePath = path.join(staticPath, req.params.page);
   res.sendFile(filePath, (err) => {
     if (err) {
-      res.status(404).send("Page not found");
+      console.error("⚠️ Page not found:", filePath);
+      res.status(404).sendFile(path.join(staticPath, "index.html"));
     }
   });
 });
 
-// ✅ Default route (homepage)
+// ✅ Default route for homepage
 app.get("/", (req, res) => {
-  res.sendFile(path.join(docsPath, "index.html"));
+  res.sendFile(path.join(staticPath, "index.html"));
 });
 
 // ✅ Start Server
