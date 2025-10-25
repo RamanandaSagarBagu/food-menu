@@ -1,116 +1,101 @@
-const backendURL = "http://localhost:3000/api";
+const API_BASE = "/api";
 
-// ===== MENU =====
+// --- Tabs ---
+document.querySelectorAll("[data-tab]").forEach(btn => {
+  btn.addEventListener("click", () => {
+    document.querySelectorAll(".tab-content").forEach(tab => tab.classList.add("hidden"));
+    document.getElementById(btn.dataset.tab).classList.remove("hidden");
+  });
+});
+
+// --- Toast Helper ---
+function showToast(msg, color = "bg-green-600") {
+  const toast = document.getElementById("toast");
+  toast.textContent = msg;
+  toast.className = `fixed bottom-4 right-4 text-white px-4 py-2 rounded shadow ${color}`;
+  toast.classList.remove("hidden");
+  setTimeout(() => toast.classList.add("hidden"), 2000);
+}
+
+// --- MENU ---
 async function loadMenu() {
-  const res = await fetch(`${backendURL}/menu`);
-  const menu = await res.json();
-  const tbody = document.querySelector("#menuTable tbody");
+  const res = await fetch(`${API_BASE}/menu`);
+  const data = await res.json();
+  const tbody = document.getElementById("menuTable");
   tbody.innerHTML = "";
-  menu.forEach(item => {
-    const tr = document.createElement("tr");
-    tr.innerHTML = `
-      <td>${item.id}</td>
-      <td><input value="${item.name}" data-id="${item.id}" class="editName"></td>
-      <td><input type="number" value="${item.price}" data-id="${item.id}" class="editPrice"></td>
-      <td><input value="${item.category}" data-id="${item.id}" class="editCategory"></td>
-      <td>
-        <select data-id="${item.id}" class="editAvailable">
-          <option value="true" ${item.available?'selected':''}>Yes</option>
-          <option value="false" ${!item.available?'selected':''}>No</option>
-        </select>
-      </td>
-      <td>
-        <button onclick="updateItem(${item.id})">Update</button>
-        <button onclick="deleteItem(${item.id})">Delete</button>
-      </td>
-    `;
-    tbody.appendChild(tr);
+  data.forEach(item => {
+    tbody.innerHTML += `
+      <tr class="border-b">
+        <td class="p-2">${item.name}</td>
+        <td class="p-2">₹${item.price}</td>
+        <td class="p-2">${item.category}</td>
+        <td class="p-2">${item.available ? "✅" : "❌"}</td>
+        <td class="p-2">
+          <button onclick="deleteItem(${item.id})" class="text-red-500">Delete</button>
+        </td>
+      </tr>`;
   });
 }
-
-async function addItem() {
-  const name = document.getElementById("newName").value;
-  const price = parseFloat(document.getElementById("newPrice").value);
-  const category = document.getElementById("newCategory").value;
-  const available = document.getElementById("newAvailable").value === "true";
-  if(!name || !price || !category) { alert("Fill all fields"); return; }
-  await fetch(`${backendURL}/menu`, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ name, price, category, available })
-  });
+document.getElementById("addItemBtn").addEventListener("click", async () => {
+  const newItem = {
+    name: newName.value,
+    price: parseFloat(newPrice.value),
+    category: newCategory.value,
+    available: newAvailable.value === "true"
+  };
+  await fetch(`${API_BASE}/menu`, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(newItem) });
+  showToast("Item added!");
   loadMenu();
-}
-
-async function updateItem(id) {
-  const name = document.querySelector(`.editName[data-id='${id}']`).value;
-  const price = parseFloat(document.querySelector(`.editPrice[data-id='${id}']`).value);
-  const category = document.querySelector(`.editCategory[data-id='${id}']`).value;
-  const available = document.querySelector(`.editAvailable[data-id='${id}']`).value === "true";
-  await fetch(`${backendURL}/menu/${id}`, {
-    method: "PUT",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ name, price, category, available })
-  });
-  loadMenu();
-}
-
+});
 async function deleteItem(id) {
-  await fetch(`${backendURL}/menu/${id}`, { method: "DELETE" });
+  await fetch(`${API_BASE}/menu/${id}`, { method: "DELETE" });
+  showToast("Item deleted!", "bg-red-600");
   loadMenu();
 }
 
-document.getElementById("addItemBtn").addEventListener("click", addItem);
-
-// ===== ORDERS =====
+// --- ORDERS ---
 async function loadOrders() {
-  const res = await fetch(`${backendURL}/orders`);
-  const orders = await res.json();
-  const tbody = document.querySelector("#ordersTable tbody");
+  const res = await fetch(`${API_BASE}/orders`);
+  const data = await res.json();
+  const tbody = document.getElementById("ordersTable");
   tbody.innerHTML = "";
-  orders.forEach(order => {
-    const tr = document.createElement("tr");
-    tr.innerHTML = `
-      <td>${order.id}</td>
-      <td>${order.items.map(i=>i.name).join(", ")}</td>
-      <td>${order.total}</td>
-      <td>
-        <select onchange="updateOrderStatus(${order.id}, this.value)">
-          <option value="Processing" ${order.status==='Processing'?'selected':''}>Processing</option>
-          <option value="Delivered" ${order.status==='Delivered'?'selected':''}>Delivered</option>
-        </select>
-      </td>
-      <td></td>
-    `;
-    tbody.appendChild(tr);
+  data.forEach(order => {
+    tbody.innerHTML += `
+      <tr class="border-b">
+        <td class="p-2">${order.id}</td>
+        <td class="p-2">${order.items.map(i => i.name).join(", ")}</td>
+        <td class="p-2">₹${order.total}</td>
+        <td class="p-2">${order.status}</td>
+        <td class="p-2">
+          <button onclick="updateStatus(${order.id}, 'Processing')" class="text-blue-600">Process</button>
+          <button onclick="updateStatus(${order.id}, 'Delivered')" class="text-green-600">Deliver</button>
+        </td>
+      </tr>`;
   });
 }
-
-async function updateOrderStatus(id, status) {
-  await fetch(`${backendURL}/orders/${id}`, {
-    method: "PUT",
-    headers: {"Content-Type": "application/json"},
-    body: JSON.stringify({ status })
-  });
+async function updateStatus(id, status) {
+  await fetch(`${API_BASE}/orders/${id}`, { method: "PUT", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ status }) });
+  showToast(`Order ${status}`);
   loadOrders();
 }
 
-// ===== COUPONS =====
+// --- COUPONS ---
 async function loadCoupons() {
-  const res = await fetch(`${backendURL}/coupons`);
-  const coupons = await res.json();
-  const tbody = document.querySelector("#couponsTable tbody");
+  const res = await fetch(`${API_BASE}/coupons`);
+  const data = await res.json();
+  const tbody = document.getElementById("couponsTable");
   tbody.innerHTML = "";
-  coupons.forEach(c => {
-    const tr = document.createElement("tr");
-    tr.innerHTML = `
-      <td>${c.id}</td><td>${c.code}</td><td>${c.type}</td><td>${c.discount}</td>
-    `;
-    tbody.appendChild(tr);
+  data.forEach(c => {
+    tbody.innerHTML += `
+      <tr class="border-b">
+        <td class="p-2">${c.code}</td>
+        <td class="p-2">${c.type}</td>
+        <td class="p-2">${c.discount}${c.type === "percent" ? "%" : "₹"}</td>
+      </tr>`;
   });
 }
 
-// ===== INITIAL LOAD =====
+// Load all by default
 loadMenu();
 loadOrders();
 loadCoupons();
