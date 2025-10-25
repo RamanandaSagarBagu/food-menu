@@ -1,63 +1,93 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Admin Dashboard</title>
-  <style>
-    body { font-family: Arial; margin: 20px; }
-    h1 { color: #333; }
-    table { border-collapse: collapse; width: 100%; margin-bottom: 20px; }
-    table, th, td { border: 1px solid #ccc; }
-    th, td { padding: 10px; text-align: left; }
-    button { padding: 5px 10px; margin: 2px; }
-    input, select { padding: 5px; }
-  </style>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://unpkg.com/lucide-icons/dist/umd/lucide.min.js"></script>
 </head>
-<body>
+<body class="bg-gray-100 font-sans">
 
-<h1>Admin Dashboard</h1>
+  <div class="flex h-screen">
+    <!-- Sidebar -->
+    <aside class="w-64 bg-gray-900 text-white flex flex-col">
+      <h2 class="text-2xl font-bold p-4 border-b border-gray-700">Admin Panel</h2>
+      <nav class="flex-1 p-4 space-y-3">
+        <button class="w-full text-left px-3 py-2 rounded hover:bg-gray-800" data-tab="menu">🍽 Menu</button>
+        <button class="w-full text-left px-3 py-2 rounded hover:bg-gray-800" data-tab="orders">🧾 Orders</button>
+        <button class="w-full text-left px-3 py-2 rounded hover:bg-gray-800" data-tab="coupons">🎟 Coupons</button>
+      </nav>
+      <div class="p-4 border-t border-gray-700 text-sm text-gray-400">
+        &copy; 2025 Food Menu Admin
+      </div>
+    </aside>
 
-<h2>Menu Items</h2>
-<table id="menuTable">
-  <thead>
-    <tr>
-      <th>ID</th><th>Name</th><th>Price</th><th>Category</th><th>Available</th><th>Actions</th>
-    </tr>
-  </thead>
-  <tbody></tbody>
-</table>
+    <!-- Main Content -->
+    <main class="flex-1 overflow-y-auto p-6">
+      <!-- Menu Section -->
+      <section id="menu" class="tab-content">
+        <h2 class="text-2xl font-semibold mb-4">Menu Management</h2>
+        <div class="mb-4 bg-white p-4 rounded shadow">
+          <h3 class="font-semibold mb-2">Add New Item</h3>
+          <input id="newName" placeholder="Name" class="border p-2 rounded mr-2">
+          <input id="newPrice" placeholder="Price" type="number" class="border p-2 rounded mr-2">
+          <input id="newCategory" placeholder="Category" class="border p-2 rounded mr-2">
+          <select id="newAvailable" class="border p-2 rounded mr-2">
+            <option value="true">Available</option>
+            <option value="false">Not Available</option>
+          </select>
+          <button id="addItemBtn" class="bg-blue-600 text-white px-3 py-2 rounded">Add</button>
+        </div>
+        <table class="w-full bg-white rounded shadow">
+          <thead class="bg-gray-200">
+            <tr>
+              <th class="p-2">Name</th>
+              <th class="p-2">Price</th>
+              <th class="p-2">Category</th>
+              <th class="p-2">Available</th>
+              <th class="p-2">Actions</th>
+            </tr>
+          </thead>
+          <tbody id="menuTable"></tbody>
+        </table>
+      </section>
 
-<h3>Add New Item</h3>
-Name: <input id="newName">
-Price: <input id="newPrice" type="number">
-Category: <input id="newCategory">
-Available: <select id="newAvailable">
-  <option value="true">Yes</option>
-  <option value="false">No</option>
-</select>
-<button id="addItemBtn">Add Item</button>
+      <!-- Orders Section -->
+      <section id="orders" class="tab-content hidden">
+        <h2 class="text-2xl font-semibold mb-4">Orders</h2>
+        <table class="w-full bg-white rounded shadow">
+          <thead class="bg-gray-200">
+            <tr>
+              <th class="p-2">Order ID</th>
+              <th class="p-2">Items</th>
+              <th class="p-2">Total</th>
+              <th class="p-2">Status</th>
+              <th class="p-2">Actions</th>
+            </tr>
+          </thead>
+          <tbody id="ordersTable"></tbody>
+        </table>
+      </section>
 
-<h2>Orders</h2>
-<table id="ordersTable">
-  <thead>
-    <tr>
-      <th>ID</th><th>Items</th><th>Total</th><th>Status</th><th>Actions</th>
-    </tr>
-  </thead>
-  <tbody></tbody>
-</table>
+      <!-- Coupons Section -->
+      <section id="coupons" class="tab-content hidden">
+        <h2 class="text-2xl font-semibold mb-4">Coupons</h2>
+        <table class="w-full bg-white rounded shadow">
+          <thead class="bg-gray-200">
+            <tr>
+              <th class="p-2">Code</th>
+              <th class="p-2">Type</th>
+              <th class="p-2">Discount</th>
+            </tr>
+          </thead>
+          <tbody id="couponsTable"></tbody>
+        </table>
+      </section>
+    </main>
+  </div>
 
-<h2>Coupons</h2>
-<table id="couponsTable">
-  <thead>
-    <tr>
-      <th>ID</th><th>Code</th><th>Type</th><th>Discount</th>
-    </tr>
-  </thead>
-  <tbody></tbody>
-</table>
-
-<script src="admin.js"></script>
+  <div id="toast" class="fixed bottom-4 right-4 bg-green-600 text-white px-4 py-2 rounded shadow hidden"></div>
+  <script src="admin.js"></script>
 </body>
 </html>
