@@ -4,7 +4,7 @@ const { readJSON, writeJSON } = require("../utils/fileHandler");
 
 const FILE = "menu.json";
 
-// ✅ Get all menu items
+// Get all menu items
 router.get("/", async (req, res) => {
   try {
     const menu = await readJSON(FILE);
@@ -14,7 +14,7 @@ router.get("/", async (req, res) => {
   }
 });
 
-// ✅ Add new item
+// Add new item
 router.post("/", async (req, res) => {
   try {
     const menu = await readJSON(FILE);
@@ -27,7 +27,7 @@ router.post("/", async (req, res) => {
   }
 });
 
-// ✅ Update item
+// Update item
 router.put("/:id", async (req, res) => {
   try {
     const menu = await readJSON(FILE);
@@ -42,7 +42,7 @@ router.put("/:id", async (req, res) => {
   }
 });
 
-// ✅ Delete item
+// Delete item
 router.delete("/:id", async (req, res) => {
   try {
     const menu = await readJSON(FILE);
