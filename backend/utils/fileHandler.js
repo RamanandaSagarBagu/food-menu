@@ -3,13 +3,16 @@ const path = require("path");
 
 async function readJSON(fileName) {
   const filePath = path.join(__dirname, "../data", fileName);
-  const data = await fs.readJSON(filePath);
-  return data;
+  await fs.ensureFile(filePath); // create file if missing
+  const exists = await fs.readFile(filePath, "utf8");
+  if (!exists || exists.trim() === "") return [];
+  return fs.readJson(filePath);
 }
 
 async function writeJSON(fileName, data) {
   const filePath = path.join(__dirname, "../data", fileName);
-  await fs.writeJSON(filePath, data, { spaces: 2 });
+  await fs.ensureFile(filePath);
+  await fs.writeJson(filePath, data, { spaces: 2 });
 }
 
 module.exports = { readJSON, writeJSON };
