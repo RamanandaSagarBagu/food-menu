@@ -4,9 +4,12 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>Food Menu</title>
+
+  <!-- External Stylesheet -->
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
+
   <!-- Header -->
   <header class="header">
     <h1 class="title">Food Menu</h1>
@@ -17,23 +20,36 @@
 
   <!-- Controls -->
   <section class="controls">
-    <input id="searchBox" type="text" placeholder="Search food..." onkeyup="searchFood()" />
-    <select id="categoryFilter" onchange="onControlsChange()">
+    <input 
+      id="searchBox" 
+      type="text" 
+      placeholder="Search food..."
+    />
+
+    <select id="categoryFilter">
       <option value="all">All Categories</option>
     </select>
-    <select id="sortOptions" onchange="onControlsChange()">
+
+    <select id="sortOptions">
       <option value="default">Sort By</option>
       <option value="price-low">Price: Low → High</option>
       <option value="price-high">Price: High → Low</option>
+      <option value="name-az">Name: A → Z</option>
     </select>
   </section>
 
-  <!-- Food List -->
+  <!-- Menu List -->
   <main id="foodContainer" class="food-grid" aria-live="polite"></main>
 
-  <!-- Toast Notification -->
-  <div id="toast" class="toast" aria-hidden="true"></div>
+  <!-- No Items Placeholder -->
+  <div id="noItems" class="no-items" style="display:none;">
+    No items match your search/filter.
+  </div>
 
+  <!-- Toast Notification -->
+  <div id="toast" class="toast" aria-live="polite"></div>
+
+  <!-- Script -->
   <script src="script.js"></script>
 </body>
 </html>
