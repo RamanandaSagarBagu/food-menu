@@ -1,6 +1,7 @@
+// docs/admin.js
 const API = "/api";
 
-// ----- UI helpers -----
+// ----- Helpers -----
 function $(s) { return document.querySelector(s); }
 function $a(s) { return document.querySelectorAll(s); }
 
@@ -14,18 +15,20 @@ function showToast(msg, color = "bg-green-600") {
 
 function openModal(html) {
   $("#modal").innerHTML = html;
-  const overlay = $("#modalOverlay");
-  overlay.classList.remove("hidden");
+  $("#modalOverlay").classList.remove("hidden");
 }
 function closeModal() {
   $("#modalOverlay").classList.add("hidden");
   $("#modal").innerHTML = "";
 }
-
-// close modal on overlay click
 $("#modalOverlay").addEventListener("click", (e) => {
   if (e.target === $("#modalOverlay")) closeModal();
 });
+
+function escapeHtml(str) {
+  if (!str && str !== 0) return "";
+  return String(str).replace(/[&<>"']/g, s => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;' })[s]);
+}
 
 // ----- Tabs -----
 $("#tab-menu-btn").addEventListener("click", () => showTab("tab-menu"));
@@ -37,7 +40,7 @@ function showTab(id) {
   $(`#${id}`).classList.remove("hidden");
 }
 
-// ----- Menu: load/add/edit/delete -----
+// ----- MENU: load/add/edit/delete (with image support) -----
 async function loadMenu() {
   const res = await fetch(`${API}/menu`);
   const menu = await res.json();
@@ -46,9 +49,9 @@ async function loadMenu() {
   menu.forEach(item => {
     const tr = document.createElement("tr");
     tr.innerHTML = `
-      <td class="px-4 py-2">${item.name}</td>
+      <td class="px-4 py-2">${escapeHtml(item.name)}</td>
       <td class="px-4 py-2">₹${item.price}</td>
-      <td class="px-4 py-2">${item.category}</td>
+      <td class="px-4 py-2">${escapeHtml(item.category)}</td>
       <td class="px-4 py-2">${item.available ? "Yes" : "No"}</td>
       <td class="px-4 py-2">
         <button class="text-blue-600 mr-3" onclick="openEditMenu(${item.id})">Edit</button>
@@ -69,13 +72,38 @@ $("#openAddMenuBtn").addEventListener("click", () => {
         <option value="true">Available</option>
         <option value="false">Not available</option>
       </select>
+      <label class="block text-sm">Image (optional)</label>
+      <input id="m_image" type="file" accept="image/*" class="w-full"/>
+      <div id="m_image_preview" class="mt-2"></div>
     </div>
     <div class="mt-4 text-right">
       <button onclick="closeModal()" class="mr-2 px-3 py-1">Cancel</button>
       <button onclick="createMenu()" class="bg-blue-600 text-white px-3 py-1 rounded">Create</button>
     </div>
   `);
+
+  // preview handler
+  $("#m_image").addEventListener("change", async (e) => {
+    const file = e.target.files[0];
+    if (!file) { $("#m_image_preview").innerHTML = ""; return; }
+    const reader = new FileReader();
+    reader.onload = () => {
+      $("#m_image_preview").innerHTML = `<img src="${reader.result}" style="max-width:150px;max-height:120px;display:block;border-radius:6px">`;
+    };
+    reader.readAsDataURL(file);
+  });
 });
+
+async function readFileAsDataURL(inputEl) {
+  const file = inputEl.files && inputEl.files[0];
+  if (!file) return null;
+  return await new Promise((resolve, reject) => {
+    const r = new FileReader();
+    r.onload = () => resolve(r.result);
+    r.onerror = reject;
+    r.readAsDataURL(file);
+  });
+}
 
 async function createMenu() {
   const body = {
@@ -85,6 +113,11 @@ async function createMenu() {
     available: $("#m_available").value === "true"
   };
   if (!body.name) { showToast("Name required", "bg-red-600"); return; }
+
+  // read image (if any)
+  const imageData = await readFileAsDataURL($("#m_image"));
+  if (imageData) body.imageData = imageData;
+
   await fetch(`${API}/menu`, { method: "POST", headers: {"Content-Type":"application/json"}, body: JSON.stringify(body) });
   showToast("Menu item added");
   closeModal();
@@ -107,12 +140,25 @@ window.openEditMenu = function (id) {
           <option value="true" ${item.available ? "selected":""}>Available</option>
           <option value="false" ${!item.available ? "selected":""}>Not available</option>
         </select>
+        <label class="block text-sm">Image (optional)</label>
+        <input id="m_image" type="file" accept="image/*" class="w-full"/>
+        <div id="m_image_preview" class="mt-2">${ item.imageData ? `<img src="${item.imageData}" style="max-width:150px;max-height:120px;border-radius:6px">` : "" }</div>
       </div>
       <div class="mt-4 text-right">
         <button onclick="closeModal()" class="mr-2 px-3 py-1">Cancel</button>
         <button onclick="saveMenu(${id})" class="bg-blue-600 text-white px-3 py-1 rounded">Save</button>
       </div>
     `);
+
+    $("#m_image").addEventListener("change", async (e) => {
+      const file = e.target.files[0];
+      if (!file) { $("#m_image_preview").innerHTML = ""; return; }
+      const reader = new FileReader();
+      reader.onload = () => {
+        $("#m_image_preview").innerHTML = `<img src="${reader.result}" style="max-width:150px;max-height:120px;display:block;border-radius:6px">`;
+      };
+      reader.readAsDataURL(file);
+    });
   })();
 };
 
@@ -123,6 +169,10 @@ async function saveMenu(id) {
     category: $("#m_category").value.trim(),
     available: $("#m_available").value === "true"
   };
+
+  const imageData = await readFileAsDataURL($("#m_image"));
+  if (imageData) body.imageData = imageData; // replace only when new is uploaded
+
   await fetch(`${API}/menu/${id}`, { method: "PUT", headers: {"Content-Type":"application/json"}, body: JSON.stringify(body) });
   showToast("Menu updated");
   closeModal();
@@ -198,7 +248,7 @@ async function loadCoupons() {
   coupons.forEach(c => {
     const tr = document.createElement("tr");
     tr.innerHTML = `
-      <td class="px-4 py-2">${c.code}</td>
+      <td class="px-4 py-2">${escapeHtml(c.code)}</td>
       <td class="px-4 py-2">${c.type}</td>
       <td class="px-4 py-2">${c.discount}${c.type === "percent" ? "%" : "₹"}</td>
       <td class="px-4 py-2">
@@ -264,12 +314,6 @@ async function deleteCoupon(id) {
   await fetch(`${API}/coupons/${id}`, { method: "DELETE" });
   showToast("Deleted");
   loadCoupons();
-}
-
-// ----- Utilities -----
-function escapeHtml(str) {
-  if (!str && str !== 0) return "";
-  return String(str).replace(/[&<>"']/g, s => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;' })[s]);
 }
 
 // ----- Init -----
