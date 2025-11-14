@@ -3,107 +3,252 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Admin Dashboard</title>
-  <script src="https://cdn.tailwindcss.com"></script>
+  <title>Admin — Food Menu</title>
+
+  <!-- Use your existing style.css; additional admin styles will be provided separately -->
+  <link rel="stylesheet" href="style.css">
+
+  <!-- Inline critical admin layout tweaks (small and safe) -->
+  <style>
+    /* Basic structural layout — main spacing only (darker styling lives in Part 3) */
+    :root { --sidebar-width: 260px; }
+    html,body { height:100%; margin:0; font-family:Inter,system-ui,Arial,sans-serif; }
+    .admin-app { display:flex; height:100vh; overflow:hidden; background:#0f1724; color:#e6eef8; }
+    .sidebar { width:var(--sidebar-width); background:#0b1220; display:flex; flex-direction:column; }
+    .sidebar .brand { padding:22px; font-size:20px; font-weight:700; color:#fff; border-bottom:1px solid rgba(255,255,255,0.03); }
+    .nav { padding:14px; display:flex; flex-direction:column; gap:6px; }
+    .nav button { display:flex; gap:12px; align-items:center; width:100%; border:0; background:transparent; color:inherit; padding:10px 12px; border-radius:8px; cursor:pointer; text-align:left; font-weight:600; }
+    .nav button.active, .nav button:hover { background: rgba(255,112,67,0.12); color:#fff; }
+    .nav .icon { width:22px; text-align:center; opacity:0.9; }
+    .sidebar .bottom { margin-top:auto; padding:14px; border-top:1px solid rgba(255,255,255,0.03); font-size:13px; color:#aab6c8; }
+
+    .main { flex:1; display:flex; flex-direction:column; overflow:auto; }
+    .topbar { height:64px; display:flex; align-items:center; justify-content:space-between; padding:12px 20px; border-bottom:1px solid rgba(255,255,255,0.03); background: linear-gradient(180deg, rgba(255,255,255,0.02), transparent); }
+    .topbar .search { width:380px; max-width:48%; }
+    .topbar input { width:100%; padding:10px 12px; border-radius:10px; border:1px solid rgba(255,255,255,0.04); background: rgba(255,255,255,0.02); color:inherit; outline:none; }
+    .topbar .actions { display:flex; gap:12px; align-items:center; }
+
+    .content { padding:20px; flex:1; overflow:auto; background: linear-gradient(180deg,#0f1724,#0b1220); } 
+    .page { display:none; }
+    .page.active { display:block; }
+
+    /* Dashboard grid */
+    .grid { display:grid; gap:18px; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); }
+    .card { background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01)); padding:18px; border-radius:12px; box-shadow: 0 6px 20px rgba(2,6,23,0.5); color: #eaf6ff; }
+    .card h3 { margin:0 0 8px; font-size:14px; color:#fff; font-weight:700; }
+    .card p { margin:0; color:#c9d8e6; font-size:18px; font-weight:800; }
+
+    /* Table basic */
+    .table { width:100%; border-collapse:collapse; background:transparent; }
+    .table thead th { text-align:left; padding:12px; color:#9fb2c9; font-weight:700; font-size:13px; background: rgba(255,255,255,0.01); border-bottom:1px solid rgba(255,255,255,0.03); }
+    .table tbody td { padding:12px; border-bottom:1px dashed rgba(255,255,255,0.03); color:#d8e9fb; font-size:14px; }
+
+    /* Buttons & badges */
+    .btn { padding:8px 12px; border-radius:8px; border:0; cursor:pointer; font-weight:700; }
+    .btn.primary { background:#ff7043; color:#fff; box-shadow:0 8px 18px rgba(255,112,67,0.12); }
+    .btn.ghost { background:transparent; color:#dbe9f8; border:1px solid rgba(255,255,255,0.03); }
+
+    /* Modal overlay (JS will toggle visible) */
+    #modalOverlay { position:fixed; inset:0; display:none; align-items:center; justify-content:center; background: rgba(2,6,23,0.6); z-index:3000; }
+    #modal { width:780px; max-width:95%; background:#09121a; padding:18px; border-radius:12px; box-shadow:0 18px 60px rgba(2,6,23,0.8); color:#eaf6ff; }
+
+    /* Small helpers */
+    .flex { display:flex; gap:12px; align-items:center; }
+    .space { margin-bottom:12px; }
+    .right { margin-left:auto; }
+    .small { font-size:13px; color:#9fb2c9; }
+    .search-sm { width:260px; }
+    .text-muted { color:#97a8bb; font-size:13px; }
+    .img-thumb { width:64px; height:44px; object-fit:cover; border-radius:8px; }
+
+    /* Responsive */
+    @media (max-width:900px) {
+      .topbar .search { max-width:60%; width:100%; }
+      .grid { grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); }
+      .sidebar { width:72px; }
+      .sidebar .brand { font-size:14px; padding:12px; }
+      .nav button span.label { display:none; }
+    }
+  </style>
 </head>
-<body class="bg-gray-100 font-sans">
-  <div class="flex h-screen">
+
+<body>
+  <div class="admin-app" role="application" aria-label="Admin Dashboard">
     <!-- Sidebar -->
-    <aside class="w-64 bg-gray-900 text-white flex flex-col">
-      <div class="p-4 border-b border-gray-700">
-        <div class="text-xl font-bold">Food Menu Admin</div>
-      </div>
-      <nav class="flex-1 p-4 space-y-2">
-        <button id="tab-menu-btn" class="w-full text-left px-3 py-2 rounded hover:bg-gray-800 bg-gray-800">🍽 Menu</button>
-        <button id="tab-orders-btn" class="w-full text-left px-3 py-2 rounded hover:bg-gray-800">🧾 Orders</button>
-        <button id="tab-coupons-btn" class="w-full text-left px-3 py-2 rounded hover:bg-gray-800">🎟 Coupons</button>
+    <aside class="sidebar" aria-label="Sidebar">
+      <div class="brand">Food Menu Admin</div>
+      <nav class="nav" role="navigation" aria-label="Primary">
+        <button id="nav-home" class="active" data-page="home"><span class="icon">🏠</span><span class="label"> Dashboard</span></button>
+        <button id="nav-menu" data-page="menu"><span class="icon">🍽</span><span class="label"> Menu</span></button>
+        <button id="nav-orders" data-page="orders"><span class="icon">🧾</span><span class="label"> Orders</span></button>
+        <button id="nav-coupons" data-page="coupons"><span class="icon">🎟</span><span class="label"> Coupons</span></button>
+        <button id="nav-settings" data-page="settings"><span class="icon">⚙️</span><span class="label"> Settings</span></button>
       </nav>
-      <div class="p-4 border-t border-gray-700 text-sm text-gray-400">© 2025</div>
+
+      <div class="bottom">
+        <div class="small">Logged in as <strong>admin</strong></div>
+        <div style="height:8px"></div>
+        <button id="logoutBtn" class="btn ghost">Logout</button>
+      </div>
     </aside>
 
-    <!-- Main -->
-    <main class="flex-1 overflow-auto p-6">
-      <!-- Menu -->
-      <section id="tab-menu" class="tab-section">
-        <div class="flex items-center justify-between mb-4">
-          <h2 class="text-2xl font-semibold">Menu Management</h2>
-          <div>
-            <button id="openAddMenuBtn" class="bg-blue-600 text-white px-3 py-1 rounded">+ Add Item</button>
+    <!-- Main area -->
+    <div class="main">
+      <!-- Topbar -->
+      <div class="topbar">
+        <div class="search">
+          <input id="topSearch" placeholder="Search orders, items, coupons..." />
+        </div>
+        <div class="actions">
+          <div class="small text-muted">Admin Panel</div>
+          <div style="width:12px"></div>
+          <button id="quickAddBtn" class="btn primary">+ Quick Add</button>
+        </div>
+      </div>
+
+      <!-- Content -->
+      <div class="content">
+        <!-- Dashboard Home -->
+        <section id="page-home" class="page active" aria-labelledby="nav-home">
+          <div class="flex space">
+            <h1 style="margin:0; font-size:22px;">Dashboard</h1>
+            <div class="right small text-muted">Overview & analytics</div>
           </div>
-        </div>
 
-        <div class="bg-white rounded shadow overflow-auto">
-          <table class="min-w-full divide-y divide-gray-200">
-            <thead class="bg-gray-50">
-              <tr>
-                <th class="px-4 py-2 text-left">Name</th>
-                <th class="px-4 py-2 text-left">Price</th>
-                <th class="px-4 py-2 text-left">Category</th>
-                <th class="px-4 py-2 text-left">Available</th>
-                <th class="px-4 py-2 text-left">Actions</th>
-              </tr>
-            </thead>
-            <tbody id="menuTable" class="bg-white divide-y divide-gray-200"></tbody>
-          </table>
-        </div>
-      </section>
-
-      <!-- Orders -->
-      <section id="tab-orders" class="tab-section hidden">
-        <div class="flex items-center justify-between mb-4">
-          <h2 class="text-2xl font-semibold">Orders</h2>
-        </div>
-
-        <div class="bg-white rounded shadow overflow-auto">
-          <table class="min-w-full divide-y divide-gray-200">
-            <thead class="bg-gray-50">
-              <tr>
-                <th class="px-4 py-2 text-left">Order ID</th>
-                <th class="px-4 py-2 text-left">Items</th>
-                <th class="px-4 py-2 text-left">Total</th>
-                <th class="px-4 py-2 text-left">Status</th>
-                <th class="px-4 py-2 text-left">Actions</th>
-              </tr>
-            </thead>
-            <tbody id="ordersTable" class="bg-white divide-y divide-gray-200"></tbody>
-          </table>
-        </div>
-      </section>
-
-      <!-- Coupons -->
-      <section id="tab-coupons" class="tab-section hidden">
-        <div class="flex items-center justify-between mb-4">
-          <h2 class="text-2xl font-semibold">Coupons</h2>
-          <div>
-            <button id="openAddCouponBtn" class="bg-green-600 text-white px-3 py-1 rounded">+ Add Coupon</button>
+          <div class="grid" style="margin-bottom:18px;">
+            <div class="card">
+              <h3>Today's Orders</h3>
+              <p id="stat-today-orders">0</p>
+              <div class="small text-muted">Orders placed today</div>
+            </div>
+            <div class="card">
+              <h3>Total Revenue</h3>
+              <p id="stat-revenue">₹0</p>
+              <div class="small text-muted">All-time revenue</div>
+            </div>
+            <div class="card">
+              <h3>Pending Orders</h3>
+              <p id="stat-pending">0</p>
+              <div class="small text-muted">Awaiting processing</div>
+            </div>
+            <div class="card">
+              <h3>Delivered Orders</h3>
+              <p id="stat-delivered">0</p>
+              <div class="small text-muted">Completed deliveries</div>
+            </div>
           </div>
-        </div>
 
-        <div class="bg-white rounded shadow overflow-auto">
-          <table class="min-w-full divide-y divide-gray-200">
-            <thead class="bg-gray-50">
-              <tr>
-                <th class="px-4 py-2 text-left">Code</th>
-                <th class="px-4 py-2 text-left">Type</th>
-                <th class="px-4 py-2 text-left">Discount</th>
-                <th class="px-4 py-2 text-left">Actions</th>
-              </tr>
-            </thead>
-            <tbody id="couponsTable" class="bg-white divide-y divide-gray-200"></tbody>
-          </table>
-        </div>
-      </section>
-    </main>
+          <div class="grid" style="grid-template-columns: 1fr 360px; gap:18px;">
+            <div class="card">
+              <h3>Sales (Last 7 days)</h3>
+              <canvas id="chartSales" width="800" height="260"></canvas>
+            </div>
+
+            <div>
+              <div class="card" style="margin-bottom:18px;">
+                <h3>Top Selling Items</h3>
+                <div id="topItemsList"></div>
+              </div>
+
+              <div class="card">
+                <h3>Recent Orders</h3>
+                <div id="recentOrdersList" style="max-height:220px; overflow:auto;"></div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- Menu Management -->
+        <section id="page-menu" class="page" aria-labelledby="nav-menu">
+          <div class="flex space">
+            <h1 style="margin:0; font-size:22px;">Menu Management</h1>
+            <div class="right">
+              <button id="addMenuBtn" class="btn primary">+ Add Item</button>
+            </div>
+          </div>
+
+          <div class="card" style="margin-top:14px;">
+            <div style="display:flex; gap:12px; align-items:center; margin-bottom:12px;">
+              <input id="menuSearch" placeholder="Search menu..." class="search-sm" />
+              <select id="menuFilterCategory"><option value="all">All Categories</option></select>
+              <select id="menuSort"><option value="default">Sort</option><option value="price-low">Price Low → High</option><option value="price-high">Price High → Low</option></select>
+              <div class="right text-muted">Manage items, images, availability</div>
+            </div>
+
+            <table class="table" id="menuTable" aria-live="polite">
+              <thead>
+                <tr><th>Item</th><th>Category</th><th>Price</th><th>Avail</th><th>Actions</th></tr>
+              </thead>
+              <tbody></tbody>
+            </table>
+          </div>
+        </section>
+
+        <!-- Orders Management -->
+        <section id="page-orders" class="page" aria-labelledby="nav-orders">
+          <div class="flex space">
+            <h1 style="margin:0; font-size:22px;">Orders</h1>
+            <div class="right small text-muted">Manage and update statuses</div>
+          </div>
+
+          <div class="card" style="margin-top:14px;">
+            <table class="table" id="ordersTable">
+              <thead>
+                <tr><th>Order ID</th><th>Items</th><th>Total</th><th>Status</th><th>Actions</th></tr>
+              </thead>
+              <tbody></tbody>
+            </table>
+          </div>
+        </section>
+
+        <!-- Coupons Management -->
+        <section id="page-coupons" class="page" aria-labelledby="nav-coupons">
+          <div class="flex space">
+            <h1 style="margin:0; font-size:22px;">Coupons</h1>
+            <div class="right">
+              <button id="addCouponBtn" class="btn primary">+ Add Coupon</button>
+            </div>
+          </div>
+
+          <div class="card" style="margin-top:14px;">
+            <table class="table" id="couponsTable">
+              <thead>
+                <tr><th>Code</th><th>Type</th><th>Discount</th><th>Actions</th></tr>
+              </thead>
+              <tbody></tbody>
+            </table>
+          </div>
+        </section>
+
+        <!-- Settings (simple) -->
+        <section id="page-settings" class="page" aria-labelledby="nav-settings">
+          <h1>Settings</h1>
+          <div class="card" style="margin-top:12px;">
+            <p class="small text-muted">Admin settings will be here. For now you can logout below.</p>
+            <div style="margin-top:12px;">
+              <button id="logoutBtn2" class="btn ghost">Logout</button>
+            </div>
+          </div>
+        </section>
+      </div>
+    </div>
   </div>
 
-  <!-- Modal skeletons -->
-  <div id="modalOverlay" class="fixed inset-0 bg-black bg-opacity-40 hidden items-center justify-center z-50">
-    <div id="modal" class="bg-white rounded shadow p-6 w-full max-w-lg"></div>
+  <!-- Modal overlay -->
+  <div id="modalOverlay" aria-hidden="true">
+    <div id="modal" role="dialog" aria-modal="true"></div>
   </div>
 
   <!-- Toast -->
-  <div id="toast" class="fixed bottom-6 right-6 bg-green-600 text-white px-4 py-2 rounded hidden"></div>
+  <div id="adminToast" class="card" style="position:fixed;right:20px;bottom:20px;display:none;z-index:5000;"></div>
 
+  <!-- scripts -->
+  <script>
+    // Basic auth guard: redirect to login if not logged in
+    if (localStorage.getItem("adminLoggedIn") !== "true") {
+      window.location.href = "admin-login.html";
+    }
+  </script>
   <script src="admin.js"></script>
 </body>
 </html>
