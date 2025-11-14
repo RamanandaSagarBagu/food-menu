@@ -1,0 +1,180 @@
+/* ===========================
+   Admin Panel - Dark Neo Additions
+   Paste at the end of docs/style.css
+   =========================== */
+
+/* -- Generic admin inputs used by admin.html/admin.js -- */
+.admin-only {
+  font-family: Inter, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+  color: #eaf6ff;
+}
+
+/* Input style used by modal forms */
+.input {
+  display: block;
+  width: 100%;
+  padding: 10px 12px;
+  border-radius: 8px;
+  border: 1px solid rgba(255,255,255,0.04);
+  background: rgba(255,255,255,0.02);
+  color: #eaf6ff;
+  margin: 6px 0 12px;
+  font-size: 14px;
+  resize: vertical;
+}
+
+/* Buttons */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 8px 12px;
+  border-radius: 10px;
+  cursor: pointer;
+  font-weight: 700;
+  border: none;
+  transition: transform .12s ease, box-shadow .12s ease, opacity .12s ease;
+}
+.btn:active { transform: translateY(1px); }
+.btn.primary {
+  background: linear-gradient(180deg, #ff7a4a, #ff5e25);
+  color: #fff;
+  box-shadow: 0 8px 30px rgba(255,112,67,0.12);
+}
+.btn.ghost {
+  background: transparent;
+  border: 1px solid rgba(255,255,255,0.04);
+  color: #cfe6ff;
+}
+.btn.small {
+  padding: 6px 8px;
+  font-size: 13px;
+}
+
+/* Sidebar tweaks (for narrow screens) */
+.sidebar { 
+  background: #07121a;
+  border-right: 1px solid rgba(255,255,255,0.03);
+}
+.sidebar .brand { color: #fff; font-weight: 800; letter-spacing: .2px; }
+.nav button { color: #dbeffb; }
+.nav button.active { background: rgba(255,112,67,0.14); color: #fff; }
+
+/* Topbar input */
+.topbar input {
+  background: rgba(255,255,255,0.02);
+  border: 1px solid rgba(255,255,255,0.03);
+  color: #eaf6ff;
+}
+
+/* Cards */
+.card {
+  background: linear-gradient(180deg, rgba(255,255,255,0.015), rgba(255,255,255,0.01));
+  border: 1px solid rgba(255,255,255,0.02);
+  color: #eaf6ff;
+}
+
+/* Tables */
+.table thead th { color: #9fb2c9; font-weight: 700; }
+.table tbody td { color: #d6e9fb; }
+
+/* tiny helper classes used by admin.js markup */
+.small { font-size: 13px; color: #9fb2c9; }
+.text-muted { color: #97a8bb; }
+.img-thumb { width:64px; height:44px; object-fit:cover; border-radius:8px; border:1px solid rgba(255,255,255,0.02); }
+
+/* Modal overlay & dialog */
+#modalOverlay {
+  position: fixed;
+  inset: 0;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  background: rgba(2,6,23,0.65);
+  z-index: 4000;
+}
+#modalOverlay[aria-hidden="false"] { display: flex; }
+
+#modal {
+  width: 820px;
+  max-width: calc(100% - 36px);
+  background: linear-gradient(180deg, rgba(11,18,24,0.96), rgba(6,12,16,0.98));
+  border-radius: 12px;
+  padding: 18px;
+  box-shadow: 0 20px 60px rgba(2,6,23,0.7);
+  color: #eaf6ff;
+  border: 1px solid rgba(255,255,255,0.03);
+}
+
+/* Modal inner elements */
+#modal h2, #modal h3 { margin: 0 0 8px; color: #ffd7c6; }
+#modal label { display:block; margin-bottom:6px; color:#a9c3d8; font-size:13px; }
+
+/* Drop area */
+#modal .drop-area, .drop-area {
+  border-radius: 8px;
+  border: 1px dashed rgba(255,255,255,0.04);
+  padding: 12px;
+  background: rgba(255,255,255,0.01);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  min-height:120px;
+  color:#9fb2c9;
+}
+
+/* Toast */
+#adminToast {
+  position: fixed;
+  right: 20px;
+  bottom: 20px;
+  min-width: 160px;
+  padding: 12px 16px;
+  border-radius: 10px;
+  background: rgba(0,0,0,0.6);
+  color: #fff;
+  z-index: 9999;
+  display: none;
+  box-shadow: 0 12px 32px rgba(2,6,23,0.6);
+}
+
+/* Small responsive tweaks */
+@media (max-width:900px) {
+  #modal { width: 95%; padding: 14px; }
+  .sidebar { width:72px; }
+  .nav button span.label { display:none; }
+}
+
+/* Admin form focus */
+.input:focus, textarea.input:focus {
+  outline: none;
+  border-color: rgba(255,112,67,0.9);
+  box-shadow: 0 6px 26px rgba(255,112,67,0.06);
+}
+
+/* subtle hover for table rows */
+.table tbody tr:hover { background: rgba(255,255,255,0.01); }
+
+/* fallback image */
+.fallback-thumb {
+  width:64px;
+  height:44px;
+  border-radius:8px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  background:#0b1b24;
+  color:#8fb3c9;
+  border:1px solid rgba(255,255,255,0.02);
+}
+
+/* small badge */
+.badge {
+  padding: 4px 8px;
+  border-radius: 999px;
+  background: rgba(255,255,255,0.03);
+  color: #fff;
+  font-weight:700;
+  font-size:12px;
+}
