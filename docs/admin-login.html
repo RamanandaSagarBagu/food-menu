@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Admin Login</title>
+
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: linear-gradient(135deg, #0f0f0f, #1a1a1a);
+      height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+    }
+
+    .login-card {
+      width: 370px;
+      padding: 30px;
+      background: #121212;
+      border-radius: 12px;
+      box-shadow: 0 0 35px rgba(255, 112, 67, 0.25);
+      animation: fadeIn 0.6s ease;
+    }
+
+    h2 {
+      margin: 0;
+      margin-bottom: 20px;
+      text-align: center;
+      font-size: 26px;
+      color: #ff7043;
+    }
+
+    .input-group {
+      margin-bottom: 18px;
+    }
+
+    .input-group label {
+      font-size: 14px;
+      display: block;
+      margin-bottom: 5px;
+      color: #ccc;
+    }
+
+    .input-group input {
+      width: 100%;
+      padding: 10px;
+      border: none;
+      outline: none;
+      border-radius: 6px;
+      background: #1e1e1e;
+      color: white;
+      font-size: 15px;
+    }
+
+    button {
+      width: 100%;
+      padding: 12px;
+      border: none;
+      border-radius: 6px;
+      font-size: 16px;
+      font-weight: bold;
+      cursor: pointer;
+      background: #ff7043;
+      color: #fff;
+      margin-top: 10px;
+      transition: 0.2s ease;
+    }
+
+    button:hover {
+      background: #ff5722;
+    }
+
+    .error {
+      margin-top: 12px;
+      text-align: center;
+      color: #ff4d4d;
+      display: none;
+      font-size: 14px;
+    }
+
+    /* Shake Animation */
+    @keyframes shake {
+      0% { transform: translateX(0px); }
+      25% { transform: translateX(-6px); }
+      50% { transform: translateX(6px); }
+      75% { transform: translateX(-6px); }
+      100% { transform: translateX(0px); }
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="login-card" id="loginCard">
+    <h2>Admin Login</h2>
+
+    <div class="input-group">
+      <label>Username</label>
+      <input type="text" id="username" placeholder="Enter username">
+    </div>
+
+    <div class="input-group">
+      <label>Password</label>
+      <input type="password" id="password" placeholder="Enter password">
+    </div>
+
+    <button onclick="loginAdmin()">Login</button>
+
+    <div class="error" id="errorBox">Invalid username or password!</div>
+  </div>
+
+  <script>
+    function loginAdmin() {
+      const user = document.getElementById("username").value.trim();
+      const pass = document.getElementById("password").value.trim();
+      const errorBox = document.getElementById("errorBox");
+      const card = document.getElementById("loginCard");
+
+      const ADMIN_USER = "admin";
+      const ADMIN_PASS = "1234";
+
+      if (user === ADMIN_USER && pass === ADMIN_PASS) {
+        localStorage.setItem("adminLoggedIn", "true");
+        window.location.href = "admin.html";
+      } else {
+        errorBox.style.display = "block";
+        card.style.animation = "shake 0.4s";
+        setTimeout(() => card.style.animation = "", 400);
+      }
+    }
+
+    // Prevent already logged in admins from seeing login page
+    if (localStorage.getItem("adminLoggedIn") === "true") {
+      window.location.href = "admin.html";
+    }
+  </script>
+
+</body>
+</html>
