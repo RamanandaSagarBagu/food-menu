@@ -1,7 +1,6 @@
-/* ===========================
-   Admin Panel - Dark Neo Additions
-   Paste at the end of docs/style.css
-   =========================== */
+/* Admin Panel - Dark Neo Additions
+   Paste at the end of docs/style.css OR save as docs/admin.css (you're already linking admin.css)
+*/
 
 /* -- Generic admin inputs used by admin.html/admin.js -- */
 .admin-only {
