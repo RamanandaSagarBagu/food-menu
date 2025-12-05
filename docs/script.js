@@ -1,11 +1,15 @@
-/*
-  script.js
-  ✅ Fixed image blinking & fallback
-  ✅ Works inside /docs folder
-  ✅ Uses raw GitHub URLs (permanent)
-  ✅ Includes lazy-loading
-*/
+// docs/script.js
+// Frontend storefront — loads menu from backend /api/menu if available,
+// otherwise falls back to embedded allFoods array.
 
+const INLINE_FALLBACK = 'data:image/svg+xml;utf8,' + encodeURIComponent(
+  `<svg xmlns="http://www.w3.org/2000/svg" width="400" height="300" viewBox="0 0 400 300">
+     <rect fill="#f0f0f0" width="100%" height="100%"/>
+     <text x="50%" y="50%" dominant-baseline="middle" text-anchor="middle" fill="#9aa" font-family="Arial" font-size="18">No image</text>
+   </svg>`
+);
+
+// fallback local list (kept from your previous file)
 const allFoods = [
   {"id":"f1","name":"Chicken Biryani","price":250,"image":"https://raw.githubusercontent.com/RamanandaSagarBagu/food-menu/main/docs/chicken-hyderabadi-biryani-01.jpg","description":"Spicy Hyderabadi Biryani","category":"Non-Veg"},
   {"id":"f2","name":"Paneer Butter Masala","price":200,"image":"https://raw.githubusercontent.com/RamanandaSagarBagu/food-menu/main/docs/download%20(1).jpeg","description":"Creamy paneer curry","category":"Veg"},
@@ -29,6 +33,8 @@ const allFoods = [
   {"id":"f20","name":"Chicken Lollipop","price":260,"image":"https://raw.githubusercontent.com/RamanandaSagarBagu/food-menu/main/docs/chicken%20lollipop.jpeg","description":"Spicy deep-fried chicken drumettes","category":"Non-Veg"}
 ];
 
+let MENU = []; // effective list used by UI
+
 // --- CART MANAGEMENT ---
 function getCart(){ return JSON.parse(localStorage.getItem('cart')) || []; }
 function saveCart(cart){ localStorage.setItem('cart', JSON.stringify(cart)); updateCartCount(); }
@@ -43,20 +49,38 @@ function showToast(msg,time=1800){
   t._timeout=setTimeout(()=>{t.style.opacity='0';t.style.transform='translateY(10px)';},time);
 }
 
+// --- FETCH MENU FROM BACKEND OR FALLBACK ---
+async function fetchMenu() {
+  try {
+    const res = await fetch('/api/menu', {cache: "no-store"});
+    if (!res.ok) throw new Error('no api');
+    const json = await res.json();
+    // ensure items have id and price etc.
+    return json.map(i => ({ id: String(i.id || i.id || Math.random()), name: i.name || '', price: Number(i.price || 0), imageData: i.imageData, image: i.image, description: i.description || '', category: i.category || '' }));
+  } catch (err) {
+    // fallback to embedded list
+    console.warn('Using embedded menu fallback', err);
+    return allFoods.map(i => ({ ...i }));
+  }
+}
+
 // --- DISPLAY FOODS ---
 function displayFoods(foods){
+  MENU = foods;
   const container=document.getElementById('foodContainer');
   if(!foods||foods.length===0){container.innerHTML="<p>No items found.</p>";return;}
-  container.innerHTML=foods.map(f=>`
+  container.innerHTML=foods.map(f=>{
+    const src = f.imageData || f.image || INLINE_FALLBACK;
+    return `
     <article class="food-card" data-id="${f.id}">
-      <img loading="lazy" src="${f.image}" alt="${f.name}"
-           onerror="this.onerror=null;this.src='fallback.png';">
-      <h3>${f.name}</h3>
-      <div class="price">₹${f.price.toFixed(2)}</div>
-      <p>${f.description}</p>
+      <img loading="lazy" src="${src}" alt="${escapeHtml(f.name)}"
+           onerror="this.onerror=null;this.src='${INLINE_FALLBACK}';">
+      <h3>${escapeHtml(f.name)}</h3>
+      <div class="price">₹${Number(f.price).toFixed(0)}</div>
+      <p>${escapeHtml(f.description || '')}</p>
       <button class="btn add-to-cart" data-id="${f.id}">Add to Cart</button>
     </article>
-  `).join('');
+  `}).join('');
   attachAddButtons();
 }
 
@@ -64,7 +88,7 @@ function attachAddButtons(){
   document.querySelectorAll('.add-to-cart').forEach(btn=>{
     btn.onclick=()=>{
       const id=btn.dataset.id;
-      const food=allFoods.find(x=>x.id===id);
+      const food=MENU.find(x=>String(x.id)===String(id));
       if(!food)return;
       addToCart(food);
       showToast(`${food.name} added to cart`);
@@ -75,7 +99,7 @@ function attachAddButtons(){
 // --- CART ---
 function addToCart(food){
   let cart=getCart();
-  let existing=cart.find(i=>i.id===food.id);
+  let existing=cart.find(i=>String(i.id)===String(food.id));
   if(existing)existing.quantity=(existing.quantity||1)+1;
   else cart.push({...food,quantity:1});
   saveCart(cart);
@@ -83,22 +107,23 @@ function addToCart(food){
 function updateCartCount(){
   const el=document.getElementById('cart-count');
   const total=getCart().reduce((s,i)=>s+(i.quantity||0),0);
-  el.textContent=total;
+  if(el) el.textContent=total;
 }
 
 // --- FILTERS ---
 function populateCategoryFilter(){
-  const set=new Set(allFoods.map(f=>f.category));
+  const set=new Set(MENU.map(f=>f.category));
   const sel=document.getElementById('categoryFilter');
+  if(!sel) return;
   sel.innerHTML=`<option value="all">All Categories</option>`+
-    [...set].map(c=>`<option value="${c}">${c}</option>`).join('');
+    [...set].filter(Boolean).map(c=>`<option value="${c}">${c}</option>`).join('');
 }
 function getFilteredSortedFoods(){
   const q=document.getElementById('searchBox').value.toLowerCase();
   const cat=document.getElementById('categoryFilter').value;
   const sort=document.getElementById('sortOptions').value;
-  let list=allFoods.slice();
-  if(cat!=='all')list=list.filter(f=>f.category===cat);
+  let list=MENU.slice();
+  if(cat && cat!=='all')list=list.filter(f=>f.category===cat);
   if(q)list=list.filter(f=>f.name.toLowerCase().includes(q)||f.description.toLowerCase().includes(q));
   if(sort==='price-low')list.sort((a,b)=>a.price-b.price);
   if(sort==='price-high')list.sort((a,b)=>b.price-a.price);
@@ -108,8 +133,18 @@ function onControlsChange(){displayFoods(getFilteredSortedFoods());}
 function searchFood(){onControlsChange();}
 
 // --- INIT ---
-window.addEventListener('DOMContentLoaded',()=>{
-  populateCategoryFilter();
-  displayFoods(allFoods);
+window.addEventListener('DOMContentLoaded', async ()=>{
+  try {
+    const menu = await fetchMenu();
+    MENU = menu;
+    populateCategoryFilter();
+    displayFoods(menu);
+  } catch (err) {
+    console.error('init menu error', err);
+    displayFoods(allFoods);
+  }
   updateCartCount();
 });
+
+// small helper
+function escapeHtml(s){ if(!s && s !== 0) return ""; return String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'})[c]); }
