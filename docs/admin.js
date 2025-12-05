@@ -1,10 +1,22 @@
 // docs/admin.js
-// Admin Dashboard JS - full functionality for Menu, Orders, Coupons, Analytics
+// Updated: prefer imageData, use inline fallback, keep existing admin flows
 
 const API = "/api";
 const toastEl = document.getElementById("adminToast");
 const modalOverlay = document.getElementById("modalOverlay");
 const modalRoot = document.getElementById("modal");
+
+// Inline fallback SVG (guarantees a visible placeholder)
+const INLINE_FALLBACK = 'data:image/svg+xml;utf8,' + encodeURIComponent(
+  `<svg xmlns="http://www.w3.org/2000/svg" width="400" height="300" viewBox="0 0 400 300">
+     <rect fill="#0b1b24" width="100%" height="100%"/>
+     <g transform="translate(36,52)" fill="#8fb3c9">
+       <rect x="0" y="0" width="84" height="64" rx="8"/>
+       <rect x="110" y="12" width="196" height="40" rx="6"/>
+     </g>
+     <text x="50%" y="90%" dominant-baseline="middle" text-anchor="middle" fill="#9fb2c9" font-family="Arial" font-size="14">No image available</text>
+   </svg>`
+);
 
 // ----------------- Auth & Logout -----------------
 function checkAuth() {
@@ -88,7 +100,6 @@ navButtons.forEach(btn => {
 const topSearch = el("#topSearch");
 if (topSearch) {
   topSearch.addEventListener("input", debounce(() => {
-    // search across items/orders/coupons depending on active page
     const active = document.querySelector(".page.active");
     if (!active) return;
     if (active.id === "page-menu") applyMenuFilters();
@@ -132,10 +143,12 @@ function populateMenuTable(list) {
   tbody.innerHTML = "";
   list.forEach(item => {
     const tr = document.createElement("tr");
+    // use imageData first, then image path, then inline fallback
+    const src = item.imageData || item.image || INLINE_FALLBACK;
     tr.innerHTML = `
       <td>
         <div style="display:flex;gap:12px;align-items:center">
-          <img src="${item.imageData || item.image || 'fallback.jpg'}" alt="" class="img-thumb" onerror="this.src='fallback.jpg'">
+          <img src="${src}" alt="" class="img-thumb" onerror="this.onerror=null;this.src='${INLINE_FALLBACK}'">
           <div>
             <div style="font-weight:700;color:#fff">${escapeHtml(item.name)}</div>
             <div class="small text-muted">${escapeHtml(item.description || "")}</div>
@@ -223,7 +236,7 @@ function openAddMenuModal() {
       </div>
       <div style="width:260px">
         <label class="small text-muted">Image (drag & drop or select)</label>
-        <div id="f_drop" style="height:160px;border-radius:8px;border:1px dashed rgba(255,255,255,0.06);display:flex;align-items:center;justify-content:center;flex-direction:column;background:#071018;">
+        <div id="f_drop" class="drop-area">
           <div class="small text-muted">Drop image here</div>
           <input id="f_image" type="file" accept="image/*" style="margin-top:8px"/>
           <div id="f_preview" style="margin-top:8px"></div>
@@ -243,10 +256,10 @@ function openAddMenuModal() {
   const preview = el("#f_preview");
 
   drop.addEventListener("dragover", (e) => { e.preventDefault(); drop.style.borderColor = "#ff7043"; });
-  drop.addEventListener("dragleave", () => { drop.style.borderColor = "rgba(255,255,255,0.06)"; });
+  drop.addEventListener("dragleave", () => { drop.style.borderColor = ""; });
   drop.addEventListener("drop", (e) => {
     e.preventDefault();
-    drop.style.borderColor = "rgba(255,255,255,0.06)";
+    drop.style.borderColor = "";
     const f = e.dataTransfer.files[0];
     if (!f) return;
     const dt = new DataTransfer();
@@ -319,7 +332,7 @@ async function openEditMenuModal(id) {
       </div>
       <div style="width:260px">
         <label class="small text-muted">Image</label>
-        <div id="f_drop" style="height:160px;border-radius:8px;border:1px dashed rgba(255,255,255,0.06);display:flex;align-items:center;justify-content:center;flex-direction:column;background:#071018;">
+        <div id="f_drop" class="drop-area">
           <div class="small text-muted">Drop new image or leave as is</div>
           <input id="f_image" type="file" accept="image/*" style="margin-top:8px"/>
           <div id="f_preview" style="margin-top:8px">${item.imageData ? `<img src="${item.imageData}" style="max-width:100%;border-radius:8px">` : (item.image ? `<img src="${item.image}" style="max-width:100%;border-radius:8px">` : "")}</div>
@@ -338,10 +351,10 @@ async function openEditMenuModal(id) {
   const preview = el("#f_preview");
 
   drop.addEventListener("dragover", (e) => { e.preventDefault(); drop.style.borderColor = "#ff7043"; });
-  drop.addEventListener("dragleave", () => { drop.style.borderColor = "rgba(255,255,255,0.06)"; });
+  drop.addEventListener("dragleave", () => { drop.style.borderColor = ""; });
   drop.addEventListener("drop", (e) => {
     e.preventDefault();
-    drop.style.borderColor = "rgba(255,255,255,0.06)";
+    drop.style.borderColor = "";
     const f = e.dataTransfer.files[0];
     if (!f) return;
     const dt = new DataTransfer();
@@ -646,7 +659,6 @@ function confirmDeleteCoupon(id) {
 
 // ----------------- Dashboard analytics -----------------
 function refreshDashboard() {
-  // compute stats from ORDERS and MENU
   const today = new Date().toISOString().slice(0,10);
   const todayOrders = ORDERS.filter(o => (o.createdAt || "").slice(0,10) === today).length;
   const totalRevenue = ORDERS.reduce((s,o) => s + (Number(o.total) || 0), 0);
@@ -664,12 +676,10 @@ function refreshDashboard() {
 }
 
 function updateTopItems() {
-  // keep top items updated when menu changes
   renderTopItems();
 }
 
 function renderTopItems() {
-  // naive: compute frequency from orders
   const freq = {};
   ORDERS.forEach(o => {
     (o.items || []).forEach(it => {
@@ -709,7 +719,7 @@ function renderRecentOrders() {
   });
 }
 
-// Simple sales chart (last 7 days)
+// sales chart (see original for details)
 function renderSalesChart() {
   const canvas = el("#chartSales");
   if (!canvas) return;
@@ -722,7 +732,6 @@ function renderSalesChart() {
   }
   const totals = days.map(day => ORDERS.filter(o => (o.createdAt || "").slice(0,10) === day).reduce((s,o) => s + (Number(o.total)||0), 0));
 
-  // responsive canvas clear
   const DPR = window.devicePixelRatio || 1;
   const W = canvas.clientWidth || 700;
   const H = canvas.clientHeight || 260;
@@ -731,7 +740,6 @@ function renderSalesChart() {
   ctx.scale(DPR, DPR);
   ctx.clearRect(0,0,W,H);
 
-  // background grid
   ctx.strokeStyle = "rgba(255,255,255,0.04)";
   ctx.lineWidth = 1;
   for (let y=0;y<5;y++) {
@@ -742,14 +750,12 @@ function renderSalesChart() {
     ctx.stroke();
   }
 
-  // compute max
   const max = Math.max(...totals, 10);
   const pad = 20;
   const innerW = W - pad*2;
   const innerH = H - pad*2;
   const stepX = innerW / (days.length - 1);
 
-  // path
   ctx.beginPath();
   ctx.lineWidth = 2.4;
   ctx.strokeStyle = "#ff7043";
@@ -760,7 +766,6 @@ function renderSalesChart() {
   }
   ctx.stroke();
 
-  // fill gradient
   const grad = ctx.createLinearGradient(0, pad, 0, H);
   grad.addColorStop(0, "rgba(255,112,67,0.18)");
   grad.addColorStop(1, "rgba(255,112,67,0.02)");
@@ -770,7 +775,6 @@ function renderSalesChart() {
   ctx.fillStyle = grad;
   ctx.fill();
 
-  // draw points
   ctx.fillStyle = "#fff";
   totals.forEach((v,i) => {
     const x = pad + i * stepX;
@@ -780,11 +784,10 @@ function renderSalesChart() {
     ctx.fill();
   });
 
-  // labels
   ctx.fillStyle = "rgba(255,255,255,0.8)";
   ctx.font = "12px sans-serif";
   days.forEach((d,i) => {
-    const label = d.slice(5); // MM-DD
+    const label = d.slice(5);
     const x = pad + i * stepX;
     ctx.fillText(label, x - 18, H - 6);
   });
@@ -799,7 +802,6 @@ function escapeHtml(s) {
 // ----------------- Init & load all data -----------------
 async function initialLoad() {
   await Promise.allSettled([loadMenu(), loadOrders(), loadCoupons()]);
-  // start with dashboard
   refreshDashboard();
 }
 initialLoad();
