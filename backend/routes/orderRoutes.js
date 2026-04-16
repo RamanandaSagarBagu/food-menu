@@ -1,60 +1,58 @@
 const express = require("express");
 const router = express.Router();
-const { readJSON, writeJSON } = require("../utils/fileHandler");
 
-const FILE = "orders.json";
+const Order = require("../models/Order");
+const { validateOrder } = require("../middleware/validate");
 
-// Get all orders
+// ✅ Get all orders
 router.get("/", async (req, res) => {
   try {
-    const orders = await readJSON(FILE);
+    const orders = await Order.find().sort({ createdAt: -1 });
     res.json(orders);
   } catch (err) {
     res.status(500).json({ error: "Failed to load orders" });
   }
 });
 
-// Create an order
-router.post("/", async (req, res) => {
+// ✅ Create order (with validation)
+router.post("/", validateOrder, async (req, res) => {
   try {
-    const orders = await readJSON(FILE);
-    const newOrder = {
-      id: Date.now(),
-      items: req.body.items || [],
-      total: req.body.total || 0,
-      status: req.body.status || "Processing",
-      createdAt: new Date().toISOString()
-    };
-    orders.push(newOrder);
-    await writeJSON(FILE, orders);
+    const { items, total } = req.body;
+
+    const newOrder = await Order.create({
+      items,
+      total,
+      status: "Processing",
+      paymentStatus: "Pending"
+    });
+
     res.status(201).json(newOrder);
   } catch (err) {
     res.status(500).json({ error: "Failed to create order" });
   }
 });
 
-// Update order (status or other fields)
+// ✅ Update order
 router.put("/:id", async (req, res) => {
   try {
-    const orders = await readJSON(FILE);
-    const id = parseInt(req.params.id);
-    const idx = orders.findIndex(o => o.id === id);
-    if (idx === -1) return res.status(404).send("Not found");
-    orders[idx] = { ...orders[idx], ...req.body };
-    await writeJSON(FILE, orders);
-    res.json(orders[idx]);
+    const updated = await Order.findByIdAndUpdate(
+      req.params.id,
+      req.body,
+      { new: true }
+    );
+
+    if (!updated) return res.status(404).json({ error: "Order not found" });
+
+    res.json(updated);
   } catch (err) {
     res.status(500).json({ error: "Failed to update order" });
   }
 });
 
-// Delete order (optional)
+// ✅ Delete order
 router.delete("/:id", async (req, res) => {
   try {
-    const orders = await readJSON(FILE);
-    const id = parseInt(req.params.id);
-    const filtered = orders.filter(o => o.id !== id);
-    await writeJSON(FILE, filtered);
+    await Order.findByIdAndDelete(req.params.id);
     res.json({ message: "Deleted successfully" });
   } catch (err) {
     res.status(500).json({ error: "Failed to delete order" });
